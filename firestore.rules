@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Simplified rules for development
+    
+    // Allow all authenticated users to read/write enrollments
+    match /enrollments/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Allow public read for courses
+    match /courses/{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Allow authenticated users to read/write users
+    match /users/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Allow all other authenticated operations
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

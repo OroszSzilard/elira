@@ -1,0 +1,267 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mux Player Custom Styles */
+@layer components {
+  .mux-player {
+    --media-primary-color: hsl(var(--primary));
+    --media-secondary-color: hsl(var(--primary) / 0.8);
+    --media-accent-color: hsl(var(--accent-foreground));
+    --media-background-color: hsl(var(--background));
+    --media-text-color: hsl(var(--foreground));
+    --media-range-track-background: hsl(var(--muted));
+    --media-range-thumb-background: hsl(var(--primary));
+    --media-range-track-border-radius: var(--radius);
+    --media-control-background: hsl(var(--background) / 0.9);
+    --media-control-hover-background: hsl(var(--accent));
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  
+  .mux-player:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
+ 
+@layer base {
+  :root {
+    /* Base colors */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    /* Card colors */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+ 
+    /* Popover colors */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+ 
+    /* Primary brand colors */
+    --primary: 0 84% 24%; /* #0f766e */
+    --primary-foreground: 0 0% 100%;
+ 
+    /* Secondary colors */
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+ 
+    /* Tertiary colors */
+    --tertiary: 210 40% 96.1%;
+    --tertiary-foreground: 222.2 47.4% 11.2%;
+ 
+    /* Muted colors */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+ 
+    /* Accent colors */
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+ 
+    /* Semantic colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --error: 0 84% 60%;
+    --error-foreground: 0 0% 100%;
+    --info: 183 100% 28%;
+    --info-foreground: 0 0% 100%;
+
+    /* Destructive colors */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Border and input colors */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+ 
+    /* Border radius */
+    --radius: 0.5rem;
+
+    /* Text colors - semantic */
+    --text-primary: 222.2 84% 4.9%;
+    --text-secondary: 215.4 16.3% 46.9%;
+    --text-muted: 215.4 16.3% 46.9%;
+    --text-disabled: 215.4 16.3% 46.9%;
+
+    /* Background colors - semantic */
+    --bg-primary: 0 0% 100%;
+    --bg-secondary: 210 40% 96.1%;
+    --bg-muted: 210 40% 96.1%;
+    --bg-accent: 210 40% 96.1%;
+
+    /* Typography scale */
+    --font-xs: 0.75rem;    /* 12px */
+    --font-sm: 0.875rem;   /* 14px */
+    --font-base: 1rem;     /* 16px */
+    --font-md: 1.125rem;   /* 18px */
+    --font-lg: 1.25rem;    /* 20px */
+    --font-xl: 1.5rem;     /* 24px */
+    --font-2xl: 1.875rem;  /* 30px */
+    --font-3xl: 2.25rem;   /* 36px */
+    --font-4xl: 3rem;      /* 48px */
+    --font-5xl: 3.75rem;   /* 60px */
+
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    --leading-tight: 1.1;
+    --leading-snug: 1.25;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+
+    /* Spacing & Sizing Scale */
+    --space-0: 0px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-14: 56px;
+    --space-16: 64px;
+    --space-20: 80px;
+    --space-24: 96px;
+    --space-28: 112px;
+    --space-32: 128px;
+    /* Layout specific gap */
+    --gap-layout: 32px;
+  }
+ 
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --tertiary: 217.2 32.6% 17.5%;
+    --tertiary-foreground: 210 40% 98%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .clip-path-curved {
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%);
+  }
+
+  /* Typography utilities */
+  .text-display {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .text-lead {
+    font-size: 1.25rem;
+    line-height: 1.625;
+    font-weight: 400;
+  }
+
+  .text-muted {
+    font-size: var(--font-sm);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .text-caption {
+    font-size: var(--font-xs);
+    line-height: 1.25;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Heading utilities */
+  .heading-1 {
+    font-size: var(--font-4xl);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .heading-2 {
+    font-size: var(--font-3xl);
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .heading-3 {
+    font-size: var(--font-2xl);
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  .heading-4 {
+    font-size: var(--font-xl);
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  .heading-5 {
+    font-size: var(--font-lg);
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  .heading-6 {
+    font-size: var(--font-base);
+    line-height: 1.5;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Shared hero section background */
+  @keyframes gradientPan {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .hero-bg {
+    background: radial-gradient(circle at 30% 20%, #edf2fa 0%, #f5f7fc 50%, #ffffff 100%);
+    background-size: 200% 200%;
+    animation: gradientPan 30s ease infinite;
+    position: relative;
+  }
+} 
