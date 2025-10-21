@@ -249,9 +249,9 @@ export default function UniversityAdminSchedulePage() {
         <CardContent>
           <div className="space-y-3">
             {scheduleEvents.slice(0, 5).map((event) => (
-              <div key={event.id} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+              <div key={event.id} className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
                 <div className="flex items-center gap-4">
-                  <div className="p-2 rounded-lg bg-white dark:bg-gray-700">
+                  <div className="p-2 rounded-lg bg-white">
                     <Clock className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>

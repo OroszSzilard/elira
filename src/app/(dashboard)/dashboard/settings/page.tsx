@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion } from 'motion/react'
 import { useAuthStore } from '@/stores/authStore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,16 +10,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { User, Bell, Shield, Globe, Camera, Save, Loader2 } from 'lucide-react'
+import { User, Bell, Shield, Globe, Camera, Save, Loader2, Settings } from 'lucide-react'
 import { toast } from 'sonner'
 import { updatePassword, EmailAuthProvider, reauthenticateWithCredential, updateProfile as updateAuthProfile } from 'firebase/auth'
 import { auth, db } from '@/lib/firebase'
 import { doc, updateDoc, setDoc, getDoc } from 'firebase/firestore'
-import { useTheme } from 'next-themes'
+import { brandGradient, glassMorphism } from '@/lib/design-tokens'
 
 export default function SettingsPage() {
   const { user, setUser } = useAuthStore()
-  const { theme: currentTheme, setTheme: setSystemTheme } = useTheme()
   
   // Profile states
   const [firstName, setFirstName] = useState(user?.firstName || '')
@@ -48,7 +48,6 @@ export default function SettingsPage() {
   // Preferences states
   const [language, setLanguage] = useState('hu')
   const [timezone, setTimezone] = useState('europe/budapest')
-  const [theme, setTheme] = useState('light')
   const [autoplay, setAutoplay] = useState(true)
   const [preferencesSaving, setPreferencesSaving] = useState(false)
 
@@ -58,13 +57,6 @@ export default function SettingsPage() {
       loadUserSettings()
     }
   }, [user])
-  
-  // Sync theme with system theme on mount
-  useEffect(() => {
-    if (currentTheme) {
-      setTheme(currentTheme)
-    }
-  }, [currentTheme])
 
   const loadUserSettings = async () => {
     if (!user?.uid) return
@@ -78,12 +70,6 @@ export default function SettingsPage() {
         setNotifications(data.notifications || notifications)
         setLanguage(data.language || 'hu')
         setTimezone(data.timezone || 'europe/budapest')
-        
-        // Load and apply theme
-        const savedTheme = data.theme || 'light'
-        setTheme(savedTheme)
-        setSystemTheme(savedTheme) // Apply theme to the system
-        
         setAutoplay(data.autoplay ?? true)
       }
     } catch (error) {
@@ -158,20 +144,16 @@ export default function SettingsPage() {
   // Save preferences manually
   const savePreferences = async () => {
     if (!user?.uid) return
-    
+
     setPreferencesSaving(true)
     try {
       await setDoc(doc(db, 'userSettings', user.uid), {
         language,
         timezone,
-        theme,
         autoplay,
         updatedAt: new Date().toISOString()
       }, { merge: true })
-      
-      // Apply theme immediately
-      setSystemTheme(theme)
-      
+
       toast.success('Beállítások mentve')
     } catch (error) {
       console.error('Error saving preferences:', error)
@@ -232,49 +214,99 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="p-6">
-      <div className="max-w-5xl mx-auto">
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Beállítások</h1>
-          <p className="text-gray-600 mt-1">
-            Kezelje fiókját és testreszabja a platform használatát
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Gradient Hero Section */}
+      <section
+        className="relative -mt-20 pt-20 pb-12"
+        style={{ background: brandGradient }}
+      >
+        <div className="container mx-auto px-6 lg:px-12 py-12 relative z-10">
+          <motion.div
+            className="flex flex-col items-center gap-6 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Badge */}
+            <motion.div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm"
+              style={{
+                ...glassMorphism.badge,
+                border: '1px solid rgba(255, 255, 255, 0.25)'
+              }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Settings className="w-4 h-4 text-white" />
+              <span className="font-semibold text-white">Fiókkezelés</span>
+            </motion.div>
+
+            {/* Main Heading */}
+            <div>
+              <h1 className="text-4xl lg:text-5xl font-semibold text-white mb-3">
+                Beállítások
+              </h1>
+              <p className="text-white/80 text-lg max-w-2xl mx-auto">
+                Kezelje fiókját és testreszabja a platform használatát
+              </p>
+            </div>
+          </motion.div>
         </div>
 
-        <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="profile">Profil</TabsTrigger>
-            <TabsTrigger value="notifications">Értesítések</TabsTrigger>
-            <TabsTrigger value="security">Biztonság</TabsTrigger>
-            <TabsTrigger value="preferences">Beállítások</TabsTrigger>
-          </TabsList>
+        {/* Ambient glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle at 50% 30%, rgba(139, 92, 246, 0.08), transparent 70%)'
+          }}
+        />
+      </section>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-6 lg:px-12 py-12">
+        <div className="max-w-5xl mx-auto">
+          <Tabs defaultValue="profile" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="profile">Profil</TabsTrigger>
+              <TabsTrigger value="notifications">Értesítések</TabsTrigger>
+              <TabsTrigger value="security">Biztonság</TabsTrigger>
+              <TabsTrigger value="preferences">Beállítások</TabsTrigger>
+            </TabsList>
 
           {/* Profile Tab */}
           <TabsContent value="profile">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <User className="w-5 h-5 mr-2 text-teal-600" />
-                  Profil információk
-                </CardTitle>
-                <CardDescription>
-                  Frissítse profil adatait
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Profile Picture */}
-                <div className="flex items-center space-x-4">
-                  <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-2xl font-bold">
-                      {firstName?.[0]?.toUpperCase() || 'U'}{lastName?.[0]?.toUpperCase() || ''}
-                    </span>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <User className="w-5 h-5 mr-2 text-gray-900" />
+                    Profil információk
+                  </CardTitle>
+                  <CardDescription>
+                    Frissítse profil adatait
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Profile Picture */}
+                  <div className="flex items-center space-x-4">
+                    <div
+                      className="w-20 h-20 rounded-full flex items-center justify-center"
+                      style={{ background: brandGradient }}
+                    >
+                      <span className="text-white text-2xl font-bold">
+                        {firstName?.[0]?.toUpperCase() || 'U'}{lastName?.[0]?.toUpperCase() || ''}
+                      </span>
+                    </div>
+                    <Button variant="outline" size="sm" disabled>
+                      <Camera className="w-4 h-4 mr-2" />
+                      Kép feltöltése (hamarosan)
+                    </Button>
                   </div>
-                  <Button variant="outline" size="sm" disabled>
-                    <Camera className="w-4 h-4 mr-2" />
-                    Kép feltöltése (hamarosan)
-                  </Button>
-                </div>
 
                 {/* Name Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -332,7 +364,7 @@ export default function SettingsPage() {
                     id="bio"
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
-                    className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-gray-900"
                     rows={4}
                     placeholder="Írjon magáról pár mondatot..."
                   />
@@ -340,10 +372,10 @@ export default function SettingsPage() {
 
                 {/* Save Button */}
                 <div className="flex justify-end">
-                  <Button 
+                  <Button
                     onClick={saveProfile}
                     disabled={profileSaving}
-                    className="bg-teal-600 hover:bg-teal-700"
+                    className="bg-gray-900 hover:bg-[#466C95] transition-colors"
                   >
                     {profileSaving ? (
                       <>
@@ -360,20 +392,26 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          </motion.div>
+        </TabsContent>
 
           {/* Notifications Tab */}
           <TabsContent value="notifications">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Bell className="w-5 h-5 mr-2 text-teal-600" />
-                  Értesítési beállítások
-                </CardTitle>
-                <CardDescription>
-                  Válassza ki, milyen értesítéseket szeretne kapni
-                </CardDescription>
-              </CardHeader>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Bell className="w-5 h-5 mr-2 text-gray-900" />
+                    Értesítési beállítások
+                  </CardTitle>
+                  <CardDescription>
+                    Válassza ki, milyen értesítéseket szeretne kapni
+                  </CardDescription>
+                </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
                   {[
@@ -401,10 +439,10 @@ export default function SettingsPage() {
 
                 {/* Save Button */}
                 <div className="flex justify-end pt-4 border-t">
-                  <Button 
+                  <Button
                     onClick={saveNotifications}
                     disabled={notificationsSaving}
-                    className="bg-teal-600 hover:bg-teal-700"
+                    className="bg-gray-900 hover:bg-[#466C95] transition-colors"
                   >
                     {notificationsSaving ? (
                       <>
@@ -421,20 +459,26 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          </motion.div>
+        </TabsContent>
 
           {/* Security Tab */}
           <TabsContent value="security">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Shield className="w-5 h-5 mr-2 text-teal-600" />
-                  Biztonság és jelszó
-                </CardTitle>
-                <CardDescription>
-                  Változtassa meg jelszavát a fiók biztonságáért
-                </CardDescription>
-              </CardHeader>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Shield className="w-5 h-5 mr-2 text-gray-900" />
+                    Biztonság és jelszó
+                  </CardTitle>
+                  <CardDescription>
+                    Változtassa meg jelszavát a fiók biztonságáért
+                  </CardDescription>
+                </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <Label htmlFor="currentPassword">Jelenlegi jelszó</Label>
@@ -473,10 +517,10 @@ export default function SettingsPage() {
                 
                 {/* Save Button */}
                 <div className="flex justify-end pt-4 border-t">
-                  <Button 
+                  <Button
                     onClick={handlePasswordChange}
                     disabled={passwordSaving}
-                    className="bg-teal-600 hover:bg-teal-700"
+                    className="bg-gray-900 hover:bg-[#466C95] transition-colors"
                   >
                     {passwordSaving ? (
                       <>
@@ -493,20 +537,26 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          </motion.div>
+        </TabsContent>
 
           {/* Preferences Tab */}
           <TabsContent value="preferences">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Globe className="w-5 h-5 mr-2 text-teal-600" />
-                  Platform beállítások
-                </CardTitle>
-                <CardDescription>
-                  Testreszabhatja a platform működését
-                </CardDescription>
-              </CardHeader>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Globe className="w-5 h-5 mr-2 text-gray-900" />
+                    Platform beállítások
+                  </CardTitle>
+                  <CardDescription>
+                    Testreszabhatja a platform működését
+                  </CardDescription>
+                </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <Label htmlFor="language">Nyelv</Label>
@@ -536,20 +586,6 @@ export default function SettingsPage() {
                   </Select>
                 </div>
 
-                <div>
-                  <Label htmlFor="theme">Téma</Label>
-                  <Select value={theme} onValueChange={setTheme}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="light">Világos</SelectItem>
-                      <SelectItem value="dark">Sötét</SelectItem>
-                      <SelectItem value="auto">Automatikus</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="font-medium">Videó automatikus lejátszás</Label>
@@ -563,10 +599,10 @@ export default function SettingsPage() {
 
                 {/* Save Button */}
                 <div className="flex justify-end pt-4 border-t">
-                  <Button 
+                  <Button
                     onClick={savePreferences}
                     disabled={preferencesSaving}
-                    className="bg-teal-600 hover:bg-teal-700"
+                    className="bg-gray-900 hover:bg-[#466C95] transition-colors"
                   >
                     {preferencesSaving ? (
                       <>
@@ -583,8 +619,10 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          </motion.div>
+        </TabsContent>
         </Tabs>
+        </div>
       </div>
     </div>
   )

@@ -63,7 +63,7 @@ export const WhyElira: React.FC = () => {
   ]
 
   return (
-    <section id="why-elira" className="py-24 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 relative overflow-hidden">
+    <section id="why-elira" className="py-32 sm:py-40 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0">
         <div className="absolute top-10 left-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
@@ -71,33 +71,33 @@ export const WhyElira: React.FC = () => {
       </div>
 
       <Container className="max-w-7xl relative">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+        <div className="text-center mb-24">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
             Miért az ELIRA?
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Egyedülálló kombinációja a szakértelemnek, gyakorlatias megközelítésnek és rugalmas tanulási lehetőségeknek
           </p>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {features.map((feature) => {
             const Icon = feature.icon
             return (
               <Card 
                 key={feature.id} 
-                className="group p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0 bg-white dark:bg-gray-800 relative overflow-hidden"
+                className="group p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0 bg-white relative overflow-hidden"
               >
                 {/* Icon with gradient background */}
                 <div className={`w-16 h-16 ${feature.bgColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   <Icon className={`w-8 h-8 ${feature.textColor}`} />
                 </div>
                 
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-primary transition-colors">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors">
                   {feature.title}
                 </h3>
                 
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-gray-600 leading-relaxed">
                   {feature.description}
                 </p>
                 
@@ -109,23 +109,23 @@ export const WhyElira: React.FC = () => {
         </div>
 
         {/* Bottom stats section */}
-        <div className="mt-20 bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+        <div className="mt-20 bg-white rounded-2xl shadow-lg p-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-3xl font-bold text-primary mb-2">15,000+</div>
-              <div className="text-gray-600 dark:text-gray-400">Aktív diák</div>
+              <div className="text-gray-600">Aktív diák</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-primary mb-2">95%</div>
-              <div className="text-gray-600 dark:text-gray-400">Elégedettség</div>
+              <div className="text-gray-600">Elégedettség</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-primary mb-2">200+</div>
-              <div className="text-gray-600 dark:text-gray-400">Kurzus</div>
+              <div className="text-gray-600">Kurzus</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-primary mb-2">50+</div>
-              <div className="text-gray-600 dark:text-gray-400">Szakértő oktató</div>
+              <div className="text-gray-600">Szakértő oktató</div>
             </div>
           </div>
         </div>

@@ -1,13 +1,11 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "@/styles/globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
 import { ReactQueryProvider } from "@/components/react-query-provider"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Toaster } from 'sonner'
 import Script from 'next/script'
 import { AuthProvider } from '@/components/auth-provider'
-import { ThemeSync } from '@/components/theme-sync'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -45,18 +43,10 @@ gtag('config','${process.env.NEXT_PUBLIC_GA_ID}', { page_path: window.location.p
       <body className={`${inter.className} min-h-screen`}>
         <ErrorBoundary>
           <ReactQueryProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <AuthProvider>
-                <ThemeSync />
-                {children}
-              </AuthProvider>
-              <Toaster position="bottom-right" />
-            </ThemeProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+            <Toaster position="bottom-right" />
           </ReactQueryProvider>
         </ErrorBoundary>
       </body>

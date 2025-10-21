@@ -33,16 +33,16 @@ export default function PaymentSuccessPage() {
   }, [searchParams, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
       <div className="max-w-md w-full mx-auto p-8">
-        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl p-8 text-center">
-          <div className="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="bg-white rounded-lg shadow-xl p-8 text-center">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-12 h-12 text-green-500" />
           </div>
 
           <h1 className="text-3xl font-bold mb-4">Sikeres fizetés!</h1>
           
-          <p className="text-gray-600 dark:text-gray-400 mb-8">
+          <p className="text-gray-600 mb-8">
             Köszönjük a vásárlást! A visszaigazolást elküldtük az email címére.
           </p>
 
@@ -71,7 +71,7 @@ export default function PaymentSuccessPage() {
             )}
           </div>
 
-          <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+          <div className="mt-8 pt-8 border-t border-gray-200">
             <p className="text-sm text-gray-500 mb-4">
               Számlája hamarosan elérhető lesz:
             </p>

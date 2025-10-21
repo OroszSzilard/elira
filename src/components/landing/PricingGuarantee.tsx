@@ -28,7 +28,7 @@ export const PricingGuarantee: React.FC = () => {
   ]
 
   return (
-    <section id="pricing-guarantee" className="py-24 bg-gradient-to-br from-primary via-primary to-primary/90 relative overflow-hidden">
+    <section id="pricing-guarantee" className="py-32 sm:py-40 bg-gradient-to-br from-primary via-primary to-primary/90 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
@@ -36,11 +36,11 @@ export const PricingGuarantee: React.FC = () => {
       </div>
 
       <Container className="max-w-7xl relative">
-        <div className="text-center text-white mb-16">
-          <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="text-center text-white mb-24">
+          <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-8">
             <ShieldCheck className="w-10 h-10 text-white" />
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold mb-8">
             Teljes Garancia
           </h2>
           <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
@@ -48,7 +48,7 @@ export const PricingGuarantee: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-20">
           {guarantees.map((guarantee, index) => {
             const Icon = guarantee.icon
             return (
@@ -64,28 +64,28 @@ export const PricingGuarantee: React.FC = () => {
         </div>
 
         {/* Main guarantee highlight */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 md:p-12">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+              <h3 className="text-3xl font-bold text-gray-900 mb-6">
                 Miért bíznak bennünk?
               </h3>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">15,000+ elégedett diák</span>
+                  <span className="text-gray-700">15,000+ elégedett diák</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">95% elégedettségi arány</span>
+                  <span className="text-gray-700">95% elégedettségi arány</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">5+ év tapasztalat</span>
+                  <span className="text-gray-700">5+ év tapasztalat</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">ISO 9001 minőségbiztosítás</span>
+                  <span className="text-gray-700">ISO 9001 minőségbiztosítás</span>
                 </div>
               </div>
             </div>

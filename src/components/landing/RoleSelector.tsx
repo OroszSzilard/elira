@@ -47,34 +47,34 @@ export const RoleSelector: React.FC = () => {
   }
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="py-32 sm:py-40 bg-gray-50 transition-colors">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8">
         {/* Section Header - Centered */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Mi a célja?</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        <div className="text-center mb-24">
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8">Mi a célja?</h2>
+          <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Válassza ki a tanulási útvonalat, amely a legjobban illeszkedik céljaihoz
           </p>
         </div>
         {/* Three-Card Grid with curved hero headers */}
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-12 lg:gap-16">
           {roles.map(role => (
             <div
               key={role.id}
-              className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer bg-white dark:bg-gray-800 flex flex-col"
+              className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer bg-white flex flex-col"
             >
-              {/* Hero section with gradient and curved bottom */}
+              {/* Hero section with gradient */}
               <div
-                className={`relative h-48 bg-gradient-to-r ${role.color} clip-path-curved`}
+                className={`relative h-48 bg-gradient-to-r ${role.color} rounded-t-2xl`}
               >
                 <span className="text-6xl absolute bottom-4 left-1/2 transform -translate-x-1/2">
                   {role.icon}
                 </span>
               </div>
               {/* Card Content */}
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{role.title}</h3>
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">{role.description}</p>
+              <div className="p-8 flex flex-col flex-grow">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{role.title}</h3>
+                <p className="text-gray-700 leading-relaxed mb-8">{role.description}</p>
                 <Button 
                   onClick={() => handleRoleClick(role.route)}
                   variant="default"

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion } from 'motion/react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,7 +14,7 @@ import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/authStore'
 import { db } from '@/lib/firebase'
 import { collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp, doc, updateDoc, arrayUnion } from 'firebase/firestore'
-import { 
+import {
   HelpCircle,
   MessageSquare,
   Send,
@@ -35,8 +36,10 @@ import {
   Video,
   Star,
   User,
-  XCircle
+  XCircle,
+  Headphones
 } from 'lucide-react'
+import { brandGradient, glassMorphism } from '@/lib/design-tokens'
 
 // Helper function to get category name
 const getCategoryName = (category: string) => {
@@ -280,74 +283,137 @@ export default function HelpCenterPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'resolved':
-        return <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Megoldva</Badge>
+        return <Badge className="bg-green-100 text-green-700">Megoldva</Badge>
       case 'closed':
-        return <Badge className="bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400">LEZÁRVA</Badge>
+        return <Badge className="bg-gray-100 text-gray-700">LEZÁRVA</Badge>
       case 'in-progress':
-        return <Badge className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">Folyamatban</Badge>
+        return <Badge className="bg-gray-200 text-gray-900">Folyamatban</Badge>
       case 'open':
-        return <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Nyitott</Badge>
+        return <Badge className="bg-gray-200 text-gray-900">Nyitott</Badge>
       default:
         return null
     }
   }
 
   return (
-    <div className="p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Segítség és Támogatás
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Kérdésed van? Itt megtalálod a választ, vagy kapcsolatba léphetsz velünk.
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Gradient Hero Section */}
+      <section
+        className="relative -mt-20 pt-20 pb-12"
+        style={{ background: brandGradient }}
+      >
+        <div className="container mx-auto px-6 lg:px-12 py-12 relative z-10">
+          <motion.div
+            className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Left: Title and Description */}
+            <div className="flex-1">
+              <motion.div
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm mb-4"
+                style={{
+                  ...glassMorphism.badge,
+                  border: '1px solid rgba(255, 255, 255, 0.25)'
+                }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <Headphones className="w-4 h-4 text-white" />
+                <span className="font-semibold text-white">
+                  24/7 Support
+                </span>
+              </motion.div>
+
+              <h1 className="text-4xl lg:text-5xl font-semibold text-white mb-3">
+                Segítség és Támogatás
+              </h1>
+              <p className="text-white/80 text-lg max-w-2xl">
+                Kérdésed van? Itt megtalálod a választ, vagy kapcsolatba léphetsz velünk
+              </p>
+            </div>
+          </motion.div>
         </div>
+
+        {/* Ambient glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle at 50% 30%, rgba(139, 92, 246, 0.08), transparent 70%)'
+          }}
+        />
+      </section>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-6 lg:px-12 py-12">
+        <div className="max-w-7xl mx-auto">
 
         {/* Quick Contact Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
-                  <MessageSquare className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            whileHover={{ y: -4 }}
+          >
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-gray-100 rounded-lg">
+                    <MessageSquare className="w-6 h-6 text-gray-900" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Live Chat</h3>
+                    <p className="text-sm text-gray-600">Azonnal válaszolunk</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Live Chat</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Azonnal válaszolunk</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                  <Mail className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            whileHover={{ y: -4 }}
+          >
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-gray-100 rounded-lg">
+                    <Mail className="w-6 h-6 text-gray-900" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Email</h3>
+                    <p className="text-sm text-gray-600">support@elira.hu</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Email</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">support@elira.hu</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                  <Phone className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            whileHover={{ y: -4 }}
+          >
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-gray-100 rounded-lg">
+                    <Phone className="w-6 h-6 text-gray-900" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Telefon</h3>
+                    <p className="text-sm text-gray-600">+36 1 234 5678</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Telefon</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">+36 1 234 5678</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
 
         {/* Main Content Tabs */}
@@ -390,7 +456,11 @@ export default function HelpCenterPage() {
                         variant={selectedCategory === category.id ? "default" : "outline"}
                         size="sm"
                         onClick={() => setSelectedCategory(category.id)}
-                        className="gap-2"
+                        className={`gap-2 ${
+                          selectedCategory === category.id
+                            ? 'bg-gray-900 text-white hover:bg-[#466C95] transition-colors'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
                       >
                         <Icon className="w-4 h-4" />
                         {category.title}
@@ -404,15 +474,21 @@ export default function HelpCenterPage() {
                   {faqCategories
                     .find(c => c.id === selectedCategory)
                     ?.questions.map((item, index) => (
-                      <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-4">
-                        <h4 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                          <HelpCircle className="w-4 h-4 text-teal-600" />
+                      <motion.div
+                        key={index}
+                        className="border-b border-gray-200 pb-4"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.05 }}
+                      >
+                        <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                          <HelpCircle className="w-4 h-4 text-[#466C95]" />
                           {item.q}
                         </h4>
-                        <p className="text-gray-600 dark:text-gray-400 pl-6">
+                        <p className="text-gray-600 pl-6">
                           {item.a}
                         </p>
-                      </div>
+                      </motion.div>
                     ))}
                 </div>
               </CardContent>
@@ -514,8 +590,8 @@ export default function HelpCenterPage() {
               <CardContent>
                 {!selectedTicket ? (
                   <div className="space-y-4">
-                    {userTickets.map((ticket) => (
-                      <div 
+                    {userTickets.map((ticket, index) => (
+                      <motion.div
                         key={ticket.id}
                         onClick={async () => {
                           setSelectedTicket(ticket)
@@ -530,11 +606,15 @@ export default function HelpCenterPage() {
                             }
                           }
                         }}
-                        className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+                        className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.05 }}
+                        whileHover={{ y: -2 }}
                       >
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-1">
-                            <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                            <h4 className="font-semibold text-gray-900 flex items-center gap-2">
                               #{ticket.id.slice(-6).toUpperCase()} - {ticket.subject}
                               {ticket.hasUnreadResponse && (
                                 <span className="inline-flex w-3 h-3 bg-green-500 rounded-full animate-pulse ml-2" title="Új üzenet" />
@@ -552,7 +632,7 @@ export default function HelpCenterPage() {
                               </div>
                             )}
                           </div>
-                          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                          <div className="flex items-center gap-4 text-sm text-gray-600">
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3" />
                               {ticket.createdAt?.toDate ? ticket.createdAt.toDate().toLocaleDateString('hu-HU') : 'Most'}
@@ -561,7 +641,7 @@ export default function HelpCenterPage() {
                           </div>
                         </div>
                         <ChevronRight className="w-5 h-5 text-gray-400" />
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 ) : (
@@ -579,11 +659,11 @@ export default function HelpCenterPage() {
                       {getStatusBadge(selectedTicket.status)}
                     </div>
 
-                    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
                         {selectedTicket.subject}
                       </h3>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
                         <span>#{selectedTicket.id.slice(-6).toUpperCase()}</span>
                         <span>{getCategoryName(selectedTicket.category)}</span>
                         <span>{selectedTicket.createdAt?.toDate ? selectedTicket.createdAt.toDate().toLocaleString('hu-HU') : ''}</span>
@@ -592,19 +672,19 @@ export default function HelpCenterPage() {
                       {/* Conversation */}
                       <div className="space-y-4">
                         {/* Original Message */}
-                        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                        <div className="bg-gray-50 rounded-lg p-4">
                           <div className="flex items-start gap-3">
-                            <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center">
-                              <User className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                            <div className="w-8 h-8 bg-[#466C95]/10 rounded-full flex items-center justify-center">
+                              <User className="w-4 h-4 text-[#466C95]" />
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center justify-between mb-1">
-                                <span className="font-semibold text-gray-900 dark:text-white">Te</span>
+                                <span className="font-semibold text-gray-900">Te</span>
                                 <span className="text-xs text-gray-500">
                                   {selectedTicket.createdAt?.toDate ? selectedTicket.createdAt.toDate().toLocaleString('hu-HU') : ''}
                                 </span>
                               </div>
-                              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                              <p className="text-gray-700 whitespace-pre-wrap">
                                 {selectedTicket.message}
                               </p>
                             </div>
@@ -614,32 +694,32 @@ export default function HelpCenterPage() {
                         {/* Responses */}
                         {selectedTicket.responses && selectedTicket.responses.map((response: any, index: number) => (
                           <div key={index} className={`rounded-lg p-4 ${
-                            response.isStudent 
-                              ? 'bg-gray-50 dark:bg-gray-800' 
-                              : 'bg-teal-50 dark:bg-teal-900/20'
+                            response.isStudent
+                              ? 'bg-gray-50'
+                              : 'bg-[#466C95]/5'
                           }`}>
                             <div className="flex items-start gap-3">
                               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                                response.isStudent 
-                                  ? 'bg-teal-100 dark:bg-teal-900/30'
-                                  : 'bg-red-100 dark:bg-red-900/30'
+                                response.isStudent
+                                  ? 'bg-[#466C95]/10'
+                                  : 'bg-red-100'
                               }`}>
                                 {response.isStudent ? (
-                                  <User className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                                  <User className="w-4 h-4 text-[#466C95]" />
                                 ) : (
-                                  <Shield className="w-4 h-4 text-red-600 dark:text-red-400" />
+                                  <Shield className="w-4 h-4 text-red-600" />
                                 )}
                               </div>
                               <div className="flex-1">
                                 <div className="flex items-center justify-between mb-1">
-                                  <span className="font-semibold text-gray-900 dark:text-white">
+                                  <span className="font-semibold text-gray-900">
                                     {response.isStudent ? 'Te' : response.adminName || 'Admin'}
                                   </span>
                                   <span className="text-xs text-gray-500">
                                     {response.createdAt ? new Date(response.createdAt).toLocaleString('hu-HU') : ''}
                                   </span>
                                 </div>
-                                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                                <p className="text-gray-700 whitespace-pre-wrap">
                                   {response.message}
                                 </p>
                               </div>
@@ -650,13 +730,13 @@ export default function HelpCenterPage() {
                         {/* Reply Form or Rating */}
                         {selectedTicket.status === 'closed' ? (
                           // Rating Section for Closed Tickets
-                          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                          <div className="border-t border-gray-200 pt-4">
                             {!selectedTicket.rating ? (
-                              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                              <div className="bg-blue-50 rounded-lg p-4">
+                                <h4 className="font-semibold text-gray-900 mb-2">
                                   Értékeld a támogatást
                                 </h4>
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                <p className="text-sm text-gray-600 mb-4">
                                   Mennyire voltál elégedett a kapott segítséggel?
                                 </p>
                                 <div className="flex items-center gap-2 mb-4">
@@ -670,7 +750,7 @@ export default function HelpCenterPage() {
                                         className={`w-8 h-8 ${
                                           value <= rating 
                                             ? 'fill-yellow-400 text-yellow-400' 
-                                            : 'fill-gray-200 text-gray-300 dark:fill-gray-700 dark:text-gray-600'
+                                            : 'fill-gray-200 text-gray-300'
                                         }`}
                                       />
                                     </button>
@@ -686,9 +766,9 @@ export default function HelpCenterPage() {
                                 </Button>
                               </div>
                             ) : (
-                              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 text-center">
-                                <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400 mx-auto mb-2" />
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                              <div className="bg-green-50 rounded-lg p-4 text-center">
+                                <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-2" />
+                                <h4 className="font-semibold text-gray-900 mb-2">
                                   Köszönjük az értékelésed!
                                 </h4>
                                 <div className="flex items-center justify-center gap-1">
@@ -708,7 +788,7 @@ export default function HelpCenterPage() {
                           </div>
                         ) : selectedTicket.status !== 'resolved' ? (
                           // Reply Form for Open/In-Progress Tickets
-                          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                          <div className="border-t border-gray-200 pt-4">
                             <Textarea
                               placeholder="Írj választ..."
                               value={replyMessage}
@@ -726,9 +806,9 @@ export default function HelpCenterPage() {
                             </Button>
                           </div>
                         ) : (
-                          <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 text-center">
-                            <AlertCircle className="w-12 h-12 text-yellow-600 dark:text-yellow-400 mx-auto mb-2" />
-                            <p className="text-gray-700 dark:text-gray-300">
+                          <div className="bg-yellow-50 rounded-lg p-4 text-center">
+                            <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-2" />
+                            <p className="text-gray-700">
                               Ez a jegy megoldva lett. Várj, amíg az admin lezárja.
                             </p>
                           </div>
@@ -741,10 +821,10 @@ export default function HelpCenterPage() {
                 {userTickets.length === 0 && (
                   <div className="text-center py-8">
                     <FileQuestion className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
                       Még nincs támogatási jegyed
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-600">
                       Ha segítségre van szükséged, hozz létre egy új jegyet!
                     </p>
                   </div>
@@ -755,29 +835,36 @@ export default function HelpCenterPage() {
         </Tabs>
 
         {/* Bottom Help Section */}
-        <Card className="mt-8 bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-900/20 dark:to-blue-900/20 border-teal-200 dark:border-teal-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-white dark:bg-gray-800 rounded-lg">
-                  <Video className="w-8 h-8 text-teal-600 dark:text-teal-400" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <Card className="mt-8 bg-[#466C95]/5 border border-[#466C95]/20">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white rounded-lg">
+                    <Video className="w-8 h-8 text-[#466C95]" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      Videó útmutatók
+                    </h3>
+                    <p className="text-gray-600">
+                      Nézd meg részletes videó útmutatóinkat a platform használatáról
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                    Videó útmutatók
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Nézd meg részletes videó útmutatóinkat a platform használatáról
-                  </p>
-                </div>
+                <Button className="gap-2 bg-gray-900 hover:bg-[#466C95] transition-colors">
+                  <BookOpen className="w-4 h-4" />
+                  Útmutatók
+                </Button>
               </div>
-              <Button className="gap-2">
-                <BookOpen className="w-4 h-4" />
-                Útmutatók
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
+        </div>
       </div>
     </div>
   )

@@ -2,16 +2,17 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { motion } from 'motion/react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useTrendingCourses } from '@/hooks/useCoursesCatalog'
-import { 
-  TrendingUp, 
-  Star, 
-  Users, 
-  Clock, 
-  Play, 
+import {
+  TrendingUp,
+  Star,
+  Users,
+  Clock,
+  Play,
   BookOpen,
   Target,
   Zap,
@@ -19,6 +20,7 @@ import {
   Flame,
   Award
 } from 'lucide-react'
+import { brandGradient, cardStyles, buttonStyles } from '@/lib/design-tokens'
 
 /**
  * Trending Courses Section - Never Empty
@@ -232,7 +234,7 @@ export function TrendingCoursesSection() {
             A legkeresettebb kurzusok és legújabb trendek
           </p>
         </div>
-        <Link href="/dashboard/browse" className="text-teal-600 hover:text-teal-700 font-medium flex items-center">
+        <Link href="/dashboard/browse" className="text-gray-900 hover:text-[#466C95] font-medium flex items-center transition-colors">
           Összes kurzus
           <ArrowRight className="w-4 h-4 ml-1" />
         </Link>
@@ -246,19 +248,19 @@ export function TrendingCoursesSection() {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key as any)}
-              className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                 activeTab === tab.key
-                  ? 'bg-white text-teal-600 shadow-sm'
+                  ? 'bg-white text-gray-900 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               <Icon className="w-4 h-4 mr-2" />
               {tab.label}
               <Badge 
-                variant="secondary" 
+                variant="secondary"
                 className={`ml-2 text-xs ${
-                  activeTab === tab.key 
-                    ? 'bg-teal-100 text-teal-700' 
+                  activeTab === tab.key
+                    ? 'bg-gray-100 text-gray-900'
                     : 'bg-gray-200 text-gray-600'
                 }`}
               >
@@ -314,120 +316,133 @@ export function TrendingCoursesSection() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {getCurrentCourses().map((course) => (
-          <Card key={course.id} className="hover:shadow-lg transition-all duration-200 cursor-pointer group overflow-hidden">
-            {/* Course Thumbnail */}
-            <div className="h-40 bg-gradient-to-br from-teal-500 to-cyan-600 relative">
-              <div className="absolute inset-0 bg-black/20" />
-              
-              {/* Badges */}
-              <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
-                <div className="flex flex-col gap-2">
-                  <Badge className="bg-white/20 text-white border-white/30 text-xs">
-                    {course.category}
-                  </Badge>
-                  {course.isHot && (
-                    <Badge className="bg-red-500 text-white text-xs">
-                      <Flame className="w-3 h-3 mr-1" />
-                      HOT
-                    </Badge>
-                  )}
-                </div>
-                
-                {activeTab === 'trending' && 'trendingRank' in course && (
-                  <Badge className="bg-yellow-500 text-yellow-900 font-bold">
-                    #{course.trendingRank}
-                  </Badge>
-                )}
-              </div>
+          {getCurrentCourses().map((course, index) => (
+            <motion.div
+              key={course.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.05 }}
+              whileHover={{ y: -4 }}
+            >
+              <Card className={`${cardStyles.flat} cursor-pointer group overflow-hidden h-full`}>
+                {/* Course Thumbnail */}
+                <div className="h-40 relative" style={{ background: brandGradient }}>
+                  <div className="absolute inset-0 bg-black/20" />
 
-              {/* Course Info Overlay */}
-              <div className="absolute bottom-3 left-3 right-3">
-                <div className="flex items-center justify-between text-white text-xs">
-                  <div className="flex items-center space-x-2">
-                    <Star className="w-3 h-3 text-yellow-300" />
-                    <span>{course.rating}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-3 h-3" />
-                    <span>{course.students}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Course Content */}
-            <CardContent className="p-4 space-y-3">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline" className="text-xs">
-                    {course.level}
-                  </Badge>
-                  <span className="text-xs text-gray-500 flex items-center">
-                    <Clock className="w-3 h-3 mr-1" />
-                    {course.duration}
-                  </span>
-                </div>
-                
-                <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 group-hover:text-teal-600 transition-colors mb-1">
-                  {course.title}
-                </h3>
-                
-                <p className="text-xs text-gray-600 mb-2">
-                  {course.instructor}
-                </p>
-
-                {/* Course Highlights */}
-                {'highlights' in course && (
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {course.highlights.slice(0, 2).map((highlight, idx) => (
-                      <Badge key={idx} variant="secondary" className="text-xs">
-                        {highlight}
+                  {/* Badges */}
+                  <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
+                    <div className="flex flex-col gap-2">
+                      <Badge className="bg-white/20 text-white border-white/30 text-xs">
+                        {course.category}
                       </Badge>
-                    ))}
-                  </div>
-                )}
+                      {course.isHot && (
+                        <Badge className="bg-red-500 text-white text-xs">
+                          <Flame className="w-3 h-3 mr-1" />
+                          HOT
+                        </Badge>
+                      )}
+                    </div>
 
-                {/* Trending Growth */}
-                {activeTab === 'trending' && 'weeklyGrowth' in course && (
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-gray-600">Heti növekedés:</span>
-                    <Badge className="bg-green-100 text-green-700">
-                      <TrendingUp className="w-3 h-3 mr-1" />
-                      {course.weeklyGrowth}
-                    </Badge>
+                    {activeTab === 'trending' && 'trendingRank' in course && (
+                      <Badge className="bg-yellow-500 text-yellow-900 font-bold">
+                        #{course.trendingRank}
+                      </Badge>
+                    )}
                   </div>
-                )}
-              </div>
 
-              {/* Price and CTA */}
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-semibold text-gray-900">
-                  {course.price}
+                  {/* Course Info Overlay */}
+                  <div className="absolute bottom-3 left-3 right-3">
+                    <div className="flex items-center justify-between text-white text-xs">
+                      <div className="flex items-center space-x-2">
+                        <Star className="w-3 h-3 text-yellow-300" />
+                        <span>{course.rating}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Users className="w-3 h-3" />
+                        <span>{course.students}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <Link href={`/courses/${course.id}`}>
-                  <Button size="sm" className="bg-teal-600 hover:bg-teal-700 text-xs">
-                    <Play className="w-3 h-3 mr-1" />
-                    Kezdés
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+
+                {/* Course Content */}
+                <CardContent className="p-4 space-y-3">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge variant="outline" className="text-xs">
+                        {course.level}
+                      </Badge>
+                      <span className="text-xs text-gray-500 flex items-center">
+                        <Clock className="w-3 h-3 mr-1" />
+                        {course.duration}
+                      </span>
+                    </div>
+
+                    <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 group-hover:text-[#466C95] transition-colors mb-1">
+                      {course.title}
+                    </h3>
+
+                    <p className="text-xs text-gray-600 mb-2">
+                      {course.instructor}
+                    </p>
+
+                    {/* Course Highlights */}
+                    {'highlights' in course && (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {course.highlights.slice(0, 2).map((highlight, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-xs">
+                            {highlight}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Trending Growth */}
+                    {activeTab === 'trending' && 'weeklyGrowth' in course && (
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-gray-600">Heti növekedés:</span>
+                        <Badge className="bg-green-100 text-green-700">
+                          <TrendingUp className="w-3 h-3 mr-1" />
+                          {course.weeklyGrowth}
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Price and CTA */}
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-semibold text-gray-900">
+                      {course.price}
+                    </div>
+                    <Link href={`/courses/${course.slug || course.id}`}>
+                      <button className={`${buttonStyles.primaryLight} !rounded-lg !py-2 !px-4 text-xs w-full`}>
+                        <Play className="w-3 h-3" />
+                        <span>Kezdés</span>
+                      </button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
       )}
 
       {/* View All CTA */}
-      <div className="text-center pt-4">
+      <motion.div
+        className="text-center pt-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
         <Link href="/dashboard/browse">
-          <Button variant="outline" size="lg" className="group">
-            <BookOpen className="w-4 h-4 mr-2" />
-            Összes {activeTab === 'trending' ? 'felkapott' : activeTab === 'popular' ? 'népszerű' : 'új'} kurzus megtekintése
-            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <button className={`${buttonStyles.secondaryLight} group`}>
+            <BookOpen className="w-4 h-4" />
+            <span>Összes {activeTab === 'trending' ? 'felkapott' : activeTab === 'popular' ? 'népszerű' : 'új'} kurzus megtekintése</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
         </Link>
-      </div>
+      </motion.div>
     </div>
   )
 }

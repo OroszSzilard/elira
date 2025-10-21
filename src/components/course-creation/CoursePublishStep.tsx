@@ -395,10 +395,10 @@ export default function CoursePublishStep({ courseId, onPublish, isPublishing, i
             
             {/* Info Card – neutral background, subtle accent */}
             <div
-              className={`p-4 rounded-lg border bg-muted/20 dark:bg-muted/40 ${
+              className={`p-4 rounded-lg border bg-muted/20 ${
                 isPlus
-                  ? 'border-blue-400 dark:border-blue-600'
-                  : 'border-green-400 dark:border-green-600'
+                  ? 'border-blue-400'
+                  : 'border-green-400'
               }`}
             >
               <div className="flex items-center space-x-2 mb-2">
@@ -427,10 +427,10 @@ export default function CoursePublishStep({ courseId, onPublish, isPublishing, i
             </div>
             
             {isPlus && lessonCount < 3 && (
-              <div className="p-3 rounded-lg border border-amber-400/60 bg-muted/20 dark:bg-muted/40">
+              <div className="p-3 rounded-lg border border-amber-400/60 bg-muted/20">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                  <p className="text-sm text-amber-800">
                     ⚠️ Elira Plus kurzusokhoz legalább 3 lecke ajánlott.
                   </p>
                 </div>
@@ -502,12 +502,12 @@ export default function CoursePublishStep({ courseId, onPublish, isPublishing, i
                   {keywords.map((keyword, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm rounded-full"
+                      className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
                     >
                       {keyword}
                       <button
                         onClick={() => removeKeyword(keyword)}
-                        className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
+                        className="text-blue-600 hover:text-blue-800"
                       >
                         ×
                       </button>

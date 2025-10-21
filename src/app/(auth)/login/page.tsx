@@ -1,136 +1,117 @@
-'use client'
+'use client';
 
-import { useState, Suspense, useEffect } from 'react'
-import { useLogin } from '@/hooks/useAuthQueries'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2, Info } from 'lucide-react'
-import { toast } from 'sonner'
+import { useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuth, AuthProvider } from '@/contexts/AuthContext';
+import LoginForm from '@/components/auth/LoginForm';
+import Link from 'next/link';
+import { ChevronLeft } from 'lucide-react';
 
-function LoginForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showVerificationAlert, setShowVerificationAlert] = useState(false)
-  const login = useLogin()
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const redirectTo = searchParams?.get('redirect_to') || '/dashboard'
-  const justRegistered = searchParams?.get('registered') === 'true'
+function LoginPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { user, loading } = useAuth();
+
+  // Get redirect URL from query params or default to dashboard
+  const redirectTo = searchParams?.get('redirect_to') || '/dashboard';
 
   useEffect(() => {
-    if (justRegistered) {
-      setShowVerificationAlert(true)
+    // If user is already authenticated, redirect
+    if (user && !loading) {
+      console.log('[Login Page] User authenticated, redirecting to:', redirectTo);
+      router.push(redirectTo);
     }
-  }, [justRegistered])
+  }, [user, loading, redirectTo, router]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      const result = await login.mutateAsync({ email, password })
-      console.log('✅ Login result:', result)
-      
-      toast.success('Sikeres bejelentkezés! Átirányítás...')
+  const handleAuthSuccess = () => {
+    console.log('[Login Page] Auth success, redirecting to:', redirectTo);
+    router.push(redirectTo);
+  };
 
-      // Determine default landing if none specified
-      let target = redirectTo
-      if (!searchParams?.get('redirect_to')) {
-        const role = result.user.role
-        console.log('🔧 User role:', role)
-        if (role === 'UNIVERSITY_ADMIN' || role === 'university_admin') target = '/university-admin/dashboard'
-        else if (role === 'instructor') target = '/instructor/dashboard'
-        else if (role === 'admin') target = '/admin'
-        else target = '/dashboard'
-      }
-      
-      console.log('🔧 Redirecting to:', target)
-      
-      // Use window.location for more reliable redirect
-      setTimeout(() => {
-        if (typeof window !== 'undefined') {
-          window.location.href = target
-        } else {
-          router.push(target)
-        }
-      }, 1000)
-      
-    } catch (err: any) {
-      console.error('❌ Login error:', err)
-      toast.error(err?.response?.data?.message || err?.message || 'Valami nem stimmel. Kérjük, próbálja újra.')
-    }
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-gray-900"></div>
+      </div>
+    );
+  }
+
+  // If user is authenticated, show loading while redirecting
+  if (user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-gray-900 mx-auto mb-4"></div>
+          <p className="text-sm text-gray-600">Átirányítás...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold tracking-tight">Kezdődjön a tanulás!</CardTitle>
-          <CardDescription>Jelentkezzen be a fiókjába a folytatáshoz.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {showVerificationAlert && (
-            <Alert className="mb-4">
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                Sikeres regisztráció! Kérjük ellenőrizze email fiókját és erősítse meg email címét a bejelentkezéshez.
-              </AlertDescription>
-            </Alert>
-          )}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">E-mail cím</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="nev@pelda.com"
-                value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                required
-                disabled={login.isPending}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Jelszó</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                required
-                disabled={login.isPending}
-              />
-            </div>
-            <div className="text-right text-sm">
-              <Link href="/forgot-password" className="font-medium text-primary hover:underline">
-                Elfelejtette a jelszavát?
-              </Link>
-            </div>
-            <Button type="submit" className="w-full" disabled={login.isPending}>
-              {login.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Bejelentkezés
-            </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              Még nincs fiókja?{' '}
-              <Link href="/register" className="font-semibold text-primary hover:underline">
-                Regisztráljon ingyenesen
-              </Link>
+    <div className="min-h-screen bg-white py-12 px-4">
+      <div className="max-w-md mx-auto">
+        {/* Back to Home Link */}
+        <Link
+          href="/"
+          className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-8 transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          <span>Vissza a főoldalra</span>
+        </Link>
+
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-flex items-center justify-center space-x-2">
+            <img
+              src="/navbar-icon.png"
+              alt="Elira logo"
+              className="w-10 h-10 object-contain"
+            />
+            <span className="text-2xl font-semibold text-gray-900">Elira</span>
+          </Link>
+        </div>
+
+        {/* Auth Card */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+              Üdvözölünk vissza
+            </h1>
+            <p className="text-sm text-gray-600">
+              Jelentkezz be a fiókodba
             </p>
-          </form>
-        </CardContent>
-      </Card>
+          </div>
+
+          {/* Login Form */}
+          <LoginForm
+            onSuccess={handleAuthSuccess}
+            onSwitchToRegister={() => router.push('/register')}
+            className="!p-0 !shadow-none !bg-transparent !border-0"
+          />
+        </div>
+
+        {/* Privacy Links */}
+        <div className="mt-6 text-center text-xs text-gray-600">
+          A folytatással elfogadod az{' '}
+          <Link href="/terms" className="text-gray-900 hover:text-gray-700 underline">
+            Általános Szerződési Feltételeket
+          </Link>{' '}
+          és az{' '}
+          <Link href="/privacy" className="text-gray-900 hover:text-gray-700 underline">
+            Adatvédelmi Nyilatkozatot
+          </Link>
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div>Betöltés...</div>}>
-      <LoginForm />
-    </Suspense>
+    <AuthProvider>
+      <LoginPageContent />
+    </AuthProvider>
   );
-} 
+}

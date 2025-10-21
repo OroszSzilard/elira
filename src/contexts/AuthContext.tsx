@@ -12,20 +12,24 @@ import {
   GoogleAuthProvider,
   signInWithPopup
 } from 'firebase/auth';
-import { auth, functions } from '@/lib/firebase';
-import { httpsCallable } from 'firebase/functions';
+import { auth, db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 
 export enum UserRole {
   STUDENT = 'student',
   INSTRUCTOR = 'instructor',
   ADMIN = 'admin',
-  UNIVERSITY_ADMIN = 'university_admin'
+  UNIVERSITY_ADMIN = 'university_admin',
+  COMPANY_ADMIN = 'company_admin',
+  COMPANY_EMPLOYEE = 'company_employee'
 }
 
 interface AuthUser extends User {
   role?: UserRole;
   universityId?: string;
+  companyId?: string;
+  companyRole?: string;
 }
 
 interface AuthContextType {
@@ -77,18 +81,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Fetch additional user data - exact implementation from roadmap
+  // Fetch additional user data from Firestore and custom claims
   const fetchUserData = async (firebaseUser: User): Promise<AuthUser> => {
     try {
-      const getCurrentUser = httpsCallable(functions, 'getCurrentUser');
-      const result = await getCurrentUser();
-      const userData = result.data as any;
-      
-      return {
-        ...firebaseUser,
-        role: userData.role,
-        universityId: userData.universityId
-      };
+      // Force token refresh to get latest custom claims (including company data)
+      const idTokenResult = await firebaseUser.getIdTokenResult(true);
+      const customClaims = idTokenResult.claims;
+
+      // Fetch user document from Firestore
+      const userDocRef = doc(db, 'users', firebaseUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+
+        return {
+          ...firebaseUser,
+          role: userData.role || customClaims.role,
+          universityId: userData.universityId,
+          companyId: userData.companyId || (customClaims.companyId as string | undefined),
+          companyRole: userData.companyRole || (customClaims.companyRole as string | undefined)
+        };
+      } else {
+        // If no Firestore document, fall back to custom claims
+        return {
+          ...firebaseUser,
+          role: customClaims.role as UserRole | undefined,
+          companyId: customClaims.companyId as string | undefined,
+          companyRole: customClaims.companyRole as string | undefined
+        };
+      }
     } catch (error) {
       console.error('Error fetching user data:', error);
       return firebaseUser;
@@ -126,6 +148,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           break;
         case UserRole.UNIVERSITY_ADMIN:
           router.push('/university/dashboard');
+          break;
+        case UserRole.COMPANY_ADMIN:
+        case UserRole.COMPANY_EMPLOYEE:
+          // Company users go to dedicated company dashboard
+          router.push('/company/dashboard');
           break;
         default:
           router.push('/dashboard');

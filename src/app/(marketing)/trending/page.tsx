@@ -139,11 +139,11 @@ export default function TrendingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 py-16">
+      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 py-16">
         <div className="container">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600 mx-auto mb-4"></div>
-            <p className="text-gray-600 dark:text-gray-400">Kurzusok betöltése...</p>
+            <p className="text-gray-600">Kurzusok betöltése...</p>
           </div>
         </div>
       </div>
@@ -151,19 +151,19 @@ export default function TrendingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 py-16">
+      <div className="bg-gradient-to-r from-orange-100 to-red-100 py-16">
         <div className="container">
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-lg mb-6">
+            <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-lg mb-6">
               <Flame className="w-5 h-5 text-orange-500" />
-              <span className="font-bold text-gray-900 dark:text-white">TRENDING NOW</span>
+              <span className="font-bold text-gray-900">TRENDING NOW</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Legnépszerűbb Kurzusok
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Fedezd fel a legtöbbet választott kurzusainkat, amelyek már több ezer diák sikeréhez járultak hozzá
             </p>
           </div>
@@ -172,10 +172,10 @@ export default function TrendingPage() {
 
       {/* Filters */}
       <div className="container py-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex flex-wrap gap-4">
             <div>
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
                 Kategória
               </label>
               <div className="flex flex-wrap gap-2">
@@ -193,7 +193,7 @@ export default function TrendingPage() {
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
                 Szint
               </label>
               <div className="flex gap-2">
@@ -219,10 +219,10 @@ export default function TrendingPage() {
         {filteredCourses.length === 0 ? (
           <div className="text-center py-12">
             <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
               Nincs találat
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600">
               Próbálj más szűrőket választani!
             </p>
           </div>
@@ -232,7 +232,7 @@ export default function TrendingPage() {
               <Card key={course.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
                 <div className="relative">
                   {course.imageUrl ? (
-                    <div className="aspect-video bg-gray-100 dark:bg-gray-800">
+                    <div className="aspect-video bg-gray-100">
                       <img 
                         src={course.imageUrl} 
                         alt={course.title}
@@ -246,7 +246,7 @@ export default function TrendingPage() {
                   )}
                   
                   {/* Ranking Badge */}
-                  <div className="absolute top-2 left-2 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg">
+                  <div className="absolute top-2 left-2 bg-white rounded-full p-2 shadow-lg">
                     {getRankIcon(index)}
                   </div>
                   
@@ -269,15 +269,15 @@ export default function TrendingPage() {
                     </Badge>
                   </div>
                   
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                  <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                     {course.title}
                   </h3>
                   
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-sm text-gray-600 mb-4">
                     {course.instructorName || 'ELIRA Oktató'}
                   </p>
                   
-                  <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                     <span className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
                       {course.duration || 'N/A'}
@@ -295,9 +295,9 @@ export default function TrendingPage() {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <div className="text-lg font-bold text-gray-900 dark:text-white">
+                    <div className="text-lg font-bold text-gray-900">
                       {course.price === 0 ? (
-                        <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                        <Badge className="bg-green-100 text-green-700">
                           Ingyenes
                         </Badge>
                       ) : (

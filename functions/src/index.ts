@@ -1121,3 +1121,29 @@ export { getAuditLogs, getAuditLogStats } from './auditLog';
 
 // Export support functions
 export { createSupportTicket, respondToSupportTicket } from './support';
+
+// Export Company Admin Dashboard functions
+export { createCompany } from './company/createCompany';
+export {
+  addEmployee,
+  verifyEmployeeInvite,
+  acceptEmployeeInvite,
+} from './company/employeeInvite';
+export { enrollEmployeesInMasterclass } from './company/enrollEmployees';
+export { createCompanyMasterclass } from './company/createMasterclass';
+export { completeCompanyOnboarding } from './company/completeOnboarding';
+export {
+  assignEmployeeToMasterclass,
+  unassignEmployeeFromMasterclass,
+  getCompanyMasterclasses,
+} from './company/masterclassEnrollment';
+export {
+  purchaseCompanyMasterclass,
+  getCompanyPurchases,
+} from './company/purchaseMasterclass';
+export {
+  getCompanyDashboard,
+  getEmployeeProgressDetail,
+} from './company/progressTracking';
+export { generateCSVReport } from './company/generateCSVReport';
+export { sendEmployeeReminder } from './company/sendReminder';

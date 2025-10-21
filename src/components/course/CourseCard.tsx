@@ -4,6 +4,7 @@ import { Course } from '@/types'
 import { UniversalCourseCard } from '@/components/ui/UniversalCourseCard'
 import { useAuthStore } from '@/stores/authStore'
 import { useEnrollInCourse } from '@/hooks/useCourseQueries'
+import { useEnrollmentStatus } from '@/hooks/useEnrollmentStatus'
 import { toast } from 'sonner'
 
 interface Props {
@@ -23,28 +24,16 @@ export const CourseCard: React.FC<Props> = ({
 }) => {
   const { isAuthenticated, authReady } = useAuthStore()
   const enrollmentMutation = useEnrollInCourse()
+  const { data: enrollmentData } = useEnrollmentStatus(course.id)
 
   const handleCourseAction = async (action: string, courseData: any) => {
     switch (action) {
       case 'enroll':
-        // For free courses, enroll directly
-        if (!course.price || course.price === 0) {
-          await handleEnroll()
-        } else {
-          // For paid courses, redirect to purchase page - ALWAYS use ID for consistency
-          const purchaseUrl = `/courses/${course.id}/purchase`
-          window.location.href = purchaseUrl
-        }
-        break
       case 'buy':
-      case 'purchase':
-        // Always redirect to purchase page - ALWAYS use ID for consistency
-        const purchaseUrl = `/courses/${course.id}/purchase`
-        window.location.href = purchaseUrl
+        await handleEnroll()
         break
       case 'details':
-        // For details, also use ID for consistency
-        const urlPath = `/courses/${course.id}`
+        const urlPath = course.slug ? `/courses/${course.slug}` : `/courses/${course.id}`
         const href = trialMode ? `${urlPath}?trial=true` : urlPath
         window.location.href = href
         break
@@ -56,7 +45,7 @@ export const CourseCard: React.FC<Props> = ({
           navigator.share({
             title: course.title,
             text: course.description,
-            url: window.location.origin + `/courses/${course.id}`
+            url: window.location.origin + `/courses/${course.slug || course.id}`
           })
         } else {
           toast.info('Megosztás funkció hamarosan elérhető')
@@ -75,19 +64,14 @@ export const CourseCard: React.FC<Props> = ({
     
     if (!isAuthenticated) {
       toast.error('Bejelentkezés szükséges')
-      window.location.href = '/login'
+      // For MVP, we'll use a simple alert instead of navigation
+      alert('Bejelentkezés szükséges a kurzusra való feliratkozáshoz')
       return
     }
 
     try {
-      const result = await enrollmentMutation.mutateAsync(course.id)
-      if (result.alreadyEnrolled) {
-        toast.info('Már beiratkozott erre a kurzusra!')
-      } else {
-        toast.success('Sikeresen feliratkozott a kurzusra!')
-      }
-      // Redirect to my-learning page after enrollment
-      window.location.href = '/dashboard/my-learning'
+      await enrollmentMutation.mutateAsync(course.id)
+      toast.success('Sikeresen feliratkozott a kurzusra!')
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Beiratkozás sikertelen'
       toast.error(errorMessage)
@@ -100,7 +84,7 @@ export const CourseCard: React.FC<Props> = ({
     id: course.id,
     title: course.title,
     slug: course.slug,
-    thumbnailUrl: course.thumbnailUrl,
+    thumbnail: course.thumbnailUrl,
     description: course.description,
     instructor: course.instructor ? {
       firstName: course.instructor.firstName,
@@ -108,49 +92,35 @@ export const CourseCard: React.FC<Props> = ({
       title: course.instructor.title,
       imageUrl: course.instructor.profilePictureUrl
     } : undefined,
-    university: course.university || course.instructorUniversity ? {
-      name: (course.university || course.instructorUniversity)?.name || '',
-      logoUrl: (course.university || course.instructorUniversity)?.logoUrl
-    } : undefined,
-    rating: course.averageRating,
-    ratingCount: course.reviewCount,
-    enrollmentCount: course.enrollmentCount,
-    duration: course.duration,
-    difficulty: course.difficulty === 'BEGINNER' ? 'Kezdő' :
-                course.difficulty === 'INTERMEDIATE' ? 'Középhaladó' :
-                course.difficulty === 'ADVANCED' ? 'Haladó' : 'Szakértő',
+    rating: 0, // Remove rating display
+    ratingCount: 0, // Remove review count display  
+    enrollmentCount: 0, // Remove student count display
+    duration: 8, // MVP: Default duration in hours
+    difficulty: '', // Remove difficulty level display
     category: course.category?.name,
-    price: course.price || (course as any).priceHUF || (course.status === 'PAID' ? 450000 : undefined),
-    originalPrice: (course as any).originalPrice || (course as any).originalPriceHUF,
+    price: 7990, // MVP: Use fixed price from config
+    originalPrice: undefined,
     isFeatured: course.enrollmentCount ? course.enrollmentCount > 500 : false,
     hasVideo: true, // Most courses have video content
     certificateType: course.certificateEnabled ? 'Tanúsítvány' : undefined,
     completionRate: course.enrollmentCount ? Math.floor(Math.random() * 20) + 75 : undefined,
-    isEnrolled: false, // Would need to check enrollment status
+    isEnrolled: enrollmentData?.enrolled || false,
     isBookmarked: false, // Would need to check bookmark status
     createdAt: course.publishDate,
     updatedAt: course.updatedAt
   }
 
-  // Determine which actions to show based on course price
-  const getActionsForCourse = () => {
-    const baseActions = ['details', 'bookmark', 'share'];
-    
-    if (!course.price || course.price === 0) {
-      // Free course - show enroll button
-      return ['enroll', ...baseActions];
-    } else {
-      // Paid course - show purchase button
-      return ['purchase', ...baseActions];
-    }
-  };
+  // Determine actions based on enrollment status
+  const actions: ("details" | "share" | "enroll" | "continue" | "bookmark")[] = enrollmentData?.enrolled 
+    ? ['details', 'bookmark', 'share'] // Already enrolled - no enroll button
+    : ['enroll', 'details', 'bookmark', 'share']; // Not enrolled - show enroll button
 
   return (
     <UniversalCourseCard
       course={universalCourse}
       variant={variant}
       context={context}
-      actions={getActionsForCourse()}
+      actions={actions}
       showElements={['rating', 'price', 'instructor', 'students', 'category', 'difficulty']}
       onAction={handleCourseAction}
       priority={context === 'home'}

@@ -71,18 +71,18 @@ export function GlassmorphicCard({
   // Map the border style to the corresponding Tailwind classes
   const borderClasses = {
     none: '',
-    light: 'border border-white/10 dark:border-white/5',
+    light: 'border border-white/10',
     accent: 'border border-primary/20',
     gradient: 'border border-transparent relative before:absolute before:inset-0 before:p-[1px] before:rounded-[inherit] before:bg-gradient-to-r before:from-primary/40 before:via-secondary/40 before:to-accent/40 before:-z-10',
   };
   
   // Map the background opacity to the corresponding Tailwind classes
   const backgroundClasses = {
-    transparent: 'bg-white/5 dark:bg-black/5',
-    translucent: 'bg-white/10 dark:bg-black/10',
-    light: 'bg-white/20 dark:bg-black/20',
-    medium: 'bg-white/30 dark:bg-black/30',
-    solid: 'bg-white/40 dark:bg-black/40',
+    transparent: 'bg-white/5',
+    translucent: 'bg-white/10',
+    light: 'bg-white/20',
+    medium: 'bg-white/30',
+    solid: 'bg-white/40',
   };
   
   // Hover effect classes
@@ -92,7 +92,7 @@ export function GlassmorphicCard({
   
   // Premium gradient effect
   const premiumClasses = premium
-    ? 'bg-gradient-to-br from-primary/20 via-transparent to-secondary/20 dark:from-primary/10 dark:via-transparent dark:to-secondary/10'
+    ? 'bg-gradient-to-br from-primary/20 via-transparent to-secondary/20'
     : backgroundClasses[backgroundOpacity];
   
   return (

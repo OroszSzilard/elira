@@ -1,10 +1,12 @@
 'use client'
 
 import Link from 'next/link'
+import { motion } from 'motion/react'
 import { Play, Clock, CheckCircle, BookOpen, Search, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { UserProgressData, EnrolledCourse } from '@/types'
+import { brandGradient, buttonStyles, cardStyles } from '@/lib/design-tokens'
 
 /**
  * Continue Learning Section
@@ -68,33 +70,37 @@ export function ContinueLearningSection({ data, isLoading = false }: ContinueLea
     return (
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-gray-900">Tanulás folytatása</h2>
-        <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-lg border border-teal-200 p-8 text-center">
-            <>
-              <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="rounded-2xl p-8 text-center relative overflow-hidden" style={{ background: brandGradient }}>
+            <div className="relative z-10">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-white mb-2">
                 Szuper! Minden kurzust teljesített!
               </h3>
-              <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                Gratulálunk! {completedCourses.length} kurzust sikeresen befejezett. 
+              <p className="text-white/90 mb-6 max-w-md mx-auto">
+                Gratulálunk! {completedCourses.length} kurzust sikeresen befejezett.
                 Fedezzen fel új területeket és fejlessze tovább tudását.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href="/courses">
-                  <Button size="lg" className="flex items-center">
-                    <BookOpen className="w-5 h-5 mr-2" />
-                    Új kurzusok keresése
-                  </Button>
+                  <button className={buttonStyles.primaryDark}>
+                    <BookOpen className="w-5 h-5" />
+                    <span>Új kurzusok keresése</span>
+                  </button>
                 </Link>
                 <Link href="/dashboard/certificates">
-                  <Button size="lg" variant="outline" className="flex items-center">
-                    <CheckCircle className="w-5 h-5 mr-2" />
-                    Tanúsítványok megtekintése
-                  </Button>
+                  <button className={buttonStyles.secondaryDark}>
+                    <CheckCircle className="w-5 h-5" />
+                    <span>Tanúsítványok megtekintése</span>
+                  </button>
                 </Link>
               </div>
-            </>
+            </div>
+            {/* Ambient glow */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+              background: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), transparent 70%)'
+            }} />
         </div>
       </div>
     )
@@ -110,11 +116,18 @@ export function ContinueLearningSection({ data, isLoading = false }: ContinueLea
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {inProgressCourses.map((course: EnrolledCourse) => (
-          <div key={course.courseId} className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-200 group">
-            
+        {inProgressCourses.map((course: EnrolledCourse, index: number) => (
+          <motion.div
+            key={course.courseId}
+            className={`${cardStyles.flat} overflow-hidden group`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            whileHover={{ y: -4 }}
+          >
+
             {/* Course Thumbnail */}
-            <div className="h-48 bg-gradient-to-br from-teal-500 to-cyan-600 relative overflow-hidden">
+            <div className="h-48 relative overflow-hidden" style={{ background: brandGradient }}>
               {course.thumbnailUrl ? (
                 <img 
                   src={course.thumbnailUrl} 
@@ -160,7 +173,7 @@ export function ContinueLearningSection({ data, isLoading = false }: ContinueLea
             {/* Course Info */}
             <div className="p-5 space-y-4">
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-teal-600 transition-colors">
+                <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-[#466C95] transition-colors">
                   {course.title}
                 </h3>
                 <p className="text-sm text-gray-600">
@@ -179,7 +192,7 @@ export function ContinueLearningSection({ data, isLoading = false }: ContinueLea
 
               {/* Next Lesson */}
               {course.nextLesson && (
-                <div className="flex items-center text-sm text-teal-600 bg-teal-50 px-3 py-2 rounded-lg">
+                <div className="flex items-center text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200">
                   <CheckCircle className="w-4 h-4 mr-2" />
                   Következő: {course.nextLesson.title}
                 </div>
@@ -187,13 +200,13 @@ export function ContinueLearningSection({ data, isLoading = false }: ContinueLea
 
               {/* Continue Button */}
               <Link href={`/courses/${course.slug || course.courseId}/player`} className="block">
-                <Button className="w-full group-hover:bg-teal-700 transition-colors">
-                  <Play className="w-4 h-4 mr-2" />
-                  Tanulás folytatása
-                </Button>
+                <button className={`w-full ${buttonStyles.primaryLight} !rounded-lg !py-2.5`}>
+                  <Play className="w-4 h-4" />
+                  <span>Tanulás folytatása</span>
+                </button>
               </Link>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

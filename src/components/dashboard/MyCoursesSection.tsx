@@ -2,12 +2,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { motion } from 'motion/react'
 import { BookOpen, Award, Clock, Users, Filter, Search, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { UserProgressData, EnrolledCourse, CourseState, CourseFilter, CourseFilterOption } from '@/types'
 import { CourseCard } from './CourseCard'
+import { brandGradient, buttonStyles } from '@/lib/design-tokens'
 
 /**
  * My Courses Section
@@ -97,31 +99,43 @@ export function MyCoursesSection({ data, isLoading = false }: MyCoursesProps) {
     return (
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-gray-900">Kurzusaim</h2>
-        <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-lg border border-teal-200 p-8 text-center">
-          <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Search className="w-10 h-10 text-white" />
+        <motion.div
+          className="rounded-2xl p-8 text-center relative overflow-hidden"
+          style={{ background: brandGradient }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="relative z-10">
+            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="w-10 h-10 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              Még nem kezdtél el egyetlen kurzust sem
+            </h3>
+            <p className="text-white/90 mb-6 max-w-md mx-auto">
+              Fedezd fel kurzusainkat és kezdd el a tanulást még ma! Válogass a szakmai fejlődést segítő képzéseink közül.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link href="/courses">
+                <button className={buttonStyles.primaryDark}>
+                  <Search className="w-5 h-5" />
+                  <span>Kurzusok böngészése</span>
+                </button>
+              </Link>
+              <Link href="/trending">
+                <button className={buttonStyles.secondaryDark}>
+                  <TrendingUp className="w-5 h-5" />
+                  <span>Népszerű kurzusok</span>
+                </button>
+              </Link>
+            </div>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            Még nem kezdtél el egyetlen kurzust sem
-          </h3>
-          <p className="text-gray-600 mb-6 max-w-md mx-auto">
-            Fedezd fel kurzusainkat és kezdd el a tanulást még ma! Válogass a szakmai fejlődést segítő képzéseink közül.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/courses">
-              <Button size="lg" className="flex items-center">
-                <Search className="w-5 h-5 mr-2" />
-                Kurzusok böngészése
-              </Button>
-            </Link>
-            <Link href="/trending">
-              <Button size="lg" variant="outline" className="flex items-center">
-                <TrendingUp className="w-5 h-5 mr-2" />
-                Népszerű kurzusok
-              </Button>
-            </Link>
-          </div>
-        </div>
+          {/* Ambient glow */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), transparent 70%)'
+          }} />
+        </motion.div>
       </div>
     )
   }
@@ -147,17 +161,17 @@ export function MyCoursesSection({ data, isLoading = false }: MyCoursesProps) {
             size="sm"
             onClick={() => setActiveFilter(option.key)}
             className={`flex items-center space-x-2 ${
-              activeFilter === option.key 
-                ? 'bg-teal-600 text-white hover:bg-teal-700' 
+              activeFilter === option.key
+                ? 'bg-gray-900 text-white hover:bg-black'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             <span>{option.label}</span>
-            <Badge 
-              variant="secondary" 
+            <Badge
+              variant="secondary"
               className={`ml-1 ${
-                activeFilter === option.key 
-                  ? 'bg-teal-500 text-white' 
+                activeFilter === option.key
+                  ? 'bg-gray-800 text-white'
                   : 'bg-gray-200 text-gray-600'
               }`}
             >
@@ -172,15 +186,21 @@ export function MyCoursesSection({ data, isLoading = false }: MyCoursesProps) {
         <EmptyFilterState activeFilter={activeFilter} />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCourses.map((course) => (
-            <CourseCard 
-              key={course.courseId} 
-              course={course}
-              onStart={handleStartCourse}
-              onContinue={handleContinueCourse}
-              onViewCertificate={handleViewCertificate}
-              onRate={handleRateCourse}
-            />
+          {filteredCourses.map((course, index) => (
+            <motion.div
+              key={course.courseId}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.05 }}
+            >
+              <CourseCard
+                course={course}
+                onStart={handleStartCourse}
+                onContinue={handleContinueCourse}
+                onViewCertificate={handleViewCertificate}
+                onRate={handleRateCourse}
+              />
+            </motion.div>
           ))}
         </div>
       )}

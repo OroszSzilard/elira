@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: ["class"],
   content: [
     './src/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
@@ -11,15 +10,18 @@ module.exports = {
       center: true,
       padding: "2rem",
       screens: {
-        "lg": "1320px", // custom layout width
+        "lg": "1320px", // Elira custom layout width
         "2xl": "1400px",
       },
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-        heading: ['Codec Pro', 'sans-serif'],
-        inter: ['Inter', 'ui-sans-serif', 'system-ui'],
+        sans: ['SF Pro Display', 'SF Pro Text', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'ui-sans-serif', 'system-ui'],
+        display: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui'],
+        heading: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui'],
+        serif: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui'],
+        inter: ['SF Pro Text', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'ui-sans-serif', 'system-ui'],
+        academic: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -80,20 +82,22 @@ module.exports = {
           foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "var(--popover)",
+          foreground: "var(--popover-foreground)",
         },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
         blue: {
-          DEFAULT: '#4F46E5', // Primary blue
-          light: '#6366F1',
+          DEFAULT: '#16222F', // Elira primary blue-gray
+          light: '#1e2a37',
+          navy: '#16222F',
+          'navy-light': '#1e2a37',
         },
         category: {
           green: '#10B981',
-          blue: '#2563EB',
+          blue: '#16222F',
           orange: '#F97316',
           red: '#EF4444',
           purple: '#7C3AED',
@@ -115,6 +119,57 @@ module.exports = {
           800: '#1F2937',
           900: '#111827',
         },
+        // Academic Harvard/Yale Color Scheme - Full palette from Elira
+        academic: {
+          primary: {
+            50: '#FFFBEB',
+            100: '#FEF3C7',
+            200: '#FDE68A',
+            300: '#FCD34D',
+            400: '#FBBF24',
+            500: '#F59E0B',
+            600: '#D97706',
+            700: '#B45309',
+            800: '#92400E',
+            900: '#78350F',
+          },
+          slate: {
+            50: '#F8FAFC',
+            100: '#F1F5F9',
+            200: '#E2E8F0',
+            300: '#CBD5E1',
+            400: '#94A3B8',
+            500: '#64748B',
+            600: '#475569',
+            700: '#334155',
+            800: '#1E293B',
+            900: '#0F172A',
+          },
+          stone: {
+            50: '#FAFAF9',
+            100: '#F5F5F4',
+            200: '#E7E5E4',
+            300: '#D6D3D1',
+            400: '#A8A29E',
+            500: '#78716C',
+            600: '#57534E',
+            700: '#44403C',
+            800: '#292524',
+            900: '#1C1917',
+          },
+          amber: {
+            50: '#FFFBEB',
+            100: '#FEF3C7',
+            200: '#FDE68A',
+            300: '#FCD34D',
+            400: '#FBBF24',
+            500: '#F59E0B',
+            600: '#D97706',
+            700: '#B45309',
+            800: '#92400E',
+            900: '#78350F',
+          },
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -134,10 +189,31 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: 0 },
         },
+        'gradient-x': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          },
+        },
+        'float': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        'scroll-infinite': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        'gradient-x': 'gradient-x 3s ease infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'scroll-infinite': 'scroll-infinite 30s linear infinite',
       },
       spacing: {
         '0': 'var(--space-0)',
@@ -164,9 +240,15 @@ module.exports = {
         floating: '0 12px 48px 0 rgba(16, 23, 42, 0.24)',
       },
       backgroundImage: {
-        'hero-gradient': "linear-gradient(135deg, rgba(15,118,110,0.8), rgba(59,130,246,0.8))",
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'hero-gradient': "linear-gradient(135deg, rgba(22,34,47,0.8), rgba(30,42,55,0.8))",
+        'gradient-primary': 'linear-gradient(135deg, #16222F 0%, #1e2a37 50%, #252f3d 100%)',
+        'gradient-secondary': 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+        'gradient-accent': 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+        'gradient-hero': 'linear-gradient(to bottom, #16222F, #466C95)',
+        // Category gradients from Elira
         'category-green': 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
-        'category-blue': 'linear-gradient(135deg, #2563EB 0%, #60A5FA 100%)',
+        'category-blue': 'linear-gradient(135deg, #16222F 0%, #1e2a37 100%)',
         'category-orange': 'linear-gradient(135deg, #F97316 0%, #FDBA74 100%)',
         'category-red': 'linear-gradient(135deg, #EF4444 0%, #FCA5A5 100%)',
         'category-purple': 'linear-gradient(135deg, #7C3AED 0%, #C4B5FD 100%)',
@@ -175,6 +257,11 @@ module.exports = {
         'category-cyan': 'linear-gradient(135deg, #06B6D4 0%, #67E8F9 100%)',
         'category-lime': 'linear-gradient(135deg, #84CC16 0%, #D9F99D 100%)',
         'category-indigo': 'linear-gradient(135deg, #6366F1 0%, #A5B4FC 100%)',
+        // Academic gradients from Elira
+        'academic-hero': 'linear-gradient(135deg, #F8FAFC 0%, #F5F5F4 25%, #FFFBEB 100%)',
+        'academic-section': 'linear-gradient(to bottom right, #F8FAFC 0%, #F5F5F4 100%)',
+        'academic-card': 'linear-gradient(to bottom right, rgba(248, 250, 252, 0.6) 0%, rgba(245, 245, 244, 0.6) 100%)',
+        'academic-accent': 'linear-gradient(135deg, #FDE68A 0%, #F59E0B 100%)',
       },
       fontSize: {
         xs: 'var(--font-xs)',
@@ -187,8 +274,8 @@ module.exports = {
         '3xl': 'var(--font-3xl)',
         '4xl': 'var(--font-4xl)',
         '5xl': 'var(--font-5xl)',
-        display: 'clamp(2.5rem, 6vw, 4rem)',
-        lead: '1.25rem',
+        display: 'clamp(2.5rem, 6vw, 4rem)', // Elira responsive display font
+        lead: '1.25rem', // Elira lead text size
         muted: 'var(--font-sm)',
       },
       fontWeight: {

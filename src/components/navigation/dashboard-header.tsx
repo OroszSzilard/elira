@@ -13,8 +13,7 @@ import {
   ChevronDown,
   BookOpen,
   Award,
-  Menu,
-  Home
+  Menu
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -29,6 +28,7 @@ import { Input } from '@/components/ui/input'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { toast } from 'sonner'
+import { brandGradient } from '@/lib/design-tokens'
 
 export function DashboardHeader() {
   const { user, clearAuth } = useAuthStore()
@@ -73,26 +73,26 @@ export function DashboardHeader() {
   }
 
   return (
-    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-      <div className="px-6 py-3">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200/50">
+      <div
+        className="relative"
+        style={{
+          background: 'rgba(255,255,255,0.9)',
+          backdropFilter: 'blur(20px) saturate(150%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(150%)'
+        }}
+      >
+        <div className="px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Logo and Brand */}
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2">
-              <img 
-                src="/images/navbar-logo.png" 
-                alt="ELIRA" 
+              <img
+                src="/navbar-icon.png"
+                alt="ELIRA"
                 className="h-8 w-auto"
               />
-            </Link>
-            
-            {/* Home button */}
-            <Link 
-              href="/" 
-              className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
-            >
-              <Home className="h-4 w-4" />
-              <span>Főoldal</span>
+              <span className="text-xl font-bold text-gray-900">Elira</span>
             </Link>
 
             {/* Search Bar */}
@@ -103,7 +103,7 @@ export function DashboardHeader() {
                 placeholder="Kurzusok keresése..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 w-80 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
+                className="pl-10 pr-4 w-80 bg-gray-50 border-gray-200"
               />
             </form>
           </div>
@@ -113,13 +113,9 @@ export function DashboardHeader() {
             {/* Quick Stats - only for students */}
             {user?.role === 'STUDENT' && (
               <div className="hidden lg:flex items-center gap-6 mr-4">
-                <Link href="/dashboard/my-learning" className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                <Link href="/dashboard/my-learning" className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
                   <BookOpen className="h-4 w-4" />
                   <span>3 aktív kurzus</span>
-                </Link>
-                <Link href="/dashboard/certificates" className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                  <Award className="h-4 w-4" />
-                  <span>2 tanúsítvány</span>
                 </Link>
               </div>
             )}
@@ -132,7 +128,7 @@ export function DashboardHeader() {
                   user.role === 'ADMIN' ? "bg-red-100 text-red-700" :
                   user.role === 'INSTRUCTOR' ? "bg-purple-100 text-purple-700" :
                   (user.role === 'UNIVERSITY_ADMIN' || user.role === 'university_admin') ? "bg-blue-100 text-blue-700" :
-                  "bg-teal-100 text-teal-700"
+                  "bg-[#466C95]/10 text-[#466C95]"
                 )}>
                   {user.role === 'ADMIN' ? 'Admin' :
                    user.role === 'INSTRUCTOR' ? 'Oktató' :
@@ -152,13 +148,16 @@ export function DashboardHeader() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ background: brandGradient }}
+                  >
                     <span className="text-white text-sm font-medium">
                       {getInitials()}
                     </span>
                   </div>
                   <span className="hidden md:block text-sm font-medium">
-                    {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : 
+                    {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` :
                      user?.displayName || user?.firstName || user?.lastName || user?.email}
                   </span>
                   <ChevronDown className="h-4 w-4" />
@@ -186,6 +185,7 @@ export function DashboardHeader() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+        </div>
         </div>
       </div>
     </header>

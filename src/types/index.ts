@@ -1,15 +1,51 @@
 // Common types used throughout the application
 
+// Role System Types
+export type UserRole = 'STUDENT' | 'INSTRUCTOR' | 'ADMIN' | 'COMPANY_ADMIN' | 'COMPANY_EMPLOYEE';
+
+export interface RolePermissions {
+  // Course management
+  canCreateCourses: boolean;
+  canEditOwnCourses: boolean;
+  canEditAllCourses: boolean;
+  canDeleteCourses: boolean;
+  canPublishCourses: boolean;
+
+  // User management
+  canViewAllUsers: boolean;
+  canEditUserRoles: boolean;
+  canDeactivateUsers: boolean;
+  canDeleteUsers: boolean;
+
+  // Analytics and reporting
+  canViewOwnAnalytics: boolean;
+  canViewPlatformAnalytics: boolean;
+  canExportData: boolean;
+
+  // Platform administration
+  canModifyPlatformSettings: boolean;
+  canManagePayments: boolean;
+  canAccessAdminPanel: boolean;
+  canManageCategories: boolean;
+
+  // Company-specific permissions
+  canManageEmployees?: boolean;
+  canViewReports?: boolean;
+  canManageBilling?: boolean;
+  canManageMasterclasses?: boolean;
+}
+
 export interface User {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
-  role: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN';
+  role: UserRole;
   profilePictureUrl?: string;
   title?: string;
   bio?: string;
   companyRole?: string;
+  companyId?: string;
   institution?: string;
   credentials?: string[];
   specialties?: string[];

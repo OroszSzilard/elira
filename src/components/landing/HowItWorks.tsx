@@ -10,8 +10,8 @@ const steps = [
     title: 'Válasszon kurzust',
     description: 'Böngésszen több száz kurzus között, vagy használja a keresőt a tökéletes találat érdekében.',
     color: 'from-primary to-primary',
-    bgColor: 'bg-blue-50 dark:bg-blue-900/20',
-    textColor: 'text-blue-700 dark:text-blue-400'
+    bgColor: 'bg-blue-50',
+    textColor: 'text-blue-700'
   },
   {
     id: 2,
@@ -19,8 +19,8 @@ const steps = [
     title: 'Tanuljon saját tempójában',
     description: 'Videó leckék, gyakorlatok és valós projektek segítségével gyakorlati készségeket szerez.',
     color: 'from-green-500 to-green-600',
-    bgColor: 'bg-green-50 dark:bg-green-900/20',
-    textColor: 'text-green-700 dark:text-green-400'
+    bgColor: 'bg-green-50',
+    textColor: 'text-green-700'
   },
   {
     id: 3,
@@ -28,30 +28,30 @@ const steps = [
     title: 'Szerezzen tanúsítványt',
     description: 'Teljesítse a kurzust és kapjon elismert tanúsítványt, amelyet megoszthat a LinkedIn profilján.',
     color: 'from-purple-500 to-purple-600',
-    bgColor: 'bg-purple-50 dark:bg-purple-900/20',
-    textColor: 'text-purple-700 dark:text-purple-400'
+    bgColor: 'bg-purple-50',
+    textColor: 'text-purple-700'
   }
 ]
 
 export const HowItWorks: React.FC = () => {
   return (
-    <section className="py-24 bg-white dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div 
-          className="text-center mb-16"
+    <section className="py-32 sm:py-40 bg-white">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+        <motion.div
+          className="text-center mb-24"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8">
             Hogyan működik?
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Három egyszerű lépésben kezdje el a tanulási utazását és szerezzen valós készségeket
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
           {steps.map((step, index) => (
             <motion.div
               key={step.id}
@@ -82,7 +82,7 @@ export const HowItWorks: React.FC = () => {
                   <h3 className={`text-xl font-bold ${step.textColor} mb-4`}>
                     {step.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {step.description}
                   </p>
                 </div>
@@ -95,7 +95,7 @@ export const HowItWorks: React.FC = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
                   >
-                    <div className="w-8 h-8 bg-white dark:bg-gray-800 rounded-full shadow-lg flex items-center justify-center">
+                    <div className="w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
                       <ArrowRight className="w-4 h-4 text-primary" />
                     </div>
                   </motion.div>

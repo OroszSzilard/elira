@@ -34,7 +34,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   // Loading state for authentication
   if (isLoading || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center space-y-4">
           <Loader2 className="h-12 w-12 animate-spin text-teal-600" />
           <p className="text-sm text-muted-foreground">Betöltés...</p>
@@ -44,9 +44,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="h-screen flex bg-gray-50 dark:bg-gray-900">
+    <div className="h-screen flex bg-gray-50">
       {/* Left Sidebar Navigation - Coursera Style */}
-      <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-shrink-0">
+      <aside className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
         <DashboardSidebar />
       </aside>
 

@@ -79,11 +79,11 @@ export function StudentSidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 min-h-screen">
+    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen">
       <nav className="flex flex-col gap-1 p-4">
         <div className="mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Tanulói Panel</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Fejlődj minden nap</p>
+          <h2 className="text-lg font-semibold text-gray-900">Tanulói Panel</h2>
+          <p className="text-sm text-gray-500">Fejlődj minden nap</p>
         </div>
         
         {studentNavItems.map((item) => {
@@ -97,13 +97,13 @@ export function StudentSidebar() {
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
                 isActive
-                  ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 shadow-sm'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
+                  ? 'bg-teal-50 text-teal-600 shadow-sm'
+                  : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
               )}
             >
               <Icon className={cn(
                 "h-4 w-4",
-                isActive ? "text-teal-600 dark:text-teal-400" : "text-gray-500 dark:text-gray-400"
+                isActive ? "text-teal-600" : "text-gray-500"
               )} />
               {item.title}
             </Link>

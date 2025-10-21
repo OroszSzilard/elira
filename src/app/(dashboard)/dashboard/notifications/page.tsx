@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'motion/react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Bell, BookOpen, Award, Users, TrendingUp, Settings, Check, X, Filter } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { hu } from 'date-fns/locale'
+import { brandGradient, glassMorphism } from '@/lib/design-tokens'
 
 /**
  * Notifications Dashboard
@@ -83,13 +85,13 @@ export default function NotificationsPage() {
   const getNotificationIcon = (type: Notification['type']) => {
     switch (type) {
       case 'course':
-        return <BookOpen className="w-5 h-5 text-blue-600" />
+        return <BookOpen className="w-5 h-5 text-gray-900" />
       case 'achievement':
-        return <Award className="w-5 h-5 text-yellow-600" />
+        return <Award className="w-5 h-5 text-gray-900" />
       case 'system':
         return <Settings className="w-5 h-5 text-gray-600" />
       case 'social':
-        return <Users className="w-5 h-5 text-green-600" />
+        return <Users className="w-5 h-5 text-gray-900" />
       default:
         return <Bell className="w-5 h-5 text-gray-600" />
     }
@@ -98,13 +100,13 @@ export default function NotificationsPage() {
   const getNotificationColor = (type: Notification['type']) => {
     switch (type) {
       case 'course':
-        return 'bg-blue-50 border-blue-200'
+        return 'bg-gray-50 border-gray-300'
       case 'achievement':
-        return 'bg-yellow-50 border-yellow-200'
+        return 'bg-gray-50 border-gray-300'
       case 'system':
         return 'bg-gray-50 border-gray-200'
       case 'social':
-        return 'bg-green-50 border-green-200'
+        return 'bg-gray-50 border-gray-300'
       default:
         return 'bg-gray-50 border-gray-200'
     }
@@ -139,23 +141,76 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Page Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Értesítések</h1>
-            <p className="text-gray-600 mt-1">
-              Kövesse nyomon a legújabb frissítéseket és eredményeket
-            </p>
-          </div>
-          {unreadCount > 0 && (
-            <Button variant="outline" onClick={markAllAsRead}>
-              <Check className="w-4 h-4 mr-2" />
-              Összes megjelölése olvasottként ({unreadCount})
-            </Button>
-          )}
+    <div className="min-h-screen bg-gray-50">
+      {/* Gradient Hero Section */}
+      <section
+        className="relative -mt-20 pt-20 pb-12"
+        style={{ background: brandGradient }}
+      >
+        <div className="container mx-auto px-6 lg:px-12 py-12 relative z-10">
+          <motion.div
+            className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Left: Title and Description */}
+            <div className="flex-1">
+              <motion.div
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm mb-4"
+                style={{
+                  ...glassMorphism.badge,
+                  border: '1px solid rgba(255, 255, 255, 0.25)'
+                }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <Bell className="w-4 h-4 text-white" />
+                <span className="font-semibold text-white">
+                  {unreadCount} Olvasatlan
+                </span>
+              </motion.div>
+
+              <h1 className="text-4xl lg:text-5xl font-semibold text-white mb-3">
+                Értesítések
+              </h1>
+              <p className="text-white/80 text-lg max-w-2xl">
+                Kövesse nyomon a legújabb frissítéseket és eredményeket
+              </p>
+            </div>
+
+            {/* Right: Mark All Read Button */}
+            {unreadCount > 0 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <Button
+                  onClick={markAllAsRead}
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-md"
+                >
+                  <Check className="w-4 h-4 mr-2" />
+                  Összes olvasottként jelölése
+                </Button>
+              </motion.div>
+            )}
+          </motion.div>
         </div>
+
+        {/* Ambient glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle at 50% 30%, rgba(139, 92, 246, 0.08), transparent 70%)'
+          }}
+        />
+      </section>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-6 lg:px-12 py-12">
+        <div className="max-w-4xl mx-auto space-y-6">
 
         {/* Filter Tabs */}
         <div className="flex flex-wrap gap-2">
@@ -172,17 +227,17 @@ export default function NotificationsPage() {
               size="sm"
               onClick={() => setFilter(key as any)}
               className={`flex items-center space-x-2 ${
-                filter === key 
-                  ? 'bg-teal-600 text-white hover:bg-teal-700' 
+                filter === key
+                  ? 'bg-gray-900 text-white hover:bg-[#466C95] transition-colors'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
               <span>{label}</span>
-              <Badge 
-                variant="secondary" 
+              <Badge
+                variant="secondary"
                 className={`ml-1 ${
-                  filter === key 
-                    ? 'bg-teal-500 text-white' 
+                  filter === key
+                    ? 'bg-gray-800 text-white'
                     : 'bg-gray-200 text-gray-600'
                 }`}
               >
@@ -208,15 +263,20 @@ export default function NotificationsPage() {
               </p>
             </Card>
           ) : (
-            filteredNotifications.map((notification) => (
-              <Card 
-                key={notification.id} 
-                className={`transition-all hover:shadow-md ${
-                  !notification.isRead 
-                    ? `${getNotificationColor(notification.type)} border-l-4` 
-                    : 'border-gray-200'
-                }`}
+            filteredNotifications.map((notification, index) => (
+              <motion.div
+                key={notification.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
               >
+                <Card
+                  className={`transition-all hover:shadow-md ${
+                    !notification.isRead
+                      ? 'bg-gray-50 border-l-4 border-[#466C95]'
+                      : 'border-gray-200'
+                  }`}
+                >
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3 flex-1">
@@ -229,7 +289,7 @@ export default function NotificationsPage() {
                             {notification.title}
                           </h3>
                           {!notification.isRead && (
-                            <div className="w-2 h-2 bg-teal-500 rounded-full" />
+                            <div className="w-2 h-2 bg-[#466C95] rounded-full" />
                           )}
                         </div>
                         <p className="text-gray-600 mb-2">{notification.message}</p>
@@ -277,8 +337,10 @@ export default function NotificationsPage() {
                   )}
                 </CardContent>
               </Card>
+              </motion.div>
             ))
           )}
+        </div>
         </div>
       </div>
     </div>

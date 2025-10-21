@@ -1,3 +1,4 @@
+
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
@@ -7,7 +8,20 @@
       "Bash(npx tsc:*)",
       "Bash(curl:*)",
       "Bash(lsof:*)",
-      "Bash(firebase functions:list:*)"
+      "Bash(firebase functions:list:*)",
+      "Read(//c/Users/Yoga X380/Documents/ELIRA/elira/**)",
+      "Bash(findstr landing)",
+      "Read(//c/Users/Yoga X380/Documents/**)",
+      "Bash(ls -la src/app/(company)/)",
+      "Bash(head -50 src/app/(auth)/login/page.tsx)",
+      "Bash(test -d \"elira-landing-main\")",
+      "Bash(npm run build)",
+      "Bash(test -d \"src/components/blog\")",
+      "Bash(test -d \"src/components/home\")",
+      "Bash(test -d \"src/components/buttons\")",
+      "Bash(test -d \"src/components/consistent\")",
+      "Bash(test -d \"src/components/guards\")",
+      "Bash(npx tailwindcss:*)"
     ],
     "deny": []
   }

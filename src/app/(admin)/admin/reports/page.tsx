@@ -112,13 +112,13 @@ export default function AdminReportsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'open':
-        return <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Nyitott</Badge>
+        return <Badge className="bg-blue-100 text-blue-700">Nyitott</Badge>
       case 'in-progress':
-        return <Badge className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">Folyamatban</Badge>
+        return <Badge className="bg-yellow-100 text-yellow-700">Folyamatban</Badge>
       case 'resolved':
-        return <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Megoldva</Badge>
+        return <Badge className="bg-green-100 text-green-700">Megoldva</Badge>
       case 'closed':
-        return <Badge className="bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400">Lezárva</Badge>
+        return <Badge className="bg-gray-100 text-gray-700">Lezárva</Badge>
       default:
         return null
     }
@@ -127,15 +127,15 @@ export default function AdminReportsPage() {
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case 'urgent':
-        return <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Sürgős</Badge>
+        return <Badge className="bg-red-100 text-red-700">Sürgős</Badge>
       case 'high':
-        return <Badge className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">Magas</Badge>
+        return <Badge className="bg-orange-100 text-orange-700">Magas</Badge>
       case 'normal':
-        return <Badge className="bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400">Normál</Badge>
+        return <Badge className="bg-gray-100 text-gray-700">Normál</Badge>
       case 'low':
-        return <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Alacsony</Badge>
+        return <Badge className="bg-blue-100 text-blue-700">Alacsony</Badge>
       default:
-        return <Badge className="bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400">Normál</Badge>
+        return <Badge className="bg-gray-100 text-gray-700">Normál</Badge>
     }
   }
 
@@ -257,7 +257,7 @@ export default function AdminReportsPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Jegyek betöltése...</p>
+          <p className="text-gray-600">Jegyek betöltése...</p>
         </div>
       </div>
     )
@@ -268,10 +268,10 @@ export default function AdminReportsPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Támogatási Jegyek
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             Felhasználói segítségkérések és jelentések kezelése
           </p>
         </div>
@@ -282,7 +282,7 @@ export default function AdminReportsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Összes</p>
+                  <p className="text-sm text-gray-600">Összes</p>
                   <p className="text-2xl font-bold">{stats.total}</p>
                 </div>
                 <Activity className="w-8 h-8 text-gray-400" />
@@ -294,7 +294,7 @@ export default function AdminReportsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Nyitott</p>
+                  <p className="text-sm text-gray-600">Nyitott</p>
                   <p className="text-2xl font-bold text-blue-600">{stats.open}</p>
                 </div>
                 <AlertCircle className="w-8 h-8 text-blue-400" />
@@ -306,7 +306,7 @@ export default function AdminReportsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Folyamatban</p>
+                  <p className="text-sm text-gray-600">Folyamatban</p>
                   <p className="text-2xl font-bold text-yellow-600">{stats.inProgress}</p>
                 </div>
                 <Clock className="w-8 h-8 text-yellow-400" />
@@ -318,7 +318,7 @@ export default function AdminReportsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Megoldva</p>
+                  <p className="text-sm text-gray-600">Megoldva</p>
                   <p className="text-2xl font-bold text-green-600">{stats.resolved}</p>
                 </div>
                 <CheckCircle className="w-8 h-8 text-green-400" />
@@ -330,7 +330,7 @@ export default function AdminReportsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Sürgős</p>
+                  <p className="text-sm text-gray-600">Sürgős</p>
                   <p className="text-2xl font-bold text-red-600">{stats.urgent}</p>
                 </div>
                 <AlertTriangle className="w-8 h-8 text-red-400" />
@@ -410,26 +410,26 @@ export default function AdminReportsPage() {
                 {filteredTickets.length === 0 ? (
                   <div className="text-center py-8">
                     <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-600 dark:text-gray-400">Nincs támogatási jegy</p>
+                    <p className="text-gray-600">Nincs támogatási jegy</p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                  <div className="divide-y divide-gray-200">
                     {filteredTickets.map((ticket) => (
                       <div
                         key={ticket.id}
                         onClick={() => setSelectedTicket(ticket)}
-                        className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors ${
-                          selectedTicket?.id === ticket.id ? 'bg-gray-50 dark:bg-gray-800' : ''
+                        className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
+                          selectedTicket?.id === ticket.id ? 'bg-gray-50' : ''
                         }`}
                       >
                         <div className="flex items-start justify-between mb-2">
                           <span className="text-xs font-mono text-gray-500">#{ticket.id.slice(-6).toUpperCase()}</span>
                           {getPriorityBadge(ticket.priority)}
                         </div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white text-sm mb-1 line-clamp-1">
+                        <h4 className="font-semibold text-gray-900 text-sm mb-1 line-clamp-1">
                           {ticket.subject}
                         </h4>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                        <p className="text-xs text-gray-600 mb-2">
                           {ticket.userName} • {getCategoryName(ticket.category)}
                         </p>
                         <div className="flex items-center justify-between">
@@ -466,16 +466,16 @@ export default function AdminReportsPage() {
                 </CardHeader>
                 <CardContent className="space-y-4 overflow-y-auto h-[480px]">
                   {/* User Info */}
-                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                  <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center">
-                        <User className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                      <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+                        <User className="w-5 h-5 text-teal-600" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 dark:text-white">
+                        <h4 className="font-semibold text-gray-900">
                           {selectedTicket.userName}
                         </h4>
-                        <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="flex items-center gap-4 text-sm text-gray-600">
                           <span className="flex items-center gap-1">
                             <Mail className="w-3 h-3" />
                             {selectedTicket.userEmail}
@@ -491,11 +491,11 @@ export default function AdminReportsPage() {
 
                   {/* Original Message */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                    <h4 className="font-semibold text-gray-900 mb-2">
                       Eredeti üzenet
                     </h4>
-                    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                      <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                      <p className="text-gray-700 whitespace-pre-wrap">
                         {selectedTicket.message}
                       </p>
                     </div>
@@ -504,21 +504,21 @@ export default function AdminReportsPage() {
                   {/* Responses */}
                   {selectedTicket.responses && selectedTicket.responses.length > 0 && (
                     <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                      <h4 className="font-semibold text-gray-900 mb-2">
                         Válaszok ({selectedTicket.responses.length})
                       </h4>
                       <div className="space-y-3">
                         {selectedTicket.responses.map((response, index) => (
-                          <div key={index} className="bg-teal-50 dark:bg-teal-900/20 rounded-lg p-4">
+                          <div key={index} className="bg-teal-50 rounded-lg p-4">
                             <div className="flex items-center justify-between mb-2">
-                              <span className="font-semibold text-teal-700 dark:text-teal-400">
+                              <span className="font-semibold text-teal-700">
                                 {response.adminName}
                               </span>
                               <span className="text-xs text-gray-500">
                                 {formatDate(response.createdAt)}
                               </span>
                             </div>
-                            <p className="text-gray-700 dark:text-gray-300">
+                            <p className="text-gray-700">
                               {response.message}
                             </p>
                           </div>
@@ -529,7 +529,7 @@ export default function AdminReportsPage() {
 
                   {/* Admin Actions */}
                   <div className="border-t pt-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
+                    <h4 className="font-semibold text-gray-900 mb-3">
                       Admin műveletek
                     </h4>
                     
@@ -574,10 +574,10 @@ export default function AdminReportsPage() {
               <Card className="h-[600px] flex items-center justify-center">
                 <div className="text-center">
                   <MessageSquare className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     Válassz egy jegyet
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
+                  <p className="text-gray-600">
                     Kattints egy jegyre a bal oldali listából a részletek megtekintéséhez
                   </p>
                 </div>

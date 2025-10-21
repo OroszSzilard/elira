@@ -95,7 +95,7 @@ export function UniversityAdminSidebar() {
   };
 
   return (
-    <div className="flex h-full w-64 flex-col bg-gray-900 dark:bg-gray-950">
+    <div className="flex h-full w-64 flex-col bg-gray-900">
       {/* Header */}
       <div className="flex h-16 items-center justify-center border-b border-gray-800 px-6">
         <Building className="h-8 w-8 text-blue-500 mr-2" />

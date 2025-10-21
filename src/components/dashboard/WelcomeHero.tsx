@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { motion } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useTrendingCourses } from '@/hooks/useCoursesCatalog'
 import { usePlatformAnalytics } from '@/hooks/usePlatformAnalytics'
-import { 
-  BookOpen, 
-  TrendingUp, 
-  Target, 
+import {
+  BookOpen,
+  TrendingUp,
+  Target,
   Clock,
   Users,
   Star,
@@ -20,6 +21,7 @@ import {
   Trophy,
   Zap
 } from 'lucide-react'
+import { brandGradient, glassMorphism, buttonStyles, cardStyles, animations } from '@/lib/design-tokens'
 
 /**
  * Welcome Hero Section - Dynamic First Experience
@@ -107,7 +109,7 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
       title: 'Kurzusok böngészése',
       description: 'Fedezze fel 100+ szakmai kurzust',
       href: '/dashboard/browse',
-      color: 'bg-blue-500 hover:bg-blue-600',
+      color: 'bg-gray-900 hover:bg-black',
       badge: 'Népszerű'
     },
     {
@@ -115,25 +117,38 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
       title: 'Személyre szabott javaslatok',
       description: 'AI-alapú kurzusajánlatok',
       href: '/dashboard/browse?tab=recommended',
-      color: 'bg-teal-500 hover:bg-teal-600',
+      color: 'bg-gray-800 hover:bg-gray-900',
       badge: 'Új'
-    },
-    {
-      icon: <Trophy className="w-5 h-5" />,
-      title: 'Tanulási útvonalak',
-      description: 'Strukturált fejlődési tervek',
-      href: '/dashboard/career',
-      color: 'bg-purple-500 hover:bg-purple-600',
-      badge: 'Trending'
     }
   ]
 
   return (
     <div className="space-y-8">
       {/* Dynamic Welcome Header */}
-      <div className="bg-gradient-to-r from-teal-500 to-cyan-600 rounded-xl p-8 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24" />
+      <motion.div
+        className="rounded-2xl p-8 lg:p-12 text-white relative overflow-hidden"
+        style={{ background: brandGradient }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Animated background orbs */}
+        <motion.div
+          className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.1, 0.15, 0.1]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.05, 0.1, 0.05]
+          }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
         
         <div className="relative z-10">
           <div className="flex items-start justify-between">
@@ -152,7 +167,7 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
                 }
               </h1>
               
-              <p className="text-teal-100 text-lg mb-6 max-w-2xl">
+              <p className="text-white/90 text-lg mb-6 max-w-2xl">
                 {hasEnrolledCourses
                   ? 'Térjen vissza aktív kurzusaihoz, vagy fedezzen fel új területeket.'
                   : 'Több mint 100 szakmai kurzus vár Önre. Válassza ki a megfelelő tanulási utat és kezdje meg fejlődését még ma.'
@@ -160,45 +175,56 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
               </p>
 
               {/* Dynamic Learning Tip */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-6 border border-white/20">
+              <motion.div
+                className="rounded-lg p-4 mb-6"
+                style={{
+                  ...glassMorphism.badge,
+                  border: '1px solid rgba(255, 255, 255, 0.25)'
+                }}
+                key={currentTip}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.5 }}
+              >
                 <div className="flex items-center space-x-2">
                   <Zap className="w-4 h-4 text-yellow-300" />
-                  <span className="text-sm font-medium transition-all duration-500">
+                  <span className="text-sm font-medium">
                     {learningTips[currentTip]}
                   </span>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Primary CTAs */}
               <div className="flex flex-col sm:flex-row gap-4">
                 {hasEnrolledCourses ? (
                   <>
                     <Link href="/dashboard/my-learning">
-                      <Button size="lg" className="bg-white text-teal-600 hover:bg-gray-100 font-semibold">
-                        <Play className="w-5 h-5 mr-2" />
-                        Tanulás folytatása
-                      </Button>
+                      <button className={`${buttonStyles.primaryDark} !text-gray-900`}>
+                        <Play className="w-5 h-5" />
+                        <span>Tanulás folytatása</span>
+                      </button>
                     </Link>
                     <Link href="/dashboard/browse">
-                      <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                        <BookOpen className="w-5 h-5 mr-2" />
-                        Új kurzusok felfedezése
-                      </Button>
+                      <button className={buttonStyles.secondaryDark}>
+                        <BookOpen className="w-5 h-5" />
+                        <span>Új kurzusok felfedezése</span>
+                      </button>
                     </Link>
                   </>
                 ) : (
                   <>
                     <Link href="/dashboard/browse">
-                      <Button size="lg" className="bg-white text-teal-600 hover:bg-gray-100 font-semibold">
-                        <BookOpen className="w-5 h-5 mr-2" />
-                        Kurzusok böngészése
-                      </Button>
+                      <button className={`${buttonStyles.primaryDark} !text-gray-900`}>
+                        <BookOpen className="w-5 h-5" />
+                        <span>Kurzusok böngészése</span>
+                      </button>
                     </Link>
-                    <Link href="/dashboard/career">
-                      <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                        <Target className="w-5 h-5 mr-2" />
-                        Karrierterv készítése
-                      </Button>
+                    <Link href="/dashboard/browse?tab=recommended">
+                      <button className={buttonStyles.secondaryDark}>
+                        <Target className="w-5 h-5" />
+                        <span>Személyre szabott javaslatok</span>
+                      </button>
                     </Link>
                   </>
                 )}
@@ -212,58 +238,62 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
                   <div className="text-2xl font-bold">
                     {platformData?.data?.totalCourses ? `${platformData.data.totalCourses}+` : '100+'}
                   </div>
-                  <div className="text-teal-200 text-sm">Szakmai kurzus</div>
+                  <div className="text-white/80 text-sm">Szakmai kurzus</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold">
-                    {platformData?.data?.totalUsers ? 
-                      `${Math.floor(platformData.data.totalUsers / 1000)}K+` : 
+                    {platformData?.data?.totalUsers ?
+                      `${Math.floor(platformData.data.totalUsers / 1000)}K+` :
                       '25K+'
                     }
                   </div>
-                  <div className="text-teal-200 text-sm">Aktív tanuló</div>
+                  <div className="text-white/80 text-sm">Aktív tanuló</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold">
-                    {platformData?.data?.averageRating ? 
-                      `${platformData.data.averageRating}★` : 
+                    {platformData?.data?.averageRating ?
+                      `${platformData.data.averageRating}★` :
                       '4.8★'
                     }
                   </div>
-                  <div className="text-teal-200 text-sm">Átlag értékelés</div>
+                  <div className="text-white/80 text-sm">Átlag értékelés</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {quickActions.map((action, index) => (
           <Link key={index} href={action.href}>
-            <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer group border-0 bg-gradient-to-br from-gray-50 to-white">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-lg ${action.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform`}>
-                    {action.icon}
-                  </div>
-                  <Badge variant="secondary" className="text-xs">
-                    {action.badge}
-                  </Badge>
+            <motion.div
+              className={`${cardStyles.flat} p-6 cursor-pointer group`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 + index * 0.1 }}
+              whileHover={{ y: -4 }}
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className={`w-12 h-12 rounded-lg ${action.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform`}>
+                  {action.icon}
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-teal-600 transition-colors">
-                  {action.title}
-                </h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  {action.description}
-                </p>
-                <div className="flex items-center text-teal-600 text-sm font-medium">
-                  Kezdés
-                  <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </CardContent>
-            </Card>
+                <Badge variant="secondary" className="text-xs">
+                  {action.badge}
+                </Badge>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-[#466C95] transition-colors">
+                {action.title}
+              </h3>
+              <p className="text-gray-600 text-sm mb-4">
+                {action.description}
+              </p>
+              <div className="flex items-center text-gray-900 text-sm font-medium group-hover:text-[#466C95] transition-colors">
+                Kezdés
+                <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </motion.div>
           </Link>
         ))}
       </div>
@@ -275,7 +305,7 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
             <h2 className="text-2xl font-bold text-gray-900">Kiemelt Kurzusok</h2>
             <p className="text-gray-600 mt-1">A legkeresettebb tanulási lehetőségek</p>
           </div>
-          <Link href="/dashboard/browse" className="text-teal-600 hover:text-teal-700 font-medium flex items-center">
+          <Link href="/dashboard/browse" className="text-gray-900 hover:text-gray-700 font-medium flex items-center">
             Összes megtekintése
             <ArrowRight className="w-4 h-4 ml-1" />
           </Link>
@@ -298,7 +328,7 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featuredCourses.map((course) => {
+            {featuredCourses.map((course, index) => {
               // Handle both API data structure and fallback data structure
               const courseData = {
                 id: course.id,
@@ -306,8 +336,8 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
                 category: course.category?.name || course.category || 'Általános',
                 rating: course.averageRating || course.rating || 4.8,
                 students: course.enrollmentCount || course.students || 0,
-                instructor: course.instructor ? 
-                  `${course.instructor.firstName} ${course.instructor.lastName}` : 
+                instructor: course.instructor ?
+                  `${course.instructor.firstName} ${course.instructor.lastName}` :
                   course.instructor || 'Oktató',
                 level: course.difficulty || course.level || 'Kezdő',
                 isPlus: course.isPlus || false,
@@ -315,8 +345,15 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
               }
 
               return (
-                <Card key={courseData.id} className="hover:shadow-lg transition-all duration-200 cursor-pointer group overflow-hidden">
-                  <div className="h-48 bg-gradient-to-br from-teal-500 to-cyan-600 relative">
+                <motion.div
+                  key={courseData.id}
+                  className={`${cardStyles.flat} cursor-pointer group overflow-hidden`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ y: -4 }}
+                >
+                  <div className="h-48 relative" style={{ background: brandGradient }}>
                     <div className="absolute inset-0 bg-black/20" />
                     <div className="absolute top-4 left-4">
                       <Badge className="bg-white/20 text-white border-white/30">
@@ -338,8 +375,8 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
                       </div>
                     </div>
                   </div>
-                  
-                  <CardContent className="p-6">
+
+                  <div className="p-6">
                     <div className="space-y-4">
                       <div>
                         <Badge variant="outline" className="text-xs mb-2">
@@ -348,7 +385,7 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
                            courseData.level === 'ADVANCED' ? 'Haladó' :
                            courseData.level === 'EXPERT' ? 'Szakértő' : courseData.level}
                         </Badge>
-                        <h3 className="font-semibold text-gray-900 group-hover:text-teal-600 transition-colors">
+                        <h3 className="font-semibold text-gray-900 group-hover:text-gray-700 transition-colors">
                           {courseData.title}
                         </h3>
                         <p className="text-sm text-gray-600 mt-1">
@@ -376,14 +413,14 @@ export function WelcomeHero({ userName, hasEnrolledCourses = false, isNewUser = 
                       </div>
 
                       <Link href={`/courses/${courseData.slug || courseData.id}`}>
-                        <Button className="w-full bg-teal-600 hover:bg-teal-700">
-                          <Play className="w-4 h-4 mr-2" />
-                          Kurzus megtekintése
-                        </Button>
+                        <button className={`w-full ${buttonStyles.primaryLight} !rounded-lg !py-2.5 text-sm`}>
+                          <Play className="w-4 h-4" />
+                          <span>Kurzus megtekintése</span>
+                        </button>
                       </Link>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </motion.div>
               )
             })}
           </div>

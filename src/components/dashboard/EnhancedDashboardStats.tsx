@@ -1,17 +1,19 @@
 'use client'
 
+import { motion } from 'motion/react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
-  BookOpen, 
-  Clock, 
-  Award, 
+import {
+  BookOpen,
+  Clock,
+  Award,
   TrendingUp,
   Zap,
   Trophy
 } from 'lucide-react'
 import { UserProgressData } from '@/types'
+import { brandGradient, cardStyles, buttonStyles, animations } from '@/lib/design-tokens'
 
 /**
  * Enhanced Dashboard Stats - Rich Content for All Users
@@ -34,32 +36,32 @@ export function EnhancedDashboardStats({ data, isLoading }: EnhancedDashboardSta
       title: 'Beiratkozott kurzusok',
       value: data?.totalCoursesEnrolled || 0,
       icon: BookOpen,
-      color: 'text-teal-600',
-      bgColor: 'bg-teal-50',
+      color: 'text-gray-900',
+      bgColor: 'bg-gray-100',
       description: hasUserData ? 'Aktív tanulás' : 'Kezdje el első kurzusát'
     },
     {
       title: 'Tanulási idő',
       value: hasUserData ? `${data?.totalHoursLearned || 0} óra` : '0 óra',
       icon: Clock,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50',
+      color: 'text-gray-900',
+      bgColor: 'bg-gray-100',
       description: hasUserData ? 'Összesen' : 'Hamarosan növekedni fog'
     },
     {
       title: 'Befejezett kurzusok',
       value: data?.completedCourses || 0,
       icon: Award,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
+      color: 'text-gray-900',
+      bgColor: 'bg-gray-100',
       description: hasUserData ? 'Eredmények' : 'Első sikere vár'
     },
     {
       title: 'Aktuális szint',
       value: hasUserData ? (data?.currentStreak ? `${data.currentStreak} nap` : 'Kezdő') : 'Kezdő',
       icon: TrendingUp,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
+      color: 'text-gray-900',
+      bgColor: 'bg-gray-100',
       description: hasUserData ? 'Tanulási sorozat' : 'Építse fel rutinját'
     }
   ]
@@ -67,19 +69,19 @@ export function EnhancedDashboardStats({ data, isLoading }: EnhancedDashboardSta
 
   // Weekly learning goals (motivational for new users)
   const weeklyGoals = [
-    { 
-      title: 'Heti tanulási cél', 
-      current: hasUserData ? (data?.weeklyHours || 0) : 0, 
-      target: 5, 
+    {
+      title: 'Heti tanulási cél',
+      current: hasUserData ? (data?.weeklyHours || 0) : 0,
+      target: 5,
       unit: 'óra',
-      color: 'bg-teal-500'
+      color: 'bg-gray-900'
     },
-    { 
-      title: 'Leckék a héten', 
-      current: hasUserData ? (data?.weeklyLessons || 0) : 0, 
-      target: 10, 
+    {
+      title: 'Leckék a héten',
+      current: hasUserData ? (data?.weeklyLessons || 0) : 0,
+      target: 10,
       unit: 'lecke',
-      color: 'bg-blue-500'
+      color: 'bg-gray-800'
     }
   ]
 
@@ -108,7 +110,7 @@ export function EnhancedDashboardStats({ data, isLoading }: EnhancedDashboardSta
             {hasUserData ? 'Tanulási Áttekintés' : 'Kezdje Meg Tanulási Útját'}
           </h2>
           {hasUserData && (
-            <Badge className="bg-teal-100 text-teal-700">
+            <Badge className="bg-gray-100 text-gray-900">
               <Trophy className="w-3 h-3 mr-1" />
               Aktív tanuló
             </Badge>
@@ -119,10 +121,16 @@ export function EnhancedDashboardStats({ data, isLoading }: EnhancedDashboardSta
           {userStats.map((stat, index) => {
             const Icon = stat.icon
             return (
-              <Card key={index} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
+              <motion.div
+                key={index}
+                className={`${cardStyles.flat} p-6`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -4 }}
+              >
                   <div className="flex items-center justify-between">
-                    <div className={`w-12 h-12 rounded-lg ${stat.bgColor} flex items-center justify-center`}>
+                    <div className={`w-12 h-12 rounded-lg ${stat.bgColor} flex items-center justify-center transition-transform group-hover:scale-110`}>
                       <Icon className={`w-6 h-6 ${stat.color}`} />
                     </div>
                     {!hasUserData && index === 0 && (
@@ -143,8 +151,7 @@ export function EnhancedDashboardStats({ data, isLoading }: EnhancedDashboardSta
                       {stat.description}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+              </motion.div>
             )
           })}
         </div>
@@ -156,26 +163,31 @@ export function EnhancedDashboardStats({ data, isLoading }: EnhancedDashboardSta
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Heti Célok</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {weeklyGoals.map((goal, index) => (
-              <Card key={index}>
-                <CardContent className="p-6">
+              <motion.div
+                key={index}
+                className={`${cardStyles.flat} p-6`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                whileHover={{ y: -4 }}
+              >
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-medium text-gray-900">{goal.title}</h4>
                     <span className="text-sm text-gray-600">
                       {goal.current}/{goal.target} {goal.unit}
                     </span>
                   </div>
-                  <Progress 
-                    value={(goal.current / goal.target) * 100} 
+                  <Progress
+                    value={(goal.current / goal.target) * 100}
                     className="h-2"
                   />
                   <div className="mt-2 text-xs text-gray-500">
-                    {goal.target - goal.current > 0 
+                    {goal.target - goal.current > 0
                       ? `Még ${goal.target - goal.current} ${goal.unit} a cél eléréséhez`
                       : '🎉 Heti cél teljesítve!'
                     }
                   </div>
-                </CardContent>
-              </Card>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -184,25 +196,40 @@ export function EnhancedDashboardStats({ data, isLoading }: EnhancedDashboardSta
 
       {/* Motivational Call-to-Action for New Users */}
       {!hasUserData && (
-        <Card className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white">
-          <CardContent className="p-8 text-center">
-            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <BookOpen className="w-8 h-8" />
+        <motion.div
+          className="text-white p-8 lg:p-12 text-center rounded-2xl relative overflow-hidden"
+          style={{ background: brandGradient }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+            {/* Ambient glow */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+              background: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), transparent 70%)'
+            }} />
+
+            <div className="relative z-10">
+              <motion.div
+                className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4"
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <BookOpen className="w-8 h-8" />
+              </motion.div>
+              <h3 className="text-xl lg:text-2xl font-bold mb-2">Készen áll az első lépésre?</h3>
+              <p className="text-white/90 mb-6 max-w-2xl mx-auto">
+                Csatlakozzon 25,000+ tanulóhoz és kezdje meg szakmai fejlődését még ma!
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className={`${buttonStyles.primaryDark} !text-gray-900`}>
+                  <span>Első kurzus kiválasztása</span>
+                </button>
+                <button className={buttonStyles.secondaryDark}>
+                  <span>Tanulási teszt kitöltése</span>
+                </button>
+              </div>
             </div>
-            <h3 className="text-xl font-bold mb-2">Készen áll az első lépésre?</h3>
-            <p className="text-teal-100 mb-6">
-              Csatlakozzon 25,000+ tanulóhoz és kezdje meg szakmai fejlődését még ma!
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-teal-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                Első kurzus kiválasztása
-              </button>
-              <button className="border border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors">
-                Tanulási teszt kitöltése
-              </button>
-            </div>
-          </CardContent>
-        </Card>
+        </motion.div>
       )}
     </div>
   )

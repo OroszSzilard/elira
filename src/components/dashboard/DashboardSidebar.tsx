@@ -3,36 +3,31 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { useAuthStore } from '@/stores/authStore'
-import { 
+import { useAuth } from '@/contexts/AuthContext'
+import { motion } from 'motion/react'
+import {
   Home,
-  BookOpen, 
+  BookOpen,
   GraduationCap,
-  Search,
   TrendingUp,
-  Award,
   Settings,
-  Bell,
-  Globe,
   ChevronRight,
   User,
+  Users,
   LogOut,
   Building2,
-  UserCheck,
   FolderOpen
 } from 'lucide-react'
-import { auth } from '@/lib/firebase'
-import { signOut } from 'firebase/auth'
+import { brandGradient } from '@/lib/design-tokens'
 
 /**
- * ELIRA Dashboard Sidebar - Coursera-Style Navigation
+ * Elira Course Platform Dashboard Sidebar
  * 
  * Features:
  * - Learning-focused navigation hierarchy
  * - User context and role-based menus
- * - Hungarian language labels
  * - Clean, professional design
  */
 
@@ -43,16 +38,8 @@ const navigationSections = {
       title: 'Tanulás',
       items: [
         { title: 'Kezdőlap', href: '/dashboard', icon: Home },
-        { title: 'Tanulás folyamatban', href: '/dashboard/my-learning', icon: BookOpen },
-        { title: 'Kurzusok böngészése', href: '/dashboard/browse', icon: Search },
-        { title: 'Képesítések', href: '/dashboard/certificates', icon: Award },
-      ]
-    },
-    {
-      title: 'Karrier',
-      items: [
-        { title: 'Új karrier keresése', href: '/dashboard/career', icon: TrendingUp },
-        { title: 'Online diplomák', href: '/dashboard/degrees', icon: GraduationCap },
+        { title: 'Masterclass', href: '/dashboard/learning', icon: BookOpen },
+        { title: '1:1 Meetingek', href: '/dashboard/meetings', icon: Users },
       ]
     }
   ],
@@ -60,10 +47,19 @@ const navigationSections = {
     {
       title: 'Oktatás',
       items: [
-        { title: 'Kezdőlap', href: '/dashboard', icon: Home },
-        { title: 'Kurzusaim', href: '/dashboard/my-courses', icon: BookOpen },
-        { title: 'Hallgatóim', href: '/dashboard/students', icon: User },
-        { title: 'Analitika', href: '/dashboard/analytics', icon: TrendingUp },
+        { title: 'Oktató Dashboard', href: '/instructor/dashboard', icon: Home },
+        { title: 'Kurzusaim', href: '/instructor/courses', icon: BookOpen },
+        { title: 'Tanulóim', href: '/instructor/students', icon: User },
+        { title: 'Tartalom', href: '/instructor/content', icon: FolderOpen },
+        { title: 'Elemzések', href: '/instructor/analytics', icon: TrendingUp },
+      ]
+    },
+    {
+      title: 'Diák Nézet',
+      items: [
+        { title: 'Diák Dashboard', href: '/dashboard', icon: GraduationCap },
+        { title: 'Masterclass', href: '/dashboard/learning', icon: BookOpen },
+        { title: '1:1 Meetingek', href: '/dashboard/meetings', icon: Users },
       ]
     }
   ],
@@ -71,41 +67,30 @@ const navigationSections = {
     {
       title: 'Adminisztráció',
       items: [
-        { title: 'Admin Vezérlőpult', href: '/admin/dashboard', icon: Home },
-        { title: 'Analitika', href: '/admin/analytics', icon: TrendingUp },
-      ]
-    },
-    {
-      title: 'Oktatás Menedzsment',
-      items: [
-        { title: 'Kurzusok Kezelése', href: '/admin/courses', icon: BookOpen },
-        { title: 'Beiratkozások', href: '/admin/enrollments', icon: GraduationCap },
+        { title: 'Admin Dashboard', href: '/admin/dashboard', icon: Home },
         { title: 'Felhasználók', href: '/admin/users', icon: User },
-        { title: 'Szerepkörök', href: '/admin/roles', icon: UserCheck },
+        { title: 'Kurzusok', href: '/admin/courses', icon: BookOpen },
+        { title: 'Elemzések', href: '/admin/analytics', icon: TrendingUp },
+        { title: 'Beállítások', href: '/admin/settings', icon: Settings },
       ]
     },
     {
-      title: 'Intézmények',
+      title: 'Oktató Nézet',
       items: [
-        { title: 'Egyetemek', href: '/admin/universities', icon: Building2 },
-        { title: 'Kategóriák', href: '/admin/categories', icon: FolderOpen },
-        { title: 'Értesítések', href: '/admin/notifications', icon: Bell },
-        { title: 'Beállítások', href: '/admin/settings', icon: Settings },
+        { title: 'Oktató Dashboard', href: '/instructor/dashboard', icon: Building2 },
+      ]
+    },
+    {
+      title: 'Diák Nézet',
+      items: [
+        { title: 'Diák Dashboard', href: '/dashboard', icon: GraduationCap },
+        { title: 'Masterclass', href: '/dashboard/learning', icon: BookOpen },
+        { title: '1:1 Meetingek', href: '/dashboard/meetings', icon: Users },
       ]
     }
   ]
 }
 
-// Logout handler
-async function handleLogout() {
-  try {
-    await signOut(auth)
-  } catch (_) {}
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('auth-storage')
-    window.location.href = '/login'
-  }
-}
 
 interface NavigationItemProps {
   item: {
@@ -114,50 +99,71 @@ interface NavigationItemProps {
     icon: React.ComponentType<{ className?: string }>
   }
   isActive: boolean
+  onNavigate?: () => void
 }
 
-function NavigationItem({ item, isActive }: NavigationItemProps) {
+interface DashboardSidebarProps {
+  onNavigate?: () => void
+}
+
+function NavigationItem({ item, isActive, onNavigate }: NavigationItemProps) {
   const Icon = item.icon
 
   return (
-    <Link
-      href={item.href}
-      className={cn(
-        'flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors group',
-        isActive 
-          ? 'bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300' 
-          : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700/50'
-      )}
+    <motion.div
+      whileHover={{ x: 4 }}
+      transition={{ duration: 0.2 }}
     >
-      <div className="flex items-center">
-        <Icon className={cn(
-          'w-4 h-4 mr-3',
-          isActive ? 'text-teal-600 dark:text-teal-400' : 'text-gray-500 dark:text-gray-400'
+      <Link
+        href={item.href}
+        onClick={onNavigate}
+        className={cn(
+          'flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-all group',
+          isActive
+            ? 'bg-[#466C95]/10 text-[#466C95] shadow-sm'
+            : 'text-gray-700 hover:bg-gray-50'
+        )}
+      >
+        <div className="flex items-center">
+          <Icon className={cn(
+            'w-4 h-4 mr-3',
+            isActive ? 'text-[#466C95]' : 'text-gray-500'
+          )} />
+          {item.title}
+        </div>
+        <ChevronRight className={cn(
+          'w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity',
+          isActive ? 'opacity-100 text-[#466C95]' : 'text-gray-400'
         )} />
-        {item.title}
-      </div>
-      <ChevronRight className={cn(
-        'w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity',
-        isActive ? 'opacity-100 text-teal-600 dark:text-teal-400' : 'text-gray-400'
-      )} />
-    </Link>
+      </Link>
+    </motion.div>
   )
 }
 
-export function DashboardSidebar() {
+export function DashboardSidebar({ onNavigate }: DashboardSidebarProps = {}) {
   const pathname = usePathname()
-  const { user, authReady } = useAuthStore()
+  const { user, loading, logout } = useAuth()
+  const router = useRouter()
+  
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.push('/auth')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
 
   // Loading state
-  if (!authReady) {
+  if (loading) {
     return (
       <div className="h-full flex flex-col">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <div className="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+        <div className="p-6 border-b border-gray-200">
+          <div className="h-6 w-24 bg-gray-200 rounded animate-pulse" />
         </div>
         <div className="flex-1 p-4 space-y-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-10 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div key={i} className="h-10 w-full bg-gray-200 rounded animate-pulse" />
           ))}
         </div>
       </div>
@@ -168,21 +174,25 @@ export function DashboardSidebar() {
   const sections = navigationSections[userRole] || navigationSections.STUDENT
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-gray-800">
+    <div className="h-full flex flex-col bg-white">
       {/* Header with Elira branding */}
-      <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+      <div className="px-6 py-5 border-b border-gray-200">
         <Link href="/dashboard" className="flex items-center space-x-3 group">
-          <div className="relative w-8 h-8 flex-shrink-0 transition-transform group-hover:scale-105">
-            <Image 
-              src="/images/navbar-logo.png" 
-              alt="Elira logo" 
+          <motion.div
+            className="relative w-10 h-10 flex-shrink-0"
+            whileHover={{ scale: 1.05, rotate: 5 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Image
+              src="/images/navbar-logo.png"
+              alt="Elira logo"
               fill
-              className="object-contain rounded-full"
-              sizes="32px"
+              className="object-contain"
+              sizes="40px"
               priority
             />
-          </div>
-          <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+          </motion.div>
+          <span className="text-xl font-bold text-gray-900 tracking-tight group-hover:text-[#466C95] transition-colors">
             Elira
           </span>
         </Link>
@@ -193,7 +203,7 @@ export function DashboardSidebar() {
         <nav className="space-y-6 px-4">
           {sections.map((section, sectionIndex) => (
             <div key={sectionIndex}>
-              <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-2">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
                 {section.title}
               </h3>
               <div className="space-y-1">
@@ -202,6 +212,7 @@ export function DashboardSidebar() {
                     key={item.href}
                     item={item}
                     isActive={pathname === item.href}
+                    onNavigate={onNavigate}
                   />
                 ))}
               </div>
@@ -211,16 +222,21 @@ export function DashboardSidebar() {
       </div>
 
       {/* User Profile Section */}
-      <div className="border-t border-gray-200 dark:border-gray-700 p-4">
+      <div className="border-t border-gray-200 p-4">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
-            <User className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-          </div>
+          <motion.div
+            className="w-8 h-8 rounded-full flex items-center justify-center"
+            style={{ background: brandGradient }}
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.2 }}
+          >
+            <User className="w-4 h-4 text-white" />
+          </motion.div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+            <p className="text-sm font-medium text-gray-900 truncate">
               {user?.firstName} {user?.lastName}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+            <p className="text-xs text-gray-500 truncate">
               {user?.email}
             </p>
           </div>
@@ -228,34 +244,26 @@ export function DashboardSidebar() {
 
         {/* Quick Actions */}
         <div className="space-y-1">
-          <Link
-            href="/dashboard/notifications"
-            className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
-          >
-            <Bell className="w-4 h-4 mr-3" />
-            Értesítések
-          </Link>
-          
-          <Link
-            href="/dashboard/settings"
-            className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
-          >
-            <Settings className="w-4 h-4 mr-3" />
-            Beállítások
-          </Link>
+          <motion.div whileHover={{ x: 2 }} transition={{ duration: 0.2 }}>
+            <Link
+              href="/dashboard/profile"
+              onClick={onNavigate}
+              className="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+            >
+              <Settings className="w-4 h-4 mr-3" />
+              Profil beállítások
+            </Link>
+          </motion.div>
 
-          <div className="flex items-center px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
-            <Globe className="w-4 h-4 mr-3" />
-            Magyar
-          </div>
-
-          <button
-            onClick={handleLogout}
-            className="flex items-center w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-          >
-            <LogOut className="w-4 h-4 mr-3" />
-            Kijelentkezés
-          </button>
+          <motion.div whileHover={{ x: 2 }} transition={{ duration: 0.2 }}>
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            >
+              <LogOut className="w-4 h-4 mr-3" />
+              Kijelentkezés
+            </button>
+          </motion.div>
         </div>
       </div>
     </div>

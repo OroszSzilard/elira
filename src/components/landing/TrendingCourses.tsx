@@ -98,17 +98,17 @@ export function TrendingCourses() {
 
   if (loading) {
     return (
-      <section className="py-16 bg-white dark:bg-gray-900">
-        <div className="container">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-3 py-1 rounded-full text-sm font-medium mb-4">
+      <section className="py-24 sm:py-32 bg-white">
+        <div className="container mx-auto px-6 sm:px-8">
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium mb-4">
               <TrendingUp className="w-4 h-4" />
               TRENDING MOST
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Népszerű Kurzusok
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Betöltés...
             </p>
           </div>
@@ -118,17 +118,17 @@ export function TrendingCourses() {
   }
 
   return (
-    <section className="py-16 bg-white dark:bg-gray-900">
-      <div className="container">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-3 py-1 rounded-full text-sm font-medium mb-4">
-            <TrendingUp className="w-4 h-4" />
+    <section className="py-32 sm:py-40 bg-white">
+      <div className="container mx-auto px-6 sm:px-8">
+        <div className="text-center mb-24">
+          <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-full text-base font-medium mb-6">
+            <TrendingUp className="w-5 h-5" />
             TRENDING MOST
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             Népszerű Kurzusok
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             A legtöbbet választott kurzusaink, amelyekkel garantáltan fejlődhetsz
           </p>
         </div>
@@ -136,18 +136,18 @@ export function TrendingCourses() {
         {courses.length === 0 ? (
           <div className="text-center py-12">
             <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600">
               Még nincsenek kurzusok. Az adminok hamarosan létrehoznak párat!
             </p>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
               {courses.map((course, index) => (
                 <Card key={course.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
                   <div className="relative">
                     {course.imageUrl ? (
-                      <div className="aspect-video bg-gray-100 dark:bg-gray-800">
+                      <div className="aspect-video bg-gray-100">
                         <img 
                           src={course.imageUrl} 
                           alt={course.title}
@@ -177,15 +177,15 @@ export function TrendingCourses() {
                       </Badge>
                     </div>
                     
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                       {course.title}
                     </h3>
                     
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    <p className="text-sm text-gray-600 mb-4">
                       {course.instructorName || 'ELIRA Oktató'}
                     </p>
                     
-                    <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                       <span className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />
                         {course.duration || 'N/A'}
@@ -203,9 +203,9 @@ export function TrendingCourses() {
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <div className="text-lg font-bold text-gray-900 dark:text-white">
+                      <div className="text-lg font-bold text-gray-900">
                         {course.price === 0 ? (
-                          <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                          <Badge className="bg-green-100 text-green-700">
                             Ingyenes
                           </Badge>
                         ) : (

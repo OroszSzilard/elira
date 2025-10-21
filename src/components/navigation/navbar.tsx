@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic'
 const importFelfedezesMenu = () => import('./FelfedezesMenu')
 const FelfedezesMenu = dynamic(importFelfedezesMenu, {
   ssr: false,
-  loading: () => <div className="p-6 animate-pulse bg-white dark:bg-gray-800" />,
+  loading: () => <div className="p-6 animate-pulse bg-white" />,
 }) as any
 
 export function Navbar() {
@@ -92,49 +92,49 @@ export function Navbar() {
 
   return (
     <>
-      <header className="fixed top-2 left-1/2 -translate-x-1/2 w-[94%] md:w-[90%] lg:w-[80%] bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-gray-200 dark:border-gray-700 drop-shadow-lg rounded-full z-50">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-2">
+      <header className="fixed top-4 left-1/2 -translate-x-1/2 w-[96%] md:w-[92%] lg:w-[85%] bg-white/80 backdrop-blur-md border border-gray-200 drop-shadow-lg rounded-full z-50">
+        <div className="max-w-7xl mx-auto px-8 sm:px-10 lg:px-16 py-5">
           <div className="flex items-center justify-between">
             {/* Logo & Discovery */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center">
-                <Image src="/images/navbar-logo.png" alt="Elira logo" width={26} height={26} className="h-[26px] w-auto" />
+                <Image src="/images/navbar-logo.png" alt="Elira logo" width={40} height={40} style={{ width: 'auto', height: '40px' }} />
               </Link>
             </div>
             {/* Navigation Links */}
-            <nav className="hidden md:flex space-x-8 items-center">
+            <nav className="hidden md:flex space-x-12 lg:space-x-16 items-center">
               <div className="relative">
                 <button
                   onClick={handleFelfedesClick}
-                  className="flex items-center space-x-2 text-sm font-medium text-gray-800 hover:text-primary transition-colors duration-200"
+                  className="flex items-center space-x-3 text-lg font-medium text-gray-800 hover:text-primary transition-colors duration-200"
                   aria-haspopup="true"
                   aria-expanded={isFelfedesOpen}
                 >
-                  <Search className="w-4 h-4" />
+                  <Search className="w-6 h-6" />
                   <span>Felfedezés</span>
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className="w-6 h-6" />
                 </button>
               </div>
-              <Link href="/courses" className="flex items-center space-x-1 text-sm font-medium text-gray-800 hover:text-primary transition-colors duration-200">
-                <BookOpen className="w-4 h-4" />
+              <Link href="/courses" className="flex items-center space-x-3 text-lg font-medium text-gray-800 hover:text-primary transition-colors duration-200">
+                <BookOpen className="w-6 h-6" />
                 <span>Kurzusok</span>
               </Link>
-              <Link href="/career-paths" className="flex items-center space-x-1 text-sm font-medium text-gray-800 hover:text-primary transition-colors duration-200">
-                <TrendingUp className="w-4 h-4" />
+              <Link href="/career-paths" className="flex items-center space-x-3 text-lg font-medium text-gray-800 hover:text-primary transition-colors duration-200">
+                <TrendingUp className="w-6 h-6" />
                 <span>Karrierutak</span>
               </Link>
-              <Link href="/trending" className="flex items-center space-x-1 text-sm font-medium text-gray-800 hover:text-primary transition-colors duration-200">
-                <BarChart2 className="w-4 h-4" />
+              <Link href="/trending" className="flex items-center space-x-3 text-lg font-medium text-gray-800 hover:text-primary transition-colors duration-200">
+                <BarChart2 className="w-6 h-6" />
                 <span>Trending</span>
-                <span className="bg-orange-500 text-white text-xs font-semibold px-1.5 py-0.5 rounded-full">Új</span>
+                <span className="bg-orange-500 text-white text-sm font-semibold px-3 py-1.5 rounded-full ml-2">Új</span>
               </Link>
             </nav>
             {/* Right Navigation */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-8">
               {isLoading ? null : isAuthenticated && user ? (
                 <div className="relative">
                   <button onClick={() => setProfileOpen(!profileOpen)} className="focus:outline-none group">
-                    <Avatar className="h-9 w-9 transition-shadow group-hover:ring-2 group-hover:ring-primary/60 group-hover:ring-offset-2">
+                    <Avatar className="h-12 w-12 transition-shadow group-hover:ring-2 group-hover:ring-primary/60 group-hover:ring-offset-2">
                       {user.profilePictureUrl ? (
                         <AvatarImage src={user.profilePictureUrl} alt={user.firstName} />
                       ) : (
@@ -171,12 +171,12 @@ export function Navbar() {
                 </div>
               ) : (
                 <>
-                  <Link href="/login" className="text-base font-medium text-gray-800 hover:text-primary transition-colors duration-200">
+                  <Link href="/login" className="text-lg font-semibold text-gray-800 hover:text-primary transition-colors duration-200 px-3">
                     Bejelentkezés
                   </Link>
                   <Link
                     href="/register"
-                    className="text-base font-medium bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-colors duration-200"
+                    className="text-lg font-semibold bg-primary text-white px-8 py-4 rounded-full hover:bg-primary/90 transition-all duration-200 shadow-md hover:shadow-lg"
                   >
                     Regisztráció
                   </Link>

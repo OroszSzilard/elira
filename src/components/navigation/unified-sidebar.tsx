@@ -121,27 +121,9 @@ const allNavItems: NavItem[] = [
     roles: ['STUDENT']
   },
   {
-    title: 'Ingyenes anyagok',
-    href: '/dashboard/free-resources',
-    icon: FileText,
-    roles: ['STUDENT']
-  },
-  {
-    title: 'Karrierutak',
-    href: '/dashboard/career',
-    icon: TrendingUp,
-    roles: ['STUDENT']
-  },
-  {
     title: 'Számlák',
     href: '/dashboard/invoices',
     icon: FileText,
-    roles: ['STUDENT']
-  },
-  {
-    title: 'Kedvencek',
-    href: '/dashboard/favorites',
-    icon: Heart,
     roles: ['STUDENT']
   },
   {
@@ -233,12 +215,6 @@ const allNavItems: NavItem[] = [
     href: '/instructor/analytics',
     icon: BarChart3,
     roles: ['INSTRUCTOR']
-  },
-  {
-    title: 'Tanúsítványok',
-    href: '/dashboard/certificates',
-    icon: Award,
-    roles: ['ADMIN', 'INSTRUCTOR', 'STUDENT']
   },
   {
     title: 'Értesítések',
@@ -347,12 +323,12 @@ export function UnifiedSidebar({ userRole }: UnifiedSidebarProps) {
   }
 
   return (
-    <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 min-h-screen">
-      <nav className="flex flex-col gap-1 p-4 pt-2">
+    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
+      <nav className="flex-1 flex flex-col gap-1 p-4 pt-2">
         {/* Admin section */}
         {adminItems.length > 0 && userRole === 'ADMIN' && (
           <>
-            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 mt-4">
+            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4">
               Adminisztráció
             </div>
             {adminItems.map((item) => {
@@ -367,13 +343,13 @@ export function UnifiedSidebar({ userRole }: UnifiedSidebarProps) {
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
                     isActive
-                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
+                      ? 'bg-red-50 text-red-600 shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   )}
                 >
                   <Icon className={cn(
                     "h-4 w-4",
-                    isActive ? "text-red-600 dark:text-red-400" : "text-gray-500 dark:text-gray-400"
+                    isActive ? "text-red-600" : "text-gray-500"
                   )} />
                   <span className="flex-1">{item.title}</span>
                   {isReportsPage && openTicketsCount > 0 && (
@@ -390,7 +366,7 @@ export function UnifiedSidebar({ userRole }: UnifiedSidebarProps) {
         {/* University Admin section */}
         {universityAdminItems.length > 0 && (userRole === 'UNIVERSITY_ADMIN' || userRole === 'university_admin') && (
           <>
-            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 mt-4">
+            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4">
               Egyetem Adminisztráció
             </div>
             {universityAdminItems.map((item) => {
@@ -404,13 +380,13 @@ export function UnifiedSidebar({ userRole }: UnifiedSidebarProps) {
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
                     isActive
-                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-sm'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
+                      ? 'bg-blue-50 text-blue-600 shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   )}
                 >
                   <Icon className={cn(
                     "h-4 w-4",
-                    isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"
+                    isActive ? "text-blue-600" : "text-gray-500"
                   )} />
                   {item.title}
                 </Link>
@@ -422,7 +398,7 @@ export function UnifiedSidebar({ userRole }: UnifiedSidebarProps) {
         {/* Instructor section */}
         {instructorItems.length > 0 && userRole === 'INSTRUCTOR' && (
           <>
-            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 mt-4">
+            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4">
               Oktatói funkciók
             </div>
             {instructorItems.map((item) => {
@@ -436,13 +412,13 @@ export function UnifiedSidebar({ userRole }: UnifiedSidebarProps) {
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
                     isActive
-                      ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 shadow-sm'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
+                      ? 'bg-purple-50 text-purple-600 shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   )}
                 >
                   <Icon className={cn(
                     "h-4 w-4",
-                    isActive ? "text-purple-600 dark:text-purple-400" : "text-gray-500 dark:text-gray-400"
+                    isActive ? "text-purple-600" : "text-gray-500"
                   )} />
                   {item.title}
                 </Link>
@@ -454,14 +430,14 @@ export function UnifiedSidebar({ userRole }: UnifiedSidebarProps) {
         {/* Common section */}
         {commonItems.length > 0 && (
           <>
-            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 mt-4">
+            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4">
               Általános
             </div>
             {commonItems.map((item) => {
               const Icon = item.icon
               const isActive = pathname === item.href
               const isHelpCenter = item.href === '/dashboard/help-center'
-              
+
               return (
                 <Link
                   key={item.href}
@@ -469,14 +445,14 @@ export function UnifiedSidebar({ userRole }: UnifiedSidebarProps) {
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
                     isActive
-                      ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 shadow-sm'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
+                      ? 'bg-[#466C95]/10 text-[#466C95] shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   )}
                 >
                   <div className="relative">
                     <Icon className={cn(
                       "h-4 w-4",
-                      isActive ? "text-teal-600 dark:text-teal-400" : "text-gray-500 dark:text-gray-400"
+                      isActive ? "text-[#466C95]" : "text-gray-500"
                     )} />
                     {isHelpCenter && hasUnreadResponses && userRole === 'STUDENT' && (
                       <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse" />

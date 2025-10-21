@@ -371,13 +371,41 @@ async function seedDatabase() {
 
 
     console.log('✅ Existing data cleared');
-    
-    // Create users in Firestore (Auth users already exist from seed-auth.js)
-    console.log('👥 Creating/updating users in Firestore...');
-    for (const user of testUsers) {
-      await db.collection('users').doc(user.id).set(user);
+
+    // Clear existing Auth users in emulator
+    console.log('🔐 Clearing Auth users...');
+    try {
+      const listUsersResult = await auth.listUsers();
+      for (const userRecord of listUsersResult.users) {
+        await auth.deleteUser(userRecord.uid);
+      }
+      console.log('✅ Auth users cleared');
+    } catch (error) {
+      console.log('⚠️  Could not clear auth users:', error.message);
     }
-    console.log(`✅ Created/updated ${testUsers.length} users in Firestore`);
+
+    // Create users in both Auth and Firestore
+    console.log('👥 Creating users in Auth and Firestore...');
+    for (const user of testUsers) {
+      try {
+        // Create Auth user
+        await auth.createUser({
+          uid: user.id,
+          email: user.email,
+          password: 'password123', // Default password for all test users
+          displayName: `${user.firstName} ${user.lastName}`,
+          emailVerified: true,
+        });
+
+        // Create Firestore user document
+        await db.collection('users').doc(user.id).set(user);
+
+        console.log(`✅ Created user: ${user.email} (password: password123)`);
+      } catch (error) {
+        console.error(`❌ Failed to create user ${user.email}:`, error.message);
+      }
+    }
+    console.log(`✅ Created ${testUsers.length} users in Auth and Firestore`);
 
     // Create categories
     console.log('📚 Creating categories...');

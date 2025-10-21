@@ -338,7 +338,7 @@ export default function UniversityAdminDashboard() {
           <CardContent className="space-y-4">
             {recentActivities.slice(0, 5).map((activity) => (
               <div key={activity.id} className="flex items-start gap-3">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                <div className="p-2 bg-blue-100 rounded-lg">
                   {getActivityIcon(activity)}
                 </div>
                 <div className="flex-1 space-y-1">

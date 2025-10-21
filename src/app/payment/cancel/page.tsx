@@ -14,16 +14,16 @@ export default function PaymentCancelPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-50">
       <div className="max-w-md w-full mx-auto p-8">
-        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl p-8 text-center">
-          <div className="w-20 h-20 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="bg-white rounded-lg shadow-xl p-8 text-center">
+          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <XCircle className="w-12 h-12 text-red-500" />
           </div>
 
           <h1 className="text-3xl font-bold mb-4">Fizetés megszakítva</h1>
           
-          <p className="text-gray-600 dark:text-gray-400 mb-8">
+          <p className="text-gray-600 mb-8">
             A fizetési folyamat megszakadt. Nem történt terhelés a kártyáján.
           </p>
 
@@ -48,7 +48,7 @@ export default function PaymentCancelPage() {
             </Button>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+          <div className="mt-8 pt-8 border-t border-gray-200">
             <p className="text-sm text-gray-500">
               Ha problémája van a fizetéssel, kérjük vegye fel velünk a kapcsolatot:
             </p>

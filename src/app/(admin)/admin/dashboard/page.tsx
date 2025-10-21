@@ -116,12 +116,12 @@ function StatCard({
 }) {
   return (
     <div className={cn(
-      "bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700",
+      "bg-white rounded-lg p-6 shadow-sm border border-gray-200",
       className
     )}>
       <div className="flex items-center justify-between mb-4">
-        <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-          <Icon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+        <div className="p-2 bg-gray-100 rounded-lg">
+          <Icon className="w-6 h-6 text-gray-600" />
         </div>
         {trend !== undefined && (
           <div className={cn(
@@ -137,14 +137,14 @@ function StatCard({
         )}
       </div>
       <div>
-        <div className="text-2xl font-bold text-gray-900 dark:text-white">
+        <div className="text-2xl font-bold text-gray-900">
           {value}
         </div>
-        <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mt-1">
+        <div className="text-sm font-medium text-gray-600 mt-1">
           {title}
         </div>
         {subtitle && (
-          <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+          <div className="text-xs text-gray-500 mt-1">
             {subtitle}
           </div>
         )}
@@ -168,10 +168,10 @@ function QuickAction({
   color?: string
 }) {
   const colorClasses = {
-    teal: "bg-teal-50 text-teal-700 hover:bg-teal-100 dark:bg-teal-900/20 dark:text-teal-400 dark:hover:bg-teal-900/30",
-    blue: "bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30",
-    purple: "bg-purple-50 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:hover:bg-purple-900/30",
-    amber: "bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-900/30"
+    teal: "bg-teal-50 text-teal-700 hover:bg-teal-100",
+    blue: "bg-blue-50 text-blue-700 hover:bg-blue-100",
+    purple: "bg-purple-50 text-purple-700 hover:bg-purple-100",
+    amber: "bg-amber-50 text-amber-700 hover:bg-amber-100"
   }
 
   return (
@@ -203,12 +203,12 @@ function ActivityItem({ activity }: { activity: Activity }) {
   }
 
   const typeColors = {
-    user_registered: "text-blue-600 bg-blue-100 dark:bg-blue-900/20",
-    course_created: "text-purple-600 bg-purple-100 dark:bg-purple-900/20",
-    enrollment: "text-green-600 bg-green-100 dark:bg-green-900/20",
-    payment: "text-emerald-600 bg-emerald-100 dark:bg-emerald-900/20",
-    error: "text-red-600 bg-red-100 dark:bg-red-900/20",
-    admin_action: "text-gray-600 bg-gray-100 dark:bg-gray-900/20"
+    user_registered: "text-blue-600 bg-blue-100",
+    course_created: "text-purple-600 bg-purple-100",
+    enrollment: "text-green-600 bg-green-100",
+    payment: "text-emerald-600 bg-emerald-100",
+    error: "text-red-600 bg-red-100",
+    admin_action: "text-gray-600 bg-gray-100"
   }
 
   const Icon = typeIcons[activity.type] || Activity
@@ -223,10 +223,10 @@ function ActivityItem({ activity }: { activity: Activity }) {
         <Icon className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-gray-900 dark:text-white">
+        <p className="text-sm text-gray-900">
           {activity.message}
         </p>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-xs text-gray-500 mt-1">
           {new Date(activity.timestamp).toLocaleString('hu-HU')}
         </p>
       </div>
@@ -351,10 +351,10 @@ export default function AdminDashboardPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-3xl font-bold text-gray-900">
           Admin Vezérlőpult
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
+        <p className="text-gray-600 mt-2">
           Minden fontos adminisztrációs funkció egy helyen
         </p>
       </div>
@@ -364,8 +364,8 @@ export default function AdminDashboardPage() {
         <div className={cn(
           "p-4 rounded-lg border",
           systemHealth.status === 'warning' 
-            ? "bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800"
-            : "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800"
+            ? "bg-amber-50 border-amber-200"
+            : "bg-red-50 border-red-200"
         )}>
           <div className="flex items-center">
             <AlertCircle className={cn(
@@ -375,8 +375,8 @@ export default function AdminDashboardPage() {
             <span className={cn(
               "font-medium",
               systemHealth.status === 'warning' 
-                ? "text-amber-800 dark:text-amber-400"
-                : "text-red-800 dark:text-red-400"
+                ? "text-amber-800"
+                : "text-red-800"
             )}>
               Rendszer Figyelmeztetés
             </span>
@@ -384,7 +384,7 @@ export default function AdminDashboardPage() {
           {systemHealth.alerts && systemHealth.alerts.length > 0 && (
             <div className="mt-2 space-y-1">
               {systemHealth.alerts.slice(0, 3).map((alert, index) => (
-                <div key={index} className="text-sm text-gray-700 dark:text-gray-300">
+                <div key={index} className="text-sm text-gray-700">
                   • {alert.message}
                 </div>
               ))}
@@ -426,9 +426,9 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900">
             Gyors Műveletek
           </h2>
         </div>
@@ -466,15 +466,15 @@ export default function AdminDashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activities */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-lg font-semibold text-gray-900">
                 Legutóbbi Tevékenységek
               </h2>
               <Link 
                 href="/admin/audit-log"
-                className="text-sm text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
+                className="text-sm text-teal-600 hover:text-teal-700"
               >
                 Összes megtekintése
               </Link>
@@ -486,7 +486,7 @@ export default function AdminDashboardPage() {
                 <ActivityItem key={activity.id} activity={activity} />
               ))
             ) : (
-              <p className="text-gray-500 dark:text-gray-400 text-center py-8">
+              <p className="text-gray-500 text-center py-8">
                 Nincsenek tevékenységek
               </p>
             )}
@@ -494,9 +494,9 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* System Status */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">
               Rendszer Állapot
             </h2>
           </div>
@@ -504,14 +504,14 @@ export default function AdminDashboardPage() {
             {/* Database Status */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Database className="w-5 h-5 mr-3 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                <Database className="w-5 h-5 mr-3 text-gray-600" />
+                <span className="text-sm font-medium text-gray-900">
                   Adatbázis
                 </span>
               </div>
               <div className="flex items-center">
                 <CheckCircle className="w-4 h-4 mr-1 text-green-600" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="text-sm text-gray-600">
                   {systemHealth?.database.latency || 0}ms
                 </span>
               </div>
@@ -520,8 +520,8 @@ export default function AdminDashboardPage() {
             {/* Functions Status */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Activity className="w-5 h-5 mr-3 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                <Activity className="w-5 h-5 mr-3 text-gray-600" />
+                <span className="text-sm font-medium text-gray-900">
                   Cloud Functions
                 </span>
               </div>
@@ -536,7 +536,7 @@ export default function AdminDashboardPage() {
                 ) : (
                   <>
                     <CheckCircle className="w-4 h-4 mr-1 text-green-600" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="text-sm text-gray-600">
                       Működik
                     </span>
                   </>
@@ -547,13 +547,13 @@ export default function AdminDashboardPage() {
             {/* Storage Status */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Database className="w-5 h-5 mr-3 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                <Database className="w-5 h-5 mr-3 text-gray-600" />
+                <span className="text-sm font-medium text-gray-900">
                   Tárhely
                 </span>
               </div>
               <div className="flex items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="text-sm text-gray-600">
                   {systemHealth?.storage.usage || 0}GB / {systemHealth?.storage.limit || 100}GB
                 </span>
               </div>
@@ -562,23 +562,23 @@ export default function AdminDashboardPage() {
             {/* Auth Status */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Shield className="w-5 h-5 mr-3 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                <Shield className="w-5 h-5 mr-3 text-gray-600" />
+                <span className="text-sm font-medium text-gray-900">
                   Hitelesítés
                 </span>
               </div>
               <div className="flex items-center">
                 <CheckCircle className="w-4 h-4 mr-1 text-green-600" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="text-sm text-gray-600">
                   {systemHealth?.auth.activeUsers || 0} aktív
                 </span>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="pt-4 border-t border-gray-200">
               <Link 
                 href="/admin/system"
-                className="text-sm text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
+                className="text-sm text-teal-600 hover:text-teal-700"
               >
                 Részletes rendszer információk →
               </Link>
@@ -591,54 +591,54 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link 
           href="/admin/users"
-          className="group bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+          className="group bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
         >
           <div className="flex items-center justify-between mb-4">
-            <Users className="w-8 h-8 text-teal-600 dark:text-teal-400" />
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+            <Users className="w-8 h-8 text-teal-600" />
+            <span className="text-2xl font-bold text-gray-900">
               {stats?.users?.total || 0}
             </span>
           </div>
-          <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+          <h3 className="font-semibold text-gray-900 group-hover:text-teal-600 transition-colors">
             Felhasználók Kezelése
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-gray-600 mt-1">
             Felhasználók, szerepkörök és jogosultságok
           </p>
         </Link>
 
         <Link 
           href="/admin/courses"
-          className="group bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+          className="group bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
         >
           <div className="flex items-center justify-between mb-4">
-            <BookOpen className="w-8 h-8 text-purple-600 dark:text-purple-400" />
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+            <BookOpen className="w-8 h-8 text-purple-600" />
+            <span className="text-2xl font-bold text-gray-900">
               {stats?.courses?.total || 0}
             </span>
           </div>
-          <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+          <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">
             Kurzusok Kezelése
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-gray-600 mt-1">
             Kurzusok létrehozása, szerkesztése és jóváhagyása
           </p>
         </Link>
 
         <Link 
           href="/admin/universities"
-          className="group bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+          className="group bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
         >
           <div className="flex items-center justify-between mb-4">
-            <Building2 className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+            <Building2 className="w-8 h-8 text-blue-600" />
+            <span className="text-2xl font-bold text-gray-900">
               {stats?.universities?.total || 0}
             </span>
           </div>
-          <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
             Egyetemek Kezelése
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-gray-600 mt-1">
             Intézmények és tanszékek adminisztrációja
           </p>
         </Link>

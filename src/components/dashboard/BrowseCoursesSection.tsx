@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { motion } from 'motion/react'
 import { Search, TrendingUp, Star, Users, Heart, Filter, ChevronDown, BookOpen, Award, Clock, Target } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -9,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { usePersonalizedRecommendations, useTrendingCourses, useCoursesCatalog, CatalogCourse, CourseCatalogFilters } from '@/hooks/useCoursesCatalog'
+import { brandGradient, buttonStyles, cardStyles } from '@/lib/design-tokens'
 
 /**
  * Browse Courses Section - Hybrid Discovery Interface
@@ -150,25 +152,32 @@ export function BrowseCoursesSection() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Target className="w-5 h-5 text-teal-600 mr-2" />
+              <Target className="w-5 h-5 text-gray-900 mr-2" />
               <h3 className="text-lg font-semibold text-gray-900">Önnek ajánljuk</h3>
-              <Badge variant="secondary" className="ml-2 bg-teal-100 text-teal-700">
+              <Badge variant="secondary" className="ml-2 bg-[#466C95]/10 text-[#466C95]">
                 Személyre szabott
               </Badge>
             </div>
             <p className="text-sm text-gray-600">
-              {recommendationsData.meta.userCategories.length > 0 
-                ? `${recommendationsData.meta.userCategories.length} kategória alapján` 
+              {recommendationsData.meta.userCategories.length > 0
+                ? `${recommendationsData.meta.userCategories.length} kategória alapján`
                 : 'Tanulási előzmények alapján'}
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {recommendationsLoading ? (
               Array.from({ length: 4 }).map((_, i) => <CourseCardSkeleton key={i} />)
             ) : (
-              recommendationsData.courses.map((course) => (
-                <CourseCard key={course.id} course={course} isRecommended />
+              recommendationsData.courses.map((course, index) => (
+                <motion.div
+                  key={course.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.05 }}
+                >
+                  <CourseCard course={course} isRecommended />
+                </motion.div>
               ))
             )}
           </div>
@@ -185,17 +194,24 @@ export function BrowseCoursesSection() {
               Trending
             </Badge>
           </div>
-          <Link href="/courses?sort=trending" className="text-sm text-teal-600 hover:text-teal-700">
+          <Link href="/courses?sort=trending" className="text-sm text-gray-900 hover:text-[#466C95] transition-colors">
             Összes trending kurzus →
           </Link>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {trendingLoading ? (
             Array.from({ length: 6 }).map((_, i) => <CourseCardSkeleton key={i} />)
           ) : (
-            trendingData?.courses.map((course) => (
-              <CourseCard key={course.id} course={course} isTrending />
+            trendingData?.courses.map((course, index) => (
+              <motion.div
+                key={course.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+              >
+                <CourseCard course={course} isTrending />
+              </motion.div>
             )) || []
           )}
         </div>
@@ -225,8 +241,15 @@ export function BrowseCoursesSection() {
               <EmptySearchResults searchQuery={catalogFilters.search} />
             </div>
           ) : (
-            catalogData?.courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
+            catalogData?.courses.map((course, index) => (
+              <motion.div
+                key={course.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+              >
+                <CourseCard course={course} />
+              </motion.div>
             )) || []
           )}
         </div>
@@ -279,92 +302,94 @@ function CourseCard({
   }
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow group">
-      {/* Course Thumbnail */}
-      <div className="h-48 bg-gradient-to-br from-indigo-500 to-purple-600 relative">
-        {course.thumbnailUrl ? (
-          <img 
-            src={course.thumbnailUrl} 
-            alt={course.title}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="text-white text-center">
-              <div className="text-4xl mb-2">📚</div>
-              <p className="font-medium">{course.category?.name}</p>
+    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow group h-full">
+        {/* Course Thumbnail */}
+        <div className="h-48 relative" style={{ background: brandGradient }}>
+          {course.thumbnailUrl ? (
+            <img
+              src={course.thumbnailUrl}
+              alt={course.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-white text-center">
+                <div className="text-4xl mb-2">📚</div>
+                <p className="font-medium">{course.category?.name}</p>
+              </div>
             </div>
-          </div>
-        )}
-        
-        {/* Badges */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2">
-          {course.isPlus && (
-            <Badge className="bg-gradient-to-r from-purple-600 to-teal-600 text-white">
-              ELIRA Plus
-            </Badge>
           )}
-          {isRecommended && (
-            <Badge className="bg-teal-600 text-white">
-              <Target className="w-3 h-3 mr-1" />
-              Ajánlott
-            </Badge>
-          )}
-          {isTrending && (
-            <Badge className="bg-green-600 text-white">
-              <TrendingUp className="w-3 h-3 mr-1" />
-              Trending
-            </Badge>
-          )}
-          {course.isEnrolled && (
-            <Badge variant="secondary" className="bg-gray-100 text-gray-700">
-              Beiratkozva
-            </Badge>
-          )}
-        </div>
-      </div>
 
-      {/* Course Info */}
-      <CardContent className="p-4 space-y-3">
-        <div>
-          <h4 className="font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-teal-600 transition-colors">
-            {course.title}
-          </h4>
-          <p className="text-sm text-gray-600">
-            {course.instructor.firstName} {course.instructor.lastName}
-          </p>
+          {/* Badges */}
+          <div className="absolute top-3 right-3 flex flex-col gap-2">
+            {course.isPlus && (
+              <Badge className="text-white" style={{ background: brandGradient }}>
+                ELIRA Plus
+              </Badge>
+            )}
+            {isRecommended && (
+              <Badge className="bg-[#466C95] text-white">
+                <Target className="w-3 h-3 mr-1" />
+                Ajánlott
+              </Badge>
+            )}
+            {isTrending && (
+              <Badge className="bg-green-600 text-white">
+                <TrendingUp className="w-3 h-3 mr-1" />
+                Trending
+              </Badge>
+            )}
+            {course.isEnrolled && (
+              <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+                Beiratkozva
+              </Badge>
+            )}
+          </div>
         </div>
 
-        {/* Course Meta */}
-        <div className="flex items-center justify-between text-sm text-gray-600">
-          <div className="flex items-center">
-            <Star className="w-4 h-4 text-yellow-400 mr-1" />
-            {course.averageRating.toFixed(1)}
+        {/* Course Info */}
+        <CardContent className="p-4 space-y-3">
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-[#466C95] transition-colors">
+              {course.title}
+            </h4>
+            <p className="text-sm text-gray-600">
+              {course.instructor.firstName} {course.instructor.lastName}
+            </p>
           </div>
-          <div className="flex items-center">
-            <Users className="w-4 h-4 mr-1" />
-            {course.enrollmentCount}
-          </div>
-          {course.certificateEnabled && (
+
+          {/* Course Meta */}
+          <div className="flex items-center justify-between text-sm text-gray-600">
             <div className="flex items-center">
-              <Award className="w-4 h-4 text-purple-500 mr-1" />
-              <span className="text-xs">Tanúsítvány</span>
+              <Star className="w-4 h-4 text-yellow-400 mr-1" />
+              {course.averageRating.toFixed(1)}
             </div>
-          )}
-        </div>
+            <div className="flex items-center">
+              <Users className="w-4 h-4 mr-1" />
+              {course.enrollmentCount}
+            </div>
+            {course.certificateEnabled && (
+              <div className="flex items-center">
+                <Award className="w-4 h-4 text-[#466C95] mr-1" />
+                <span className="text-xs">Tanúsítvány</span>
+              </div>
+            )}
+          </div>
 
-        <div className="flex items-center justify-between">
-          <Badge className={getDifficultyColor(course.difficulty)}>
-            {getDifficultyLabel(course.difficulty)}
-          </Badge>
-          <Link href={`/courses/${course.id}`}>
-            <Button size="sm" className="group-hover:bg-teal-600 transition-colors">
-              {course.isEnrolled ? 'Folytatás' : 'Részletek'}
-            </Button>
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
+          <div className="flex items-center justify-between">
+            <Badge className={getDifficultyColor(course.difficulty)}>
+              {getDifficultyLabel(course.difficulty)}
+            </Badge>
+            <Link href={`/courses/${course.id}`}>
+              <Button size="sm" className="bg-gray-900 hover:bg-[#466C95] text-white transition-colors">
+                {course.isEnrolled ? 'Folytatás' : 'Részletek'}
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   )
 }
 
