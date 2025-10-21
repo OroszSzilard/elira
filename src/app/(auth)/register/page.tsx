@@ -1,135 +1,153 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRegister } from '@/hooks/useAuthQueries'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Loader2, Check, X } from 'lucide-react'
-import { toast } from 'sonner'
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuth, AuthProvider } from '@/contexts/AuthContext';
+import RegisterForm from '@/components/auth/RegisterForm';
+import { AccountTypeSelector, AccountType } from '@/components/auth/AccountTypeSelector';
+import { CompanyRegisterForm } from '@/components/auth/CompanyRegisterForm';
+import Link from 'next/link';
+import { ChevronLeft } from 'lucide-react';
 
-export default function RegisterPage() {
-  const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-  })
-  const [passwordStrength, setPasswordStrength] = useState({
-    hasMinLength: false,
-    hasUpperCase: false,
-    hasNumber: false,
-  })
-  const register = useRegister()
-  const router = useRouter()
+function RegisterPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { user, loading } = useAuth();
+  const [accountType, setAccountType] = useState<AccountType | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setForm({ ...form, [name]: value })
-    
-    // Check password strength when password changes
-    if (name === 'password') {
-      setPasswordStrength({
-        hasMinLength: value.length >= 8,
-        hasUpperCase: /[A-Z]/.test(value),
-        hasNumber: /\d/.test(value),
-      })
+  // Get redirect URL from query params or default to dashboard
+  const redirectTo = searchParams?.get('redirect_to') || '/dashboard';
+
+  useEffect(() => {
+    // If user is already authenticated, redirect based on role
+    if (user && !loading) {
+      // Check if user is COMPANY_ADMIN or COMPANY_EMPLOYEE and redirect to company dashboard
+      if (user.role === 'company_admin' || user.role === 'COMPANY_ADMIN') {
+        console.log('[Register Page] COMPANY_ADMIN user authenticated, redirecting to /company/dashboard');
+        router.push('/company/dashboard');
+      } else if (user.role === 'company_employee' || user.role === 'COMPANY_EMPLOYEE') {
+        console.log('[Register Page] COMPANY_EMPLOYEE user authenticated, redirecting to /company/dashboard');
+        router.push('/company/dashboard');
+      } else {
+        console.log('[Register Page] User authenticated, redirecting to:', redirectTo);
+        router.push(redirectTo);
+      }
     }
+  }, [user, loading, redirectTo, router]);
+
+  const handleAuthSuccess = () => {
+    console.log('[Register Page] Auth success, redirecting to:', redirectTo);
+    router.push(redirectTo);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-gray-900"></div>
+      </div>
+    );
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      await register.mutateAsync(form)
-      toast.success('Sikeres regisztráció! Kérjük ellenőrizze email fiókját és erősítse meg email címét.')
-      // Small delay to ensure signOut completes
-      setTimeout(() => {
-        router.push('/login?registered=true')
-      }, 500)
-    } catch (err: any) {
-      toast.error(err?.message || 'A regisztráció során hiba lépett fel.')
-    }
+  // If user is authenticated, show loading while redirecting
+  if (user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-gray-900 mx-auto mb-4"></div>
+          <p className="text-sm text-gray-600">Átirányítás...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold tracking-tight">Indítsa el a jövőjét, még ma.</CardTitle>
-          <CardDescription>
-            Hozzon létre egy fiókot, és tegye meg az első lépést a következő nagy karrierlehetősége felé.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Vezetéknév</Label>
-                <Input id="lastName" name="lastName" value={form.lastName} onChange={handleChange} placeholder="Gipsz" required disabled={register.isPending} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="firstName">Keresztnév</Label>
-                <Input id="firstName" name="firstName" value={form.firstName} onChange={handleChange} placeholder="Jakab" required disabled={register.isPending} />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">E-mail cím</Label>
-              <Input id="email" type="email" name="email" value={form.email} onChange={handleChange} placeholder="nev@pelda.com" required disabled={register.isPending} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Jelszó</Label>
-              <Input id="password" type="password" name="password" value={form.password} onChange={handleChange} placeholder="••••••••" required disabled={register.isPending} />
-              {form.password && (
-                <div className="space-y-1 mt-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    {passwordStrength.hasMinLength ? (
-                      <Check className="h-3 w-3 text-green-500" />
-                    ) : (
-                      <X className="h-3 w-3 text-gray-400" />
-                    )}
-                    <span className={passwordStrength.hasMinLength ? "text-green-600" : "text-gray-500"}>
-                      Legalább 8 karakter
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    {passwordStrength.hasUpperCase ? (
-                      <Check className="h-3 w-3 text-green-500" />
-                    ) : (
-                      <X className="h-3 w-3 text-gray-400" />
-                    )}
-                    <span className={passwordStrength.hasUpperCase ? "text-green-600" : "text-gray-500"}>
-                      Legalább egy nagybetű
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    {passwordStrength.hasNumber ? (
-                      <Check className="h-3 w-3 text-green-500" />
-                    ) : (
-                      <X className="h-3 w-3 text-gray-400" />
-                    )}
-                    <span className={passwordStrength.hasNumber ? "text-green-600" : "text-gray-500"}>
-                      Legalább egy szám
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-            <Button type="submit" className="w-full" disabled={register.isPending}>
-              {register.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Ingyenes fiók létrehozása
-            </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              Már van fiókja?{' '}
-              <Link href="/login" className="font-semibold text-primary hover:underline">
-                Jelentkezzen be
-              </Link>
+    <div className="min-h-screen bg-white py-12 px-4">
+      <div className="max-w-md mx-auto">
+        {/* Back to Home Link */}
+        <Link
+          href="/"
+          className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-8 transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          <span>Vissza a főoldalra</span>
+        </Link>
+
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-flex items-center justify-center space-x-2">
+            <img
+              src="/navbar-icon.png"
+              alt="Elira logo"
+              className="w-10 h-10 object-contain"
+            />
+            <span className="text-2xl font-semibold text-gray-900">Elira</span>
+          </Link>
+        </div>
+
+        {/* Auth Card */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+              {accountType === 'company'
+                ? 'Vállalati fiók létrehozása'
+                : accountType === 'individual'
+                ? 'Fiók létrehozása'
+                : 'Csatlakozz az Elirához'}
+            </h1>
+            <p className="text-sm text-gray-600">
+              {accountType === 'company'
+                ? 'Regisztrálj vállalati fiókot a csapatodnak'
+                : accountType === 'individual'
+                ? 'Csatlakozz az Elira közösséghez'
+                : 'Válaszd ki a fiók típusát'}
             </p>
-          </form>
-        </CardContent>
-      </Card>
+          </div>
+
+          {/* Form Content */}
+          {!accountType ? (
+            // Show account type selector
+            <AccountTypeSelector
+              onSelect={(type) => setAccountType(type)}
+              onBack={() => router.push('/login')}
+            />
+          ) : accountType === 'company' ? (
+            // Company registration flow
+            <CompanyRegisterForm
+              onSuccess={handleAuthSuccess}
+              onBack={() => setAccountType(null)}
+            />
+          ) : (
+            // Individual registration flow
+            <RegisterForm
+              onSuccess={handleAuthSuccess}
+              onSwitchToLogin={() => router.push('/login')}
+              onBack={() => setAccountType(null)}
+              className="!p-0 !shadow-none !bg-transparent !border-0"
+            />
+          )}
+        </div>
+
+        {/* Privacy Links */}
+        <div className="mt-6 text-center text-xs text-gray-600">
+          A folytatással elfogadod az{' '}
+          <Link href="/terms" className="text-gray-900 hover:text-gray-700 underline">
+            Általános Szerződési Feltételeket
+          </Link>{' '}
+          és az{' '}
+          <Link href="/privacy" className="text-gray-900 hover:text-gray-700 underline">
+            Adatvédelmi Nyilatkozatot
+          </Link>
+        </div>
+      </div>
     </div>
-  )
-} 
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <AuthProvider>
+      <RegisterPageContent />
+    </AuthProvider>
+  );
+}

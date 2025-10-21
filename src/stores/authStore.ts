@@ -7,9 +7,12 @@ export interface User {
   firstName: string
   lastName: string
   email: string
-  role: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN'
+  role: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN' | 'COMPANY_ADMIN' | 'COMPANY_EMPLOYEE' | 'UNIVERSITY_ADMIN'
   profilePictureUrl?: string
   subscriptionActive?: boolean
+  companyId?: string
+  companyRole?: string
+  universityId?: string
 }
 
 export interface AuthResponse {

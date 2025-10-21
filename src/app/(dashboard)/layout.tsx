@@ -20,6 +20,9 @@ export default function DashboardRouteGroupLayout({
       if (!user) {
         console.log('❌ [DashboardLayout] No user found, redirecting to login')
         router.replace('/login?redirect_to=/dashboard')
+      } else if (user.role === 'COMPANY_ADMIN') {
+        console.log('🏢 [DashboardLayout] COMPANY_ADMIN user, redirecting to company dashboard')
+        router.replace('/company/dashboard')
       }
     }
   }, [user, isLoading, authReady, router])
@@ -40,14 +43,12 @@ export default function DashboardRouteGroupLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-white">
       <DashboardHeader />
       <div className="flex">
         <UnifiedSidebar userRole={user.role} />
-        <main className="flex-1 px-6 py-8">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
+        <main className="flex-1 bg-gray-50">
+          {children}
         </main>
       </div>
     </div>

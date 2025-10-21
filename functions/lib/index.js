@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.respondToSupportTicket = exports.createSupportTicket = exports.getAuditLogStats = exports.getAuditLogs = exports.verifyEmail = exports.enrollInCourse = exports.getCoursesCallable = exports.getCourse = exports.updateUserRole = exports.getStats = exports.getUsers = exports.sendEmailVerification = exports.validateResetToken = exports.resetPassword = exports.requestPasswordReset = exports.firebaseLogin = exports.echo = exports.healthCheck = void 0;
+exports.sendEmployeeReminder = exports.generateCSVReport = exports.getEmployeeProgressDetail = exports.getCompanyDashboard = exports.getCompanyPurchases = exports.purchaseCompanyMasterclass = exports.getCompanyMasterclasses = exports.unassignEmployeeFromMasterclass = exports.assignEmployeeToMasterclass = exports.completeCompanyOnboarding = exports.createCompanyMasterclass = exports.enrollEmployeesInMasterclass = exports.acceptEmployeeInvite = exports.verifyEmployeeInvite = exports.addEmployee = exports.createCompany = exports.respondToSupportTicket = exports.createSupportTicket = exports.getAuditLogStats = exports.getAuditLogs = exports.verifyEmail = exports.enrollInCourse = exports.getCoursesCallable = exports.getCourse = exports.updateUserRole = exports.getStats = exports.getUsers = exports.sendEmailVerification = exports.validateResetToken = exports.resetPassword = exports.requestPasswordReset = exports.firebaseLogin = exports.echo = exports.healthCheck = void 0;
 /**
  * Minimal Firebase Functions for Development
  */
@@ -1021,4 +1021,31 @@ Object.defineProperty(exports, "getAuditLogStats", { enumerable: true, get: func
 var support_1 = require("./support");
 Object.defineProperty(exports, "createSupportTicket", { enumerable: true, get: function () { return support_1.createSupportTicket; } });
 Object.defineProperty(exports, "respondToSupportTicket", { enumerable: true, get: function () { return support_1.respondToSupportTicket; } });
+// Export Company Admin Dashboard functions
+var createCompany_1 = require("./company/createCompany");
+Object.defineProperty(exports, "createCompany", { enumerable: true, get: function () { return createCompany_1.createCompany; } });
+var employeeInvite_1 = require("./company/employeeInvite");
+Object.defineProperty(exports, "addEmployee", { enumerable: true, get: function () { return employeeInvite_1.addEmployee; } });
+Object.defineProperty(exports, "verifyEmployeeInvite", { enumerable: true, get: function () { return employeeInvite_1.verifyEmployeeInvite; } });
+Object.defineProperty(exports, "acceptEmployeeInvite", { enumerable: true, get: function () { return employeeInvite_1.acceptEmployeeInvite; } });
+var enrollEmployees_1 = require("./company/enrollEmployees");
+Object.defineProperty(exports, "enrollEmployeesInMasterclass", { enumerable: true, get: function () { return enrollEmployees_1.enrollEmployeesInMasterclass; } });
+var createMasterclass_1 = require("./company/createMasterclass");
+Object.defineProperty(exports, "createCompanyMasterclass", { enumerable: true, get: function () { return createMasterclass_1.createCompanyMasterclass; } });
+var completeOnboarding_1 = require("./company/completeOnboarding");
+Object.defineProperty(exports, "completeCompanyOnboarding", { enumerable: true, get: function () { return completeOnboarding_1.completeCompanyOnboarding; } });
+var masterclassEnrollment_1 = require("./company/masterclassEnrollment");
+Object.defineProperty(exports, "assignEmployeeToMasterclass", { enumerable: true, get: function () { return masterclassEnrollment_1.assignEmployeeToMasterclass; } });
+Object.defineProperty(exports, "unassignEmployeeFromMasterclass", { enumerable: true, get: function () { return masterclassEnrollment_1.unassignEmployeeFromMasterclass; } });
+Object.defineProperty(exports, "getCompanyMasterclasses", { enumerable: true, get: function () { return masterclassEnrollment_1.getCompanyMasterclasses; } });
+var purchaseMasterclass_1 = require("./company/purchaseMasterclass");
+Object.defineProperty(exports, "purchaseCompanyMasterclass", { enumerable: true, get: function () { return purchaseMasterclass_1.purchaseCompanyMasterclass; } });
+Object.defineProperty(exports, "getCompanyPurchases", { enumerable: true, get: function () { return purchaseMasterclass_1.getCompanyPurchases; } });
+var progressTracking_1 = require("./company/progressTracking");
+Object.defineProperty(exports, "getCompanyDashboard", { enumerable: true, get: function () { return progressTracking_1.getCompanyDashboard; } });
+Object.defineProperty(exports, "getEmployeeProgressDetail", { enumerable: true, get: function () { return progressTracking_1.getEmployeeProgressDetail; } });
+var generateCSVReport_1 = require("./company/generateCSVReport");
+Object.defineProperty(exports, "generateCSVReport", { enumerable: true, get: function () { return generateCSVReport_1.generateCSVReport; } });
+var sendReminder_1 = require("./company/sendReminder");
+Object.defineProperty(exports, "sendEmployeeReminder", { enumerable: true, get: function () { return sendReminder_1.sendEmployeeReminder; } });
 //# sourceMappingURL=index.js.map

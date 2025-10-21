@@ -43,6 +43,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
                 lastName: firestoreData.lastName || '',
                 role: firestoreData.role || 'STUDENT',
                 profilePictureUrl: firestoreData.profilePictureUrl || fbUser.photoURL || undefined,
+                companyId: firestoreData.companyId,
+                companyRole: firestoreData.companyRole,
+                universityId: firestoreData.universityId,
               }
               setAuth(userData, idToken)
               console.log('✅ Auth set from Firestore:', userData)
