@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { signOut } from 'firebase/auth'
+import { auth } from '@/lib/firebase'
 
 export interface User {
   id: string
@@ -31,7 +33,7 @@ interface AuthState {
   setToken: (token: string | null) => void
   setAuth: (user: User, token: string) => void
   clearAuth: () => void
-  logout: () => void
+  logout: () => Promise<void>
   updateSubscriptionStatus: (subscriptionActive: boolean) => void
   setAuthReady: (ready: boolean) => void
 }
@@ -62,12 +64,20 @@ export const useAuthStore = create<AuthState>()(
       updateSubscriptionStatus: (subscriptionActive) => set((state) => ({
         user: state.user ? { ...state.user, subscriptionActive } : null
       })),
-      logout: () => set({ 
-        user: null, 
-        accessToken: null, 
-        isAuthenticated: false, 
-        error: null 
-      }),
+      logout: async () => {
+        try {
+          await signOut(auth)
+          set({
+            user: null,
+            accessToken: null,
+            isAuthenticated: false,
+            error: null
+          })
+        } catch (error) {
+          console.error('Logout error:', error)
+          throw error
+        }
+      },
       setAuthReady: (ready) => set({ authReady: ready })
     }),
     {
