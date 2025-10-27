@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { VideoPlayer } from './VideoPlayer'
 import { FirebaseVideoPlayer } from './FirebaseVideoPlayer'
 import { EnhancedVideoPlayer } from './EnhancedVideoPlayer'
+import { LessonVideoPlayer } from './LessonVideoPlayer'
 import { QuizModal } from './QuizModal'
 import { InteractiveQuizEngine } from './InteractiveQuizEngine'
 import { RichTextContentRenderer } from './RichTextContentRenderer'
@@ -15,12 +16,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
-  Play, 
-  BookOpen, 
-  FileText, 
-  CheckCircle, 
-  Clock, 
+import {
+  Play,
+  BookOpen,
+  FileText,
+  CheckCircle,
+  Clock,
   Award,
   Volume2,
   Download,
@@ -223,56 +224,6 @@ export const LessonContentRenderer: React.FC<LessonContentRendererProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Lesson Header */}
-      <div className="bg-white rounded-lg border p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <div className={`p-2 rounded-lg ${typeInfo.color}`}>
-                <TypeIcon className="w-5 h-5" />
-              </div>
-              <div>
-                <Badge className="text-xs">
-                  {typeInfo.label}
-                </Badge>
-                {lesson.type === 'TEXT' && (
-                  <Badge className="ml-2 text-xs bg-gray-100 text-gray-600">
-                    <Clock className="w-3 h-3 mr-1" />
-                    ~{getEstimatedReadingTime(lesson.content || '')} perc
-                  </Badge>
-                )}
-              </div>
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{lesson.title}</h1>
-            {lesson.content && lesson.type !== 'VIDEO' && (
-              <p className="text-gray-600 text-sm line-clamp-2">{lesson.content.substring(0, 150)}...</p>
-            )}
-          </div>
-          
-          <div className="text-right space-y-2">
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <Clock className="w-4 h-4" />
-              <span>{Math.floor(progress.timeSpent / 60)}:{(progress.timeSpent % 60).toString().padStart(2, '0')}</span>
-            </div>
-            {progress.completed && (
-              <div className="flex items-center gap-2 text-sm text-green-600">
-                <CheckCircle className="w-4 h-4" />
-                <span>Befejezve</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Haladás</span>
-            <span className="font-medium">{Math.round(progress.percentage)}%</span>
-          </div>
-          <Progress value={progress.percentage} className="h-2" />
-        </div>
-      </div>
-
       {/* Resume Prompt */}
       {resumeManager.showResumePrompt && resumeManager.resumePoint && (
         <ResumePrompt
@@ -292,8 +243,28 @@ export const LessonContentRenderer: React.FC<LessonContentRendererProps> = ({
         {/* VIDEO Content - handle both uppercase and lowercase */}
         {(lesson.type === 'VIDEO' || lesson.type === 'video') && (
           <div className="bg-black rounded-lg overflow-hidden">
-            {/* Use Firebase player for Firebase Storage URLs, otherwise use enhanced player */}
-            {lesson.videoUrl?.includes('firebasestorage.googleapis.com') ? (
+            {/* Priority 1: Use LessonVideoPlayer if muxPlaybackId is available */}
+            {lesson.muxPlaybackId ? (
+              <LessonVideoPlayer
+                playbackId={lesson.muxPlaybackId}
+                videoUrl={lesson.videoUrl}
+                onProgress={(currentTime, duration) => {
+                  const percentage = (currentTime / duration) * 100
+                  handleProgressUpdate(percentage, currentTime, {
+                    videoPosition: currentTime,
+                    videoDuration: duration
+                  })
+                }}
+                onComplete={() => {
+                  console.log('✅ [LessonContentRenderer] Video completed via LessonVideoPlayer')
+                  handleProgressUpdate(100, progress.timeSpent)
+                  onCompleted()
+                }}
+                autoPlay={false}
+                className="w-full"
+              />
+            ) : lesson.videoUrl?.includes('firebasestorage.googleapis.com') ? (
+              /* Priority 2: Use Firebase player for Firebase Storage URLs */
               <FirebaseVideoPlayer
                 src={lesson.videoUrl}
                 lessonTitle={lesson.title}
@@ -313,14 +284,16 @@ export const LessonContentRenderer: React.FC<LessonContentRendererProps> = ({
                 startTime={resumeManager.getVideoResumeContext()?.startTime}
               />
             ) : (
+              /* Priority 3: Fallback to enhanced player */
               <EnhancedVideoPlayer
                 src={playerData?.signedPlaybackUrl || lesson.videoUrl || ''}
+                playbackId={lesson.muxPlaybackId}
                 lessonTitle={lesson.title}
                 courseTitle={playerData?.course?.title}
                 lessonId={lesson.id}
                 courseId={courseId}
                 userId={userId}
-                poster={lesson.thumbnailUrl}
+                poster={lesson.muxThumbnailUrl || lesson.thumbnailUrl}
                 onProgress={(percentage, timeSpent, analytics) => {
                   handleProgressUpdate(percentage, timeSpent, {
                     videoPosition: timeSpent,

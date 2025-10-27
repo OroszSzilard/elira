@@ -20,6 +20,7 @@ import { CourseGuaranteeSection } from '@/components/course/CourseGuaranteeSecti
 import { CheckoutForm } from '@/components/payment/CheckoutForm';
 import { motion } from "motion/react";
 import { brandGradient } from '@/lib/design-tokens';
+import { CheckCircle, ArrowRight, Shield } from 'lucide-react';
 
 export default function ClientCourseDetailPage({ id }: { id: string }) {
   const router = useRouter();
@@ -216,6 +217,75 @@ export default function ClientCourseDetailPage({ id }: { id: string }) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Left Column - Main Content */}
             <div className="lg:col-span-2 space-y-16">
+              {/* What You'll Learn Section */}
+              {c.whatYouWillLearn && c.whatYouWillLearn.length > 0 && (
+                <motion.section
+                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                    Mit fogsz megtanulni?
+                  </h2>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {c.whatYouWillLearn.map((item: string, index: number) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-700">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.section>
+              )}
+
+              {/* Requirements Section */}
+              {c.requirements && c.requirements.length > 0 && (
+                <motion.section
+                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                    Előfeltételek
+                  </h2>
+                  <ul className="space-y-3">
+                    {c.requirements.map((item: string, index: number) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <span className="text-gray-400 mt-1">•</span>
+                        <span className="text-gray-700">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.section>
+              )}
+
+              {/* Target Audience Section */}
+              {c.targetAudience && c.targetAudience.length > 0 && (
+                <motion.section
+                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                    Kinek ajánlott ez a kurzus?
+                  </h2>
+                  <div className="space-y-3">
+                    {c.targetAudience.map((item: string, index: number) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <ArrowRight className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-700">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.section>
+              )}
+
               {/* Curriculum Section */}
               {formattedModules.length > 0 && (
                 <CourseCurriculumSection
@@ -239,6 +309,55 @@ export default function ClientCourseDetailPage({ id }: { id: string }) {
                 }}
                 expertise={c.tags || ['Üzleti fejlődés', 'Soft skills', 'Szakmai képzés']}
               />
+
+              {/* FAQ Section */}
+              {c.faq && c.faq.length > 0 && (
+                <motion.section
+                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                    Gyakran Ismételt Kérdések
+                  </h2>
+                  <div className="space-y-4">
+                    {c.faq.map((item: { question: string; answer: string }, index: number) => (
+                      <details
+                        key={index}
+                        className="group border border-gray-200 rounded-lg overflow-hidden"
+                      >
+                        <summary className="cursor-pointer list-none p-4 bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                          <div className="flex items-center justify-between">
+                            <h3 className="font-semibold text-gray-900">
+                              {item.question}
+                            </h3>
+                            <svg
+                              className="w-5 h-5 text-gray-500 transition-transform duration-200 group-open:rotate-180"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                              />
+                            </svg>
+                          </div>
+                        </summary>
+                        <div className="p-4 bg-white border-t border-gray-200">
+                          <p className="text-gray-700 whitespace-pre-line">
+                            {item.answer}
+                          </p>
+                        </div>
+                      </details>
+                    ))}
+                  </div>
+                </motion.section>
+              )}
             </div>
 
             {/* Right Column - Enrollment Card */}
@@ -308,7 +427,26 @@ export default function ClientCourseDetailPage({ id }: { id: string }) {
         </div>
 
         {/* Guarantee Section */}
-        <CourseGuaranteeSection />
+        {c.guaranteeEnabled && c.guaranteeText && (
+          <div className="container mx-auto px-6 lg:px-12 py-16">
+            <motion.section
+              className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-10 text-center shadow-lg border border-blue-200"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <Shield className="w-16 h-16 text-blue-600 mx-auto mb-6" />
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                {c.guaranteeDays || 30} Napos Pénzvisszafizetési Garancia
+              </h2>
+              <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+                {c.guaranteeText}
+              </p>
+            </motion.section>
+          </div>
+        )}
+        {!c.guaranteeEnabled && <CourseGuaranteeSection />}
       </div>
 
       <PremiumFooter />

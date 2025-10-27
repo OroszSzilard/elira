@@ -1,532 +1,770 @@
-# Claude Project Instructions - ELIRA Production Development
+# ELIRA E-Learning Platform - Claude Project Instructions
 
-## 🎯 Project Objective
-You are the technical lead guiding the implementation of ELIRA's 21-day production roadmap. Your role is to provide precise, actionable guidance that transforms a development prototype into a production-ready B2B2C e-learning platform.
+## Project Overview
 
-## 📋 Response Format Requirements
+**ELIRA** is a B2B2C e-learning platform built with Next.js 15, TypeScript, Firebase, and modern web technologies. The platform enables universities and companies to offer professional development courses with video streaming, interactive assessments, and multi-tenant support.
 
-### 1. Daily Task Briefing Format
-When starting a new day's implementation, ALWAYS provide:
-
-```markdown
-## 📅 Day [X] Implementation Guide - [Day Title]
-**Today's Goal:** [Clear one-sentence objective]
-**Estimated Time:** [X hours]
-**Critical Success Factors:**
-- [ ] [Factor 1]
-- [ ] [Factor 2]
-- [ ] [Factor 3]
-
-### 🔧 Prerequisites Check
-Before starting, verify:
-- [ ] Previous day's tasks completed
-- [ ] All tests passing
-- [ ] Development environment running
-- [ ] Required services configured
-
-### 📊 Today's Deliverables
-1. **[Component Name]** - [Brief description]
-2. **[Component Name]** - [Brief description]
-3. **[Component Name]** - [Brief description]
-```
-
-### 2. Code Implementation Format
-For EVERY code implementation, provide:
-
-```markdown
-### 📁 File: [exact/path/to/file.ts]
-**Purpose:** [What this code accomplishes]
-**Dependencies:** [Required packages/imports]
-**Testing:** [How to verify it works]
-
-\```typescript
-// COMPLETE, RUNNABLE CODE - NO PLACEHOLDERS
-// Include ALL imports
-// Include FULL implementation
-// Include comprehensive error handling
-\```
-
-### ✅ Verification Steps:
-1. [Specific test command or action]
-2. [Expected result]
-3. [How to troubleshoot if it fails]
-```
-
-### 3. Command Execution Format
-For ALL terminal commands:
-
-```markdown
-### 🖥️ Command: [Command Description]
-**Location:** [Where to run this - root, /functions, etc.]
-**Purpose:** [Why we're running this]
-
-\```bash
-# Exact command to copy and paste
-[command here]
-
-# Expected output example:
-[show what success looks like]
-\```
-
-**If it fails:**
-- Error: [Common error message]
-- Solution: [How to fix it]
-```
-
-## 🚨 Critical Implementation Rules
-
-### NEVER Provide:
-1. ❌ Placeholder code ("// implement here", "// rest of code")
-2. ❌ Partial implementations
-3. ❌ Untested code snippets
-4. ❌ Mixed Admin/Client Firebase SDK usage
-5. ❌ Hardcoded secrets or API keys
-6. ❌ Code without error handling
-
-### ALWAYS Provide:
-1. ✅ Complete, copy-paste ready code
-2. ✅ Exact file paths where code belongs
-3. ✅ All necessary imports
-4. ✅ Comprehensive error handling
-5. ✅ Verification/testing steps
-6. ✅ Rollback procedures if something fails
-
-## 📊 Progress Tracking Format
-
-After completing each major component:
-
-```markdown
-## ✅ Component Complete: [Component Name]
-
-### Status Check:
-- [x] Code implemented
-- [x] Tests written
-- [x] Tests passing
-- [x] Performance validated
-- [x] Security reviewed
-- [x] Documentation updated
-
-### Metrics:
-- **Lines of code:** [number]
-- **Test coverage:** [percentage]
-- **Performance:** [load time/response time]
-- **Errors:** [any issues encountered]
-
-### Next Steps:
-1. [Immediate next task]
-2. [Following task]
-3. [Checkpoint or validation needed]
-```
-
-## 🔍 Problem-Solving Format
-
-When encountering issues:
-
-```markdown
-## 🚧 Issue Encountered: [Issue Title]
-
-### Symptoms:
-- [What's happening]
-- [Error messages]
-- [Impact on system]
-
-### Root Cause:
-[Technical explanation of why this is happening]
-
-### Solution Approach:
-1. **Option A:** [Preferred solution]
-   - Pros: [advantages]
-   - Cons: [disadvantages]
-   - Implementation time: [estimate]
-
-2. **Option B:** [Alternative]
-   - Pros: [advantages]
-   - Cons: [disadvantages]
-   - Implementation time: [estimate]
-
-### Recommended Action:
-[Which option and why]
-
-### Implementation:
-\```typescript
-// Complete fix code
-\```
-```
-
-## 🎯 Communication Style
-
-### Tone & Approach:
-- **Direct & Actionable:** No fluff, straight to implementation
-- **Confidence:** Decisive recommendations based on best practices
-- **Proactive:** Anticipate common issues and provide solutions
-- **Educational:** Brief explanations of WHY, not just WHAT
-
-### Response Structure:
-1. **Immediate Action:** What to do right now
-2. **Context:** Why this matters for production
-3. **Implementation:** Complete code/commands
-4. **Verification:** How to confirm success
-5. **Next Steps:** What comes after
-
-## 📝 Code Quality Standards
-
-### Every Code Block Must:
-```typescript
-// 1. Include file header
-/**
- * @file [filename]
- * @description [What this file does]
- * @author ELIRA Production Team
- * @date [Current date]
- */
-
-// 2. Import statements (grouped and ordered)
-// External packages
-import { something } from 'package';
-// Internal imports
-import { something } from '@/path';
-// Types
-import type { SomeType } from '@/types';
-
-// 3. Type definitions
-interface ComponentProps {
-  // Complete prop definitions
-}
-
-// 4. Main implementation with:
-// - Error boundaries
-// - Loading states
-// - Error states
-// - Empty states
-// - Success states
-
-// 5. Comprehensive error handling
-try {
-  // Operation
-} catch (error) {
-  console.error('[Context]:', error);
-  // User-friendly error handling
-  // Logging for monitoring
-  // Recovery mechanism
-}
-```
-
-## 🔐 Security Implementation Format
-
-For security-related code:
-
-```markdown
-## 🔒 Security Implementation: [Feature]
-
-### Threat Model:
-- **Attack Vector:** [How someone might exploit this]
-- **Impact:** [What damage could occur]
-- **Likelihood:** [High/Medium/Low]
-
-### Mitigation:
-\```typescript
-// Security implementation with:
-// - Input validation
-// - Rate limiting
-// - Authentication checks
-// - Authorization checks
-// - Audit logging
-\```
-
-### Security Tests:
-\```typescript
-// Test cases covering:
-// - Valid inputs
-// - Invalid inputs
-// - Injection attempts
-// - Permission bypasses
-\```
-```
-
-## 🚀 Deployment Guidance Format
-
-For deployment-related tasks:
-
-```markdown
-## 🚀 Deployment Step: [Step Name]
-
-### Pre-Deployment Checklist:
-- [ ] All tests passing
-- [ ] Environment variables set
-- [ ] Database migrations complete
-- [ ] Security scan passed
-- [ ] Performance benchmarks met
-
-### Deployment Commands:
-\```bash
-# Step-by-step deployment
-command1
-command2
-command3
-\```
-
-### Validation:
-1. Check [service] is running: [command]
-2. Verify [feature] works: [test steps]
-3. Monitor logs: [command]
-
-### Rollback Plan:
-If issues occur:
-\```bash
-# Rollback commands
-\```
-```
-
-## 📈 Performance Optimization Format
-
-When implementing performance improvements:
-
-```markdown
-## ⚡ Performance Optimization: [Feature]
-
-### Current Metrics:
-- Load time: [Xms]
-- Memory usage: [XMB]
-- API calls: [X]
-
-### Optimization Strategy:
-\```typescript
-// Before (slow approach)
-// [code showing issue]
-
-// After (optimized)
-// [improved code with explanation]
-\```
-
-### Expected Improvement:
-- Load time: [Xms] → [Yms] ([Z]% improvement)
-- Memory: [XMB] → [YMB]
-- API calls: [X] → [Y]
-
-### Verification:
-\```bash
-# Performance testing command
-npm run perf:test -- --component=[name]
-\```
-```
-
-## 🎓 Learning Points Format
-
-Include educational context when introducing new concepts:
-
-```markdown
-### 💡 Concept: [Technology/Pattern Name]
-
-**Why This Matters:**
-[1-2 sentences on production importance]
-
-**Key Understanding:**
-[Core concept in simple terms]
-
-**Implementation Pattern:**
-\```typescript
-// Standard pattern to follow
-\```
-
-**Common Pitfalls:**
-- ⚠️ [Mistake to avoid]
-- ⚠️ [Another mistake]
-
-**Best Practice:**
-✅ [Recommended approach]
-```
-
-## 🔄 Cross-Communication Protocol
-
-When working between Claude Project and Claude Code CLI:
-
-```markdown
-## 🔄 CLI Action Required
-
-### From Project to CLI:
-**Task:** [What needs to be done in CLI]
-**Files to modify:**
-- `[path/to/file1.ts]`
-- `[path/to/file2.ts]`
-
-**Commands to run:**
-\```bash
-# In Claude Code CLI, execute:
-[command 1]
-[command 2]
-\```
-
-### Expected CLI Response:
-[What output to look for]
-
-### Return to Project:
-After CLI completes:
-1. Verify [condition]
-2. Continue with [next task]
-```
-
-## 📋 Daily Standup Format
-
-Start each session with:
-
-```markdown
-## 📋 Production Development Standup - Day [X]
-
-### Yesterday's Completion:
-- ✅ [Completed task 1]
-- ✅ [Completed task 2]
-- ⚠️ [Incomplete/blocked task]
-
-### Today's Focus:
-1. **Priority 1:** [Most critical task]
-2. **Priority 2:** [Second task]
-3. **Priority 3:** [Third task]
-
-### Blockers/Risks:
-- 🚧 [Any blocking issue]
-- ⚠️ [Potential risk]
-
-### Time Allocation:
-- Morning (4hr): [Tasks]
-- Afternoon (4hr): [Tasks]
-
-### Success Metrics:
-By end of day:
-- [ ] [Measurable outcome 1]
-- [ ] [Measurable outcome 2]
-```
-
-## 🎯 Response Priorities
-
-When providing guidance, prioritize in this order:
-
-1. **Security Issues** - Address immediately
-2. **Data Loss Risks** - Prevent at all costs
-3. **Production Blockers** - Unblock ASAP
-4. **Performance Issues** - Fix if impacting UX
-5. **Feature Implementation** - Follow roadmap sequence
-6. **Nice-to-haves** - Defer to post-production
-
-## ✨ Example Perfect Response
-
-```markdown
-## 📅 Day 1 Implementation - Emergency Security Lockdown
-
-### 🖥️ Task 1: Rotate Firebase API Keys
-**Location:** Project root
-**Time:** 30 minutes
-
-First, let's backup your current configuration:
-
-\```bash
-# Create backup of current environment
-cp .env .env.backup.$(date +%Y%m%d)
-cp functions/.env functions/.env.backup.$(date +%Y%m%d)
-\```
-
-### 📁 File: /scripts/rotate-firebase-keys.ts
-**Purpose:** Automate Firebase key rotation
-**Testing:** Run with `npx ts-node scripts/rotate-firebase-keys.ts`
-
-\```typescript
-import * as admin from 'firebase-admin';
-import * as fs from 'fs';
-import * as dotenv from 'dotenv';
-
-interface FirebaseConfig {
-  apiKey: string;
-  authDomain: string;
-  projectId: string;
-  storageBucket: string;
-  messagingSenderId: string;
-  appId: string;
-}
-
-async function rotateFirebaseKeys(): Promise<void> {
-  console.log('🔄 Starting Firebase key rotation...');
-  
-  try {
-    // Read new keys from Firebase Console
-    const newConfig: FirebaseConfig = {
-      apiKey: process.env.NEW_FIREBASE_API_KEY!,
-      authDomain: 'elira-67ab7.firebaseapp.com',
-      projectId: 'elira-67ab7',
-      storageBucket: 'elira-67ab7.appspot.com',
-      messagingSenderId: process.env.NEW_SENDER_ID!,
-      appId: process.env.NEW_APP_ID!
-    };
-    
-    // Validate all keys are present
-    const missingKeys = Object.entries(newConfig)
-      .filter(([_, value]) => !value)
-      .map(([key]) => key);
-    
-    if (missingKeys.length > 0) {
-      throw new Error(`Missing keys: ${missingKeys.join(', ')}`);
-    }
-    
-    // Write to .env.local
-    const envContent = Object.entries(newConfig)
-      .map(([key, value]) => `NEXT_PUBLIC_${key.toUpperCase()}="${value}"`)
-      .join('\n');
-    
-    fs.writeFileSync('.env.local', envContent);
-    console.log('✅ Firebase keys rotated successfully');
-    
-    // Update git-ignored files list
-    if (!fs.readFileSync('.gitignore').includes('.env.local')) {
-      fs.appendFileSync('.gitignore', '\n.env.local\n');
-    }
-    
-  } catch (error) {
-    console.error('❌ Key rotation failed:', error);
-    process.exit(1);
-  }
-}
-
-// Execute
-rotateFirebaseKeys();
-\```
-
-### ✅ Verification Steps:
-1. Check new keys are loaded:
-   \```bash
-   npm run dev
-   # Open browser console and check: window.__NEXT_PUBLIC_FIREBASE_API_KEY__ is undefined
-   \```
-
-2. Test authentication still works:
-   \```bash
-   npm run test:auth
-   \```
-
-3. Verify old keys are revoked in Firebase Console
-
-### ⚠️ If Issues Occur:
-**Error:** "Missing keys: apiKey, appId"
-**Solution:** 
-1. Go to Firebase Console > Project Settings
-2. Copy the configuration object
-3. Set environment variables before running script
-
-### Next Task:
-Continue with Firestore Security Rules implementation...
-\```
-
-This completes the API key rotation. The keys are now secure and removed from version control. Ready for the next security task?
-```
-
-## 🎬 Final Notes
-
-Your responses should:
-- Enable copy-paste implementation
-- Prevent errors before they happen
-- Build confidence in the developer
-- Maintain momentum toward production
-- Ensure security and performance at every step
-
-Remember: The developer is counting on you for precise, production-ready guidance. Every response should move them closer to a successful Day 21 launch.
+**Current Phase:** Weekend Sprint - Implementing 5 critical features
+**Timeline:** Weekend completion target
+**Developer:** Hungarian-speaking team
+**Language:** All communication in Hungarian, code/comments in English
 
 ---
 
-*Use these instructions to provide consistent, high-quality guidance throughout the 21-day ELIRA production development journey.*
+## Technology Stack
+
+### Frontend
+- **Framework:** Next.js 15 (App Router)
+- **Language:** TypeScript (strict mode)
+- **Styling:** Tailwind CSS
+- **UI Components:** Shadcn/UI + Radix UI
+- **State Management:** Zustand (global), TanStack Query (server state)
+- **Forms:** React Hook Form + Zod validation
+- **Video Player:** Mux Player React
+
+### Backend
+- **Platform:** Firebase (Cloud Functions v2, Firestore, Storage, Auth)
+- **Runtime:** Node.js 18
+- **Functions:** TypeScript with ES modules
+- **Email:** SendGrid (primary) + Nodemailer (fallback)
+- **Payments:** Stripe
+- **Video:** Mux (primary) + Firebase Storage (fallback)
+
+### Development Tools
+- **Package Manager:** npm
+- **Linting:** ESLint
+- **Testing:** Jest + Playwright
+- **Git:** GitHub repository
+
+---
+
+## Project Structure
+
+```
+elira/
+├── src/
+│   ├── app/                          # Next.js App Router
+│   │   ├── (admin)/admin/            # Admin dashboard
+│   │   │   └── courses/create/       # Course creation wizard
+│   │   ├── (auth)/                   # Authentication pages
+│   │   │   ├── login/
+│   │   │   └── register/             # ⚠️ MODIFY: Remove company registration
+│   │   ├── (company)/company/        # B2B Company dashboard
+│   │   ├── (dashboard)/dashboard/    # Student dashboard
+│   │   ├── (marketing)/              # Public pages
+│   │   │   └── courses/[courseId]/   # ⚠️ MODIFY: Course detail pages
+│   │   └── (learning)/courses/       # Course player
+│   │       └── [courseId]/lessons/[lessonId]/
+│   │
+│   ├── components/                   # React components
+│   │   ├── auth/                     # Auth components
+│   │   │   ├── RegisterForm.tsx
+│   │   │   ├── AccountTypeSelector.tsx  # ⚠️ To be commented out
+│   │   │   └── CompanyRegisterForm.tsx  # ⚠️ To be commented out
+│   │   ├── course/                   # Course display components
+│   │   │   ├── CourseDetailHero.tsx
+│   │   │   ├── CourseCurriculumSection.tsx
+│   │   │   └── CourseEnrollmentCard.tsx
+│   │   ├── course-creation/          # ⚠️ MODIFY: Course creation components
+│   │   │   ├── CourseCreationWizard.tsx
+│   │   │   ├── CourseBasicInfoStep.tsx      # ⚠️ ADD marketing fields
+│   │   │   ├── CurriculumStructureStep.tsx
+│   │   │   ├── MuxVideoUploader.tsx         # ✅ DONE
+│   │   │   └── LessonContentEditorModal.tsx # ✅ DONE
+│   │   ├── payment/                  # ⚠️ MODIFY: Payment components
+│   │   │   ├── CheckoutForm.tsx
+│   │   │   └── EnhancedCheckoutButton.tsx
+│   │   └── ui/                       # Shadcn/UI components
+│   │
+│   ├── hooks/                        # Custom React hooks
+│   │   ├── useAuth.ts
+│   │   ├── useCourseQueries.ts
+│   │   └── useEnrollmentStatus.ts
+│   │
+│   ├── lib/                          # Utilities and configs
+│   │   ├── firebase.ts               # Firebase client config
+│   │   ├── stripe.ts                 # Stripe client config
+│   │   └── payment.ts                # Payment utilities
+│   │
+│   ├── stores/                       # Zustand stores
+│   │   ├── authStore.ts
+│   │   └── courseWizardStore.ts
+│   │
+│   └── types/                        # TypeScript types
+│       ├── index.ts
+│       ├── auth.ts
+│       └── payment.ts
+│
+├── functions/                        # Firebase Cloud Functions
+│   ├── src/
+│   │   ├── index.ts                  # ⚠️ MODIFY: Main functions export
+│   │   │   # Contains:
+│   │   │   # - firebaseLogin ✅
+│   │   │   # - requestPasswordReset ✅
+│   │   │   # - sendEmailVerification ✅
+│   │   │   # - SendGrid integration ✅
+│   │   │
+│   │   ├── muxActions.ts             # ✅ DONE: Mux video upload
+│   │   ├── muxWebhook.ts             # ✅ DONE: Mux webhook handler
+│   │   │
+│   │   ├── stripe/                   # ⚠️ CREATE: Stripe integration
+│   │   │   ├── createCheckoutSession.ts  # ⚠️ TODO
+│   │   │   ├── stripeWebhook.ts          # ⚠️ TODO
+│   │   │   └── handleEnrollment.ts       # ⚠️ TODO
+│   │   │
+│   │   └── company/                  # Company B2B features
+│   │       ├── createCompany.ts
+│   │       ├── employeeInvite.ts
+│   │       └── sendReminder.ts
+│   │
+│   └── package.json
+│
+├── public/                           # Static assets
+├── docs/                             # Documentation
+│   └── expanded_production_roadmap.md
+│
+├── firebase.json                     # Firebase config
+├── firestore.rules                   # Firestore security rules
+├── storage.rules                     # Storage security rules
+├── .env.local                        # Local environment variables
+└── package.json                      # Project dependencies
+```
+
+---
+
+## Current Features Status
+
+### ✅ COMPLETED FEATURES
+
+#### 1. Mux Video Integration (90%)
+**Location:**
+- `functions/src/muxActions.ts` - Upload URL generation, status checking
+- `functions/src/muxWebhook.ts` - Webhook handler for video.asset.ready
+- `src/components/course-creation/MuxVideoUploader.tsx` - Upload UI
+- `src/components/course-creation/LessonContentEditorModal.tsx` - Video editor
+
+**Implementation:**
+- Direct upload to Mux from browser
+- Automatic playbackId extraction via webhook
+- Development mode with mock uploads
+- Firestore lesson update with muxAssetId and muxPlaybackId
+
+**What's Missing:**
+- Production Mux credentials (MUX_TOKEN_ID, MUX_TOKEN_SECRET, MUX_WEBHOOK_SECRET)
+- Webhook URL registration in Mux dashboard
+
+#### 2. SendGrid Email Integration (95%)
+**Location:** `functions/src/index.ts` (lines 1-300)
+
+**Implementation:**
+- SendGrid primary email provider
+- Fallback chain: SendGrid → Brevo → Gmail → Ethereal
+- Password reset emails (requestPasswordReset function)
+- Email verification (sendEmailVerification function)
+- Company invitation emails (company/employeeInvite.ts)
+
+**What's Missing:**
+- SendGrid API key configuration
+- Sender domain verification
+
+#### 3. Authentication System (100%)
+**Location:**
+- `src/app/(auth)/login/page.tsx`
+- `src/app/(auth)/register/page.tsx` ⚠️ Needs modification
+- `src/components/auth/RegisterForm.tsx`
+- `functions/src/index.ts` - firebaseLogin function
+
+**Implementation:**
+- Firebase Authentication integration
+- Role-based access control (STUDENT, INSTRUCTOR, ADMIN, COMPANY_ADMIN)
+- Protected routes with auth guards
+- JWT token management
+
+---
+
+## Weekend Sprint Features
+
+### ⚠️ FEATURES TO IMPLEMENT
+
+#### 1. Stripe Payment Integration (P0 - Critical)
+**Estimated Time:** 4 hours
+
+**Tasks:**
+1. Create `functions/src/stripe/createCheckoutSession.ts`
+2. Create `functions/src/stripe/stripeWebhook.ts`
+3. Update `src/components/payment/CheckoutForm.tsx`
+4. Update `src/app/(marketing)/courses/[courseId]/ClientCourseDetailPage.tsx`
+5. Set up Stripe credentials
+6. Register webhook URL
+
+**Files to Create/Modify:**
+```typescript
+// functions/src/stripe/createCheckoutSession.ts
+export const createCheckoutSession = onCall(async (request) => {
+  // 1. Verify authentication
+  // 2. Get course price from Firestore
+  // 3. Create Stripe Checkout Session
+  // 4. Return sessionId and url
+})
+
+// functions/src/stripe/stripeWebhook.ts
+export const stripeWebhook = onRequest(async (req, res) => {
+  // 1. Verify webhook signature
+  // 2. Handle checkout.session.completed
+  // 3. Create enrollment in Firestore
+  // 4. Send confirmation email
+})
+```
+
+#### 2. Course Detail Page - Marketing Content (P0 - Critical)
+**Estimated Time:** 4 hours
+
+**Current State:**
+- Dynamic routing works: `/courses/[courseId]`
+- Basic course info displays
+- **PROBLEM:** Course creation doesn't save marketing/sales content
+
+**Tasks:**
+1. Add marketing fields to `CourseBasicInfoStep.tsx`
+2. Update Firestore schema
+3. Update `createCourse` and `updateCourse` functions
+4. Update `ClientCourseDetailPage.tsx` to display new fields
+
+**Fields to Add:**
+```typescript
+interface CourseMarketingData {
+  // SEO
+  seo: {
+    metaTitle: string
+    metaDescription: string
+    keywords: string[]
+  }
+
+  // Marketing
+  marketing: {
+    shortDescription: string        // 160 chars for cards
+    detailedDescription: string     // Rich text - teljes leírás
+    whatYouWillLearn: string[]      // Bullet points
+    requirements: string[]          // Prerequisites
+    targetAudience: string[]        // Who is this for
+    features: string[]              // Course features
+    highlights: string[]            // Key highlights
+  }
+
+  // Guarantee
+  guarantee: {
+    enabled: boolean
+    text: string
+    days: number
+  }
+
+  // FAQ
+  faq: Array<{
+    question: string
+    answer: string
+  }>
+}
+```
+
+**Files to Modify:**
+```
+src/components/course-creation/CourseBasicInfoStep.tsx
+src/app/(marketing)/courses/[courseId]/ClientCourseDetailPage.tsx
+functions/src/index.ts (createCourse, updateCourse)
+```
+
+#### 3. Register Page - Remove Company Registration (P0 - Critical)
+**Estimated Time:** 10 minutes
+
+**File:** `src/app/(auth)/register/page.tsx`
+
+**Task:** Comment out or conditionally hide company registration option
+
+**Approach 1 (Simple):**
+```typescript
+// Line 108-114: Remove AccountTypeSelector
+// Set accountType to 'individual' by default
+const [accountType, setAccountType] = useState<AccountType>('individual');
+
+// Remove:
+<AccountTypeSelector ... />
+```
+
+**Approach 2 (Keep code, disable UI):**
+```typescript
+// Line 114-120: Comment out CompanyRegisterForm
+accountType === 'company' ? (
+  /* TEMPORARILY DISABLED
+  <CompanyRegisterForm ... />
+  */
+  <div className="text-center py-8">
+    <p>Vállalati regisztráció hamarosan elérhető</p>
+    <Button onClick={() => setAccountType(null)}>Vissza</Button>
+  </div>
+)
+```
+
+---
+
+## Development Commands
+
+### Local Development
+```bash
+# Start Next.js dev server
+npm run dev
+
+# Start Firebase emulators
+firebase emulators:start
+
+# Both together (recommended)
+npm run dev & firebase emulators:start
+```
+
+### Firebase Functions
+```bash
+# Navigate to functions directory
+cd functions
+
+# Install dependencies
+npm install
+
+# Build TypeScript
+npm run build
+
+# Watch mode (auto-rebuild)
+npm run watch
+
+# Deploy all functions
+firebase deploy --only functions
+
+# Deploy specific function
+firebase deploy --only functions:createCheckoutSession
+
+# View logs
+firebase functions:log
+
+# Real-time logs
+firebase functions:log --only createCheckoutSession
+```
+
+### Environment Configuration
+```bash
+# Set Firebase Functions config
+firebase functions:config:set stripe.secret_key="sk_test_..."
+firebase functions:config:set mux.token_id="..."
+firebase functions:config:set sendgrid.api_key="SG...."
+
+# Get current config
+firebase functions:config:get
+
+# Unset a config
+firebase functions:config:unset stripe.secret_key
+```
+
+### Firestore & Storage
+```bash
+# Deploy Firestore rules
+firebase deploy --only firestore:rules
+
+# Deploy Storage rules
+firebase deploy --only storage:rules
+
+# Deploy everything
+firebase deploy
+```
+
+### Testing
+```bash
+# Run tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Firestore rules tests
+npm run test:firestore
+
+# Linting
+npm run lint
+```
+
+---
+
+## Firestore Data Structure
+
+### Collections
+
+#### `users/{userId}`
+```typescript
+{
+  id: string                    // Firebase Auth UID
+  email: string
+  firstName: string
+  lastName: string
+  role: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN' | 'COMPANY_ADMIN' | 'COMPANY_EMPLOYEE'
+  profilePictureUrl?: string
+  companyId?: string
+  emailVerified: boolean
+  createdAt: Timestamp
+  updatedAt: Timestamp
+}
+```
+
+#### `courses/{courseId}`
+```typescript
+{
+  id: string
+  title: string
+  description: string
+  slug: string
+  status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'
+  instructorId: string
+  categoryId: string
+  price: number                 // In cents (HUF)
+  thumbnailUrl: string
+  difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'
+  language: string
+  certificateEnabled: boolean
+  enrollmentCount: number
+  averageRating: number
+  reviewCount: number
+
+  // Learning objectives
+  learningObjectives: string[]
+
+  // ⚠️ TO ADD: Marketing fields
+  seo?: {
+    metaTitle: string
+    metaDescription: string
+    keywords: string[]
+  }
+  marketing?: {
+    shortDescription: string
+    detailedDescription: string
+    whatYouWillLearn: string[]
+    requirements: string[]
+    targetAudience: string[]
+    features: string[]
+    highlights: string[]
+  }
+  guarantee?: {
+    enabled: boolean
+    text: string
+    days: number
+  }
+  faq?: Array<{question: string, answer: string}>
+
+  createdAt: Timestamp
+  updatedAt: Timestamp
+}
+
+// Subcollections:
+// - modules/{moduleId}
+//   - lessons/{lessonId}
+```
+
+#### `courses/{courseId}/modules/{moduleId}/lessons/{lessonId}`
+```typescript
+{
+  id: string
+  title: string
+  type: 'VIDEO' | 'TEXT' | 'QUIZ' | 'PDF' | 'AUDIO' | 'READING'
+  order: number
+
+  // Video (Mux primary, Firebase Storage fallback)
+  muxAssetId?: string           // ✅ Set during upload
+  muxPlaybackId?: string        // ✅ Set by webhook
+  muxStatus?: 'uploading' | 'processing' | 'ready' | 'error'
+  videoUrl?: string             // Fallback or generated from playbackId
+
+  // Content
+  content?: string              // For TEXT, READING, AUDIO
+  quiz?: LessonQuiz             // Structured quiz data
+  pdfUrl?: string
+  audioUrl?: string
+
+  // Metadata
+  description?: string
+  durationSec?: number
+  isFreePreview?: boolean
+  resources?: Array<{name: string, url: string}>
+
+  createdAt: Timestamp
+  updatedAt: Timestamp
+}
+```
+
+#### `enrollments/{enrollmentId}`
+```typescript
+{
+  id: string                    // Format: {userId}_{courseId}
+  userId: string
+  courseId: string
+  progress: number              // 0-100
+  status: 'ACTIVE' | 'COMPLETED' | 'CANCELLED'
+  completedLessons: string[]    // Array of lesson IDs
+  enrolledAt: Timestamp
+  lastAccessedAt: Timestamp
+  completedAt?: Timestamp
+}
+```
+
+#### `payments/{paymentId}`
+```typescript
+{
+  id: string
+  userId: string
+  courseId: string
+  amount: number
+  currency: string
+  status: 'pending' | 'completed' | 'failed' | 'refunded'
+  stripeSessionId: string
+  stripePaymentIntentId?: string
+  metadata: {
+    userEmail: string
+    courseTitle: string
+  }
+  createdAt: Timestamp
+  updatedAt: Timestamp
+}
+```
+
+---
+
+## API Functions Reference
+
+### Authentication Functions
+
+#### `firebaseLogin`
+**Location:** `functions/src/index.ts`
+**Type:** Callable
+```typescript
+// Request
+{ idToken: string }
+
+// Response
+{
+  success: true,
+  user: UserData,
+  token: string
+}
+```
+
+#### `requestPasswordReset`
+**Location:** `functions/src/index.ts` (line 176)
+**Type:** Callable
+```typescript
+// Request
+{ email: string }
+
+// Response
+{
+  success: true,
+  message: string
+}
+```
+
+### Mux Functions
+
+#### `getMuxUploadUrl`
+**Location:** `functions/src/muxActions.ts`
+**Type:** Callable
+**Auth Required:** Yes (INSTRUCTOR or ADMIN)
+```typescript
+// Request: {}
+// Response: { success: true, id, url, assetId }
+```
+
+#### `getMuxAssetStatus`
+**Location:** `functions/src/muxActions.ts`
+**Type:** Callable
+```typescript
+// Request: { assetId: string }
+// Response: { success: true, status, playbackId?, duration?, aspectRatio? }
+```
+
+#### `muxWebhook`
+**Location:** `functions/src/muxWebhook.ts`
+**Type:** HTTP Request
+**URL:** `https://us-central1-[PROJECT-ID].cloudfunctions.net/muxWebhook`
+
+### ⚠️ Stripe Functions (TO IMPLEMENT)
+
+#### `createCheckoutSession` (TODO)
+**Type:** Callable
+**Auth Required:** Yes
+```typescript
+// Request
+{ courseId: string, successUrl?: string, cancelUrl?: string }
+
+// Response
+{ success: true, sessionId: string, url: string }
+```
+
+#### `stripeWebhook` (TODO)
+**Type:** HTTP Request
+**URL:** `https://us-central1-[PROJECT-ID].cloudfunctions.net/stripeWebhook`
+**Events:** checkout.session.completed, payment_intent.succeeded
+
+---
+
+## Environment Variables
+
+### Frontend (.env.local)
+```env
+# Firebase
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+
+# Stripe
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+```
+
+### Backend (Firebase Functions Config)
+```bash
+# Mux
+firebase functions:config:set mux.token_id="YOUR_TOKEN_ID"
+firebase functions:config:set mux.token_secret="YOUR_TOKEN_SECRET"
+firebase functions:config:set mux.webhook_secret="YOUR_WEBHOOK_SECRET"
+
+# Stripe
+firebase functions:config:set stripe.secret_key="sk_test_..."
+firebase functions:config:set stripe.webhook_secret="whsec_..."
+
+# SendGrid
+firebase functions:config:set sendgrid.api_key="SG...."
+firebase functions:config:set sendgrid.from_email="noreply@elira.hu"
+```
+
+---
+
+## Implementation Priorities
+
+### P0 - Critical (Must Complete)
+1. **Remove Company Registration** (10 min)
+2. **Stripe Checkout Session** (2 hours)
+3. **Stripe Webhook Handler** (2 hours)
+4. **SendGrid Configuration** (30 min)
+
+### P1 - Important (Should Complete)
+5. **Course Marketing Fields** (4 hours)
+6. **Mux Production Setup** (30 min)
+7. **Backend Deployment** (1 hour)
+
+### P2 - Optional (Nice to Have)
+8. **Email Templates** (2 hours)
+9. **Frontend Deployment** (1 hour)
+
+**Total Estimated Time:** ~19 hours
+
+---
+
+## Coding Standards
+
+### TypeScript
+- Always use strict mode
+- No `any` types (use `unknown` if necessary)
+- Explicit return types for functions
+- Interfaces for data structures
+
+### React Components
+```typescript
+'use client'  // Only if needed
+
+import { ... } from '...'
+
+interface Props {
+  // props
+}
+
+export default function ComponentName({ props }: Props) {
+  // Hooks at top
+  // State
+  // Effects
+  // Handlers
+  // Render
+}
+```
+
+### Firebase Functions
+```typescript
+import { onCall } from 'firebase-functions/v2/https';
+import { z } from 'zod';
+
+const InputSchema = z.object({
+  field: z.string().min(1)
+});
+
+export const functionName = onCall({
+  region: 'us-central1',
+  memory: '512MiB',
+  timeoutSeconds: 120,
+}, async (request) => {
+  try {
+    // 1. Auth check
+    if (!request.auth) throw new Error('Auth required');
+
+    // 2. Validate input
+    const data = InputSchema.parse(request.data);
+
+    // 3. Business logic
+    const result = await doSomething(data);
+
+    // 4. Return
+    return { success: true, data: result };
+  } catch (error: any) {
+    console.error('Error:', error);
+
+    if (error instanceof z.ZodError) {
+      return { success: false, error: 'Validation error', details: error.errors };
+    }
+
+    return { success: false, error: error.message || 'Unknown error' };
+  }
+});
+```
+
+---
+
+## Deployment Checklist
+
+### Backend (Firebase)
+- [ ] Build: `cd functions && npm run build`
+- [ ] Set environment variables
+- [ ] Deploy: `firebase deploy --only functions`
+- [ ] Register webhooks (Stripe, Mux)
+- [ ] Test webhooks
+
+### Frontend (Vercel)
+- [ ] Set environment variables
+- [ ] Deploy: `vercel --prod`
+- [ ] Configure custom domain
+- [ ] Test all flows
+
+---
+
+## Quick File Locations Reference
+
+**P0 - Stripe:**
+- Create: `functions/src/stripe/createCheckoutSession.ts`
+- Create: `functions/src/stripe/stripeWebhook.ts`
+- Modify: `src/app/(marketing)/courses/[courseId]/ClientCourseDetailPage.tsx`
+
+**P0 - Register:**
+- Modify: `src/app/(auth)/register/page.tsx` (line 108-120)
+
+**P1 - Course Marketing:**
+- Modify: `src/components/course-creation/CourseBasicInfoStep.tsx`
+- Modify: `functions/src/index.ts` (createCourse, updateCourse)
+- Modify: `src/app/(marketing)/courses/[courseId]/ClientCourseDetailPage.tsx`
+
+---
+
+**Last Updated:** 2025-10-22
+**Version:** 1.0
+**Status:** Ready for Weekend Sprint
+**Next Action:** Start with P0 tasks

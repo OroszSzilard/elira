@@ -13,7 +13,8 @@ function RegisterPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading } = useAuth();
-  const [accountType, setAccountType] = useState<AccountType | null>(null);
+  // Temporarily set to 'individual' - company registration disabled
+  const [accountType, setAccountType] = useState<AccountType>('individual');
 
   // Get redirect URL from query params or default to dashboard
   const redirectTo = searchParams?.get('redirect_to') || '/dashboard';
@@ -89,22 +90,15 @@ function RegisterPageContent() {
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-              {accountType === 'company'
-                ? 'Vállalati fiók létrehozása'
-                : accountType === 'individual'
-                ? 'Fiók létrehozása'
-                : 'Csatlakozz az Elirához'}
+              Fiók létrehozása
             </h1>
             <p className="text-sm text-gray-600">
-              {accountType === 'company'
-                ? 'Regisztrálj vállalati fiókot a csapatodnak'
-                : accountType === 'individual'
-                ? 'Csatlakozz az Elira közösséghez'
-                : 'Válaszd ki a fiók típusát'}
+              Csatlakozz az Elira közösséghez
             </p>
           </div>
 
           {/* Form Content */}
+          {/* Temporarily disabled - company registration
           {!accountType ? (
             // Show account type selector
             <AccountTypeSelector
@@ -118,14 +112,15 @@ function RegisterPageContent() {
               onBack={() => setAccountType(null)}
             />
           ) : (
-            // Individual registration flow
+          */}
+            {/* Individual registration flow - only option available */}
             <RegisterForm
               onSuccess={handleAuthSuccess}
               onSwitchToLogin={() => router.push('/login')}
-              onBack={() => setAccountType(null)}
+              onBack={() => router.push('/login')}
               className="!p-0 !shadow-none !bg-transparent !border-0"
             />
-          )}
+          {/* End temporarily disabled */}
         </div>
 
         {/* Privacy Links */}

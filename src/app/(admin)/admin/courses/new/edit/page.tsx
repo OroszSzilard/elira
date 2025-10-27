@@ -4,4 +4,4 @@ import CourseCreationWizard from '@/components/course-creation/CourseCreationWiz
 
 export default function CreateCoursePage() {
   return <CourseCreationWizard />;
-} 
+}

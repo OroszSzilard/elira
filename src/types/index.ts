@@ -82,12 +82,20 @@ export interface Lesson {
   type: 'TEXT' | 'VIDEO' | 'QUIZ' | 'READING' | 'PDF' | 'AUDIO';
   order: number;
   status: 'DRAFT' | 'PUBLISHED' | 'SOON' | 'ARCHIVED';
-  videoUrl?: string; // Firebase Storage URL for video
+  videoUrl?: string; // Firebase Storage URL for video OR Mux stream URL
   videoStoragePath?: string; // Storage path reference
   thumbnailUrl?: string; // Firebase Storage URL for thumbnail
   duration?: number;
   createdAt: string;
   updatedAt: string;
+  // Mux video fields
+  muxAssetId?: string; // Mux asset identifier
+  muxPlaybackId?: string; // Mux playback identifier for streaming
+  muxUploadId?: string; // Mux upload session ID
+  muxStatus?: 'uploading' | 'processing' | 'ready' | 'error'; // Mux processing status
+  muxThumbnailUrl?: string; // Mux-generated thumbnail URL
+  muxDuration?: number; // Mux-reported duration in seconds
+  muxAspectRatio?: string; // Video aspect ratio (e.g., "16:9")
   // NEW: structured quiz object (replaces quizJson string)
   quiz?: LessonQuiz | null;
   // NEW: PDF document URL
@@ -96,6 +104,8 @@ export interface Lesson {
   audioUrl?: string;
   // NEW: File attachments and resources
   resources?: LessonResource[];
+  // Additional lesson description field
+  description?: string;
 }
 
 export interface Course {

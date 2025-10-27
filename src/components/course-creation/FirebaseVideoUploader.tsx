@@ -20,12 +20,12 @@ interface Props {
 
 type UploadStatus = 'idle' | 'uploading' | 'processing' | 'done' | 'error';
 
-export default function FirebaseVideoUploader({ 
-  onUploaded, 
-  courseId, 
-  lessonId, 
-  maxSizeMB = 2048, // 2GB default 
-  currentVideoUrl 
+export default function FirebaseVideoUploader({
+  onUploaded,
+  courseId,
+  lessonId,
+  maxSizeMB = 2048, // 2GB default
+  currentVideoUrl
 }: Props) {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
@@ -37,6 +37,7 @@ export default function FirebaseVideoUploader({
   const [videoUrl, setVideoUrl] = useState<string>(currentVideoUrl || '');
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
   const [uploadTask, setUploadTask] = useState<any>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   // Validate video file
   const validateVideoFile = (file: File): string | null => {
@@ -230,6 +231,40 @@ export default function FirebaseVideoUploader({
     }
   };
 
+  // Drag & drop handlers for video
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isUploading && !videoUrl) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (isUploading || videoUrl) return;
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      uploadVideo(file);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Video Upload */}
@@ -248,11 +283,21 @@ export default function FirebaseVideoUploader({
           {!isUploading && !videoUrl && (
             <div
               onClick={() => videoInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary cursor-pointer transition-colors"
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              className={`
+                border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all
+                ${isDragging
+                  ? 'border-primary bg-primary/5 scale-[1.02]'
+                  : 'border-gray-300 hover:border-primary hover:bg-gray-50'
+                }
+              `}
             >
-              <Upload className="mx-auto h-12 w-12 text-gray-400" />
-              <p className="mt-2 text-sm text-gray-600">
-                Kattints vagy húzd ide a videó fájlt
+              <Upload className={`mx-auto h-12 w-12 transition-colors ${isDragging ? 'text-primary' : 'text-gray-400'}`} />
+              <p className={`mt-2 text-sm transition-colors ${isDragging ? 'text-primary font-medium' : 'text-gray-600'}`}>
+                {isDragging ? 'Engedd el a fájlt a feltöltéshez' : 'Kattints vagy húzd ide a videó fájlt'}
               </p>
               <p className="text-xs text-gray-500 mt-1">
                 MP4, MOV, AVI, WebM vagy OGG (max {maxSizeMB}MB)

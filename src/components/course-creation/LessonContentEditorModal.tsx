@@ -13,8 +13,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Upload, Save, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Progress } from "@/components/ui/progress";
-// Firebase videó feltöltő
+// Firebase videó feltöltő (fallback/legacy)
 import FirebaseVideoUploader from "./FirebaseVideoUploader";
+// Mux videó feltöltő (primary)
+import MuxVideoUploader from "./MuxVideoUploader";
 import QuizEditorModal, { LessonQuiz } from "./QuizEditorModal";
 
 const RichTextEditor = dynamic(() => import("@/components/lesson/RichTextEditor"), {
@@ -29,6 +31,14 @@ interface Lesson {
   videoUrl?: string | null;
   videoStoragePath?: string | null; // Firebase Storage path
   durationSec?: number | null; // videó hossz másodpercben
+  // Mux fields
+  muxAssetId?: string | null;
+  muxPlaybackId?: string | null;
+  muxUploadId?: string | null;
+  muxStatus?: 'uploading' | 'processing' | 'ready' | 'error';
+  muxThumbnailUrl?: string | null;
+  muxDuration?: number | null;
+  muxAspectRatio?: string | null;
   isFreePreview?: boolean;
   resources?: { name: string; url: string }[];
   // Legacy field for migration – may still exist when loaded from Firestore
@@ -67,6 +77,12 @@ export default function LessonContentEditorModal({ lesson, open, onOpenChange, o
   const [uploadProgress, setUploadProgress] = useState<{[key: string]: number}>({});
   const [uploading, setUploading] = useState<{[key: string]: boolean}>({});
   const [description, setDescription] = useState<string>(lesson.description || "");
+
+  // Mux state
+  const [muxAssetId, setMuxAssetId] = useState<string>(lesson.muxAssetId || "");
+  const [muxPlaybackId, setMuxPlaybackId] = useState<string>(lesson.muxPlaybackId || "");
+  const [muxStatus, setMuxStatus] = useState<string>(lesson.muxStatus || "");
+  const [useMux, setUseMux] = useState<boolean>(true); // Toggle between Mux and Firebase
   
   // New state for PDF and Audio
   const [pdfUrl, setPdfUrl] = useState<string>(lesson.pdfUrl || "");
@@ -129,6 +145,7 @@ export default function LessonContentEditorModal({ lesson, open, onOpenChange, o
       const result = await httpsCallable(fbFunctions, "getSignedUploadUrl")({
         fileName: file.name,
         fileType: file.type,
+        folder: "lesson-videos"
       });
       const { signedUrl, publicUrl } = result.data as { signedUrl: string; publicUrl: string };
       const res = await fetch(signedUrl, {
@@ -161,6 +178,7 @@ export default function LessonContentEditorModal({ lesson, open, onOpenChange, o
       const result = await httpsCallable(fbFunctions, "getSignedUploadUrl")({
         fileName: file.name,
         fileType: file.type,
+        folder: "lesson-subtitles"
       });
       const { signedUrl: subtitleSignedUrl, publicUrl: subtitlePublicUrl } = result.data as { signedUrl: string; publicUrl: string };
       const res = await fetch(subtitleSignedUrl, {
@@ -193,6 +211,7 @@ export default function LessonContentEditorModal({ lesson, open, onOpenChange, o
       const result = await httpsCallable(fbFunctions, "getSignedUploadUrl")({
         fileName: file.name,
         fileType: file.type,
+        folder: "lesson-thumbnails"
       });
       const { signedUrl: thumbSignedUrl, publicUrl: thumbPublicUrl } = result.data as { signedUrl: string; publicUrl: string };
       const res = await fetch(thumbSignedUrl, {
@@ -243,6 +262,7 @@ export default function LessonContentEditorModal({ lesson, open, onOpenChange, o
       const result = await httpsCallable(fbFunctions, "getSignedUploadUrl")({
         fileName: file.name,
         fileType: file.type,
+        folder: "lesson-pdfs"
       });
       const { signedUrl, publicUrl } = result.data as { signedUrl: string; publicUrl: string };
       const res = await fetch(signedUrl, {
@@ -279,6 +299,7 @@ export default function LessonContentEditorModal({ lesson, open, onOpenChange, o
       const result = await httpsCallable(fbFunctions, "getSignedUploadUrl")({
         fileName: file.name,
         fileType: file.type,
+        folder: "lesson-audio"
       });
       const { signedUrl, publicUrl } = result.data as { signedUrl: string; publicUrl: string };
       const res = await fetch(signedUrl, {
@@ -325,6 +346,10 @@ export default function LessonContentEditorModal({ lesson, open, onOpenChange, o
         assessment: lesson.type === "READING" ? assessment : null,
         pdfUrl: lesson.type === "PDF" ? pdfUrl : null,
         audioUrl: lesson.type === "AUDIO" ? audioUrl : null,
+        // Mux fields for VIDEO type
+        muxAssetId: lesson.type === "VIDEO" && muxAssetId ? muxAssetId : null,
+        muxPlaybackId: lesson.type === "VIDEO" && muxPlaybackId ? muxPlaybackId : null,
+        muxStatus: lesson.type === "VIDEO" && muxStatus ? muxStatus : null,
         updatedAt: new Date().toISOString(),
       };
 
@@ -353,6 +378,7 @@ export default function LessonContentEditorModal({ lesson, open, onOpenChange, o
       const result = await httpsCallable(fbFunctions, "getSignedUploadUrl")({
         fileName: file.name,
         fileType: file.type,
+        folder: "lesson-resources"
       });
       const { signedUrl: resourceSignedUrl, publicUrl: resourcePublicUrl } = result.data as { signedUrl: string; publicUrl: string };
       const res = await fetch(resourceSignedUrl, {
@@ -472,21 +498,77 @@ export default function LessonContentEditorModal({ lesson, open, onOpenChange, o
 
           {lesson.type === "VIDEO" && (
             <div className="space-y-4">
-              {/* Firebase videó feltöltő */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium">Videó feltöltése a számítógépről</label>
-                <FirebaseVideoUploader 
-                  onUploaded={(url, thumbUrl) => {
-                    setVideoUrl(url);
-                    if (thumbUrl) {
-                      setThumbnailUrl(thumbUrl);
-                    }
-                  }}
-                  courseId={lesson.courseId}
-                  lessonId={lesson.id}
-                  currentVideoUrl={videoUrl}
-                />
+              {/* Upload method toggle */}
+              <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    checked={useMux}
+                    onChange={() => setUseMux(true)}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm font-medium">Mux Video (ajánlott)</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    checked={!useMux}
+                    onChange={() => setUseMux(false)}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm font-medium">Firebase Storage (legacy)</span>
+                </label>
               </div>
+
+              {useMux ? (
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium">Videó feltöltése Mux-szal</label>
+                  <MuxVideoUploader
+                    onUploaded={(assetId, playbackId) => {
+                      setMuxAssetId(assetId);
+                      setMuxPlaybackId(playbackId || "");
+                      setMuxStatus("ready");
+                      // Also set videoUrl for backwards compatibility
+                      if (playbackId) {
+                        setVideoUrl(`https://stream.mux.com/${playbackId}`);
+                      }
+                      toast.success("Videó sikeresen feltöltve Mux-ba!");
+                    }}
+                    lessonId={lesson.id}
+                    maxSizeMB={500}
+                  />
+                  {muxAssetId && (
+                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <p className="text-sm text-green-800">
+                        <strong>Mux Asset ID:</strong> {muxAssetId}
+                      </p>
+                      {muxPlaybackId && (
+                        <p className="text-sm text-green-800">
+                          <strong>Playback ID:</strong> {muxPlaybackId}
+                        </p>
+                      )}
+                      <p className="text-sm text-green-600 mt-1">
+                        ✓ Videó sikeresen feldolgozva és streamelésre kész
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium">Videó feltöltése Firebase Storage-ba</label>
+                  <FirebaseVideoUploader
+                    onUploaded={(url, thumbUrl) => {
+                      setVideoUrl(url);
+                      if (thumbUrl) {
+                        setThumbnailUrl(thumbUrl);
+                      }
+                    }}
+                    courseId={lesson.courseId}
+                    lessonId={lesson.id}
+                    currentVideoUrl={videoUrl}
+                  />
+                </div>
+              )}
 
               {/* Subtitle upload */}
               <div className="space-y-2 pt-4">

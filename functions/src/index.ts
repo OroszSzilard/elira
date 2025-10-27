@@ -6,7 +6,7 @@ import { onRequest, onCall } from 'firebase-functions/v2/https';
 import { logger } from 'firebase-functions/v2';
 import * as nodemailer from 'nodemailer';
 import { v4 as uuidv4 } from 'uuid';
-import * as sgMail from '@sendgrid/mail';
+// import * as sgMail from '@sendgrid/mail';
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
@@ -21,10 +21,10 @@ const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@elira.hu';
 
 // Initialize SendGrid if API key is available
-if (SENDGRID_API_KEY) {
-  sgMail.setApiKey(SENDGRID_API_KEY);
-  console.log('SendGrid initialized for email sending');
-}
+// if (SENDGRID_API_KEY) {
+//   sgMail.setApiKey(SENDGRID_API_KEY);
+//   console.log('SendGrid initialized for email sending');
+// }
 
 // Email transporter configuration
 const createTransporter = async () => {
@@ -257,26 +257,26 @@ export const requestPasswordReset = onCall({
       `;
 
     // Try SendGrid first if available
-    if (SENDGRID_API_KEY) {
-      try {
-        const msg = {
-          to: email,
-          from: FROM_EMAIL,
-          subject: 'Jelszó visszaállítás - ELIRA',
-          html: htmlContent,
-        };
-        
-        await sgMail.send(msg);
-        logger.info('Email sent via SendGrid to:', email);
-        
-        return {
-          success: true,
-          message: 'Ha a megadott email cím regisztrálva van, küldtünk egy jelszó visszaállítási linket.'
-        };
-      } catch (error: any) {
-        logger.error('SendGrid error, falling back to SMTP:', error);
-      }
-    }
+    // if (SENDGRID_API_KEY) {
+    //   try {
+    //     const msg = {
+    //       to: email,
+    //       from: FROM_EMAIL,
+    //       subject: 'Jelszó visszaállítás - ELIRA',
+    //       html: htmlContent,
+    //     };
+    //
+    //     await sgMail.send(msg);
+    //     logger.info('Email sent via SendGrid to:', email);
+    //
+    //     return {
+    //       success: true,
+    //       message: 'Ha a megadott email cím regisztrálva van, küldtünk egy jelszó visszaállítási linket.'
+    //     };
+    //   } catch (error: any) {
+    //     logger.error('SendGrid error, falling back to SMTP:', error);
+    //   }
+    // }
 
     // Use nodemailer (Brevo, Gmail, or Ethereal)
     const transporter = await createTransporter();
@@ -520,26 +520,26 @@ export const sendEmailVerification = onCall({
       `;
 
     // Try SendGrid first if available
-    if (SENDGRID_API_KEY) {
-      try {
-        const msg = {
-          to: email,
-          from: FROM_EMAIL,
-          subject: 'Email cím megerősítése - ELIRA',
-          html: htmlContent,
-        };
-        
-        await sgMail.send(msg);
-        logger.info('Verification email sent via SendGrid to:', email);
-        
-        return {
-          success: true,
-          message: 'Megerősítő email elküldve.'
-        };
-      } catch (error: any) {
-        logger.error('SendGrid error, falling back to SMTP:', error);
-      }
-    }
+    // if (SENDGRID_API_KEY) {
+    //   try {
+    //     const msg = {
+    //       to: email,
+    //       from: FROM_EMAIL,
+    //       subject: 'Email cím megerősítése - ELIRA',
+    //       html: htmlContent,
+    //     };
+    //
+    //     await sgMail.send(msg);
+    //     logger.info('Verification email sent via SendGrid to:', email);
+    //
+    //     return {
+    //       success: true,
+    //       message: 'Megerősítő email elküldve.'
+    //     };
+    //   } catch (error: any) {
+    //     logger.error('SendGrid error, falling back to SMTP:', error);
+    //   }
+    // }
 
     // Use nodemailer (Brevo, Gmail, or Ethereal)
     const transporter = await createTransporter();
@@ -1147,3 +1147,232 @@ export {
 } from './company/progressTracking';
 export { generateCSVReport } from './company/generateCSVReport';
 export { sendEmployeeReminder } from './company/sendReminder';
+
+// Export Mux video functions
+export { getMuxUploadUrl, getMuxAssetStatus, testVideoUpload } from './muxActions';
+export { muxWebhook } from './muxWebhook';
+
+// Export course management functions
+export { createCourse, updateCourse, publishCourse, deleteCourse } from './courseManagement';
+
+// Export file actions
+export { getSignedUploadUrl } from './fileActions';
+
+/**
+ * Get all categories
+ * Auto-creates default categories if none exist
+ */
+export const getCategories = onCall({
+  cors: true,
+  region: 'us-central1',
+}, async (request) => {
+  try {
+    logger.info('[getCategories] Called');
+
+    let snapshot = await firestore.collection('categories').orderBy('name', 'asc').get();
+
+    // If no categories exist, create default ones
+    if (snapshot.empty) {
+      logger.info('[getCategories] No categories found, creating defaults...');
+
+      const defaultCategories = [
+        { name: 'Üzleti és Menedzsment', slug: 'uzleti-es-menedzsment', description: 'Üzleti vezetés, stratégia, projektmenedzsment', icon: '💼', order: 1, active: true },
+        { name: 'Marketing és Értékesítés', slug: 'marketing-es-ertekesites', description: 'Digitális marketing, közösségi média, értékesítési technikák', icon: '📈', order: 2, active: true },
+        { name: 'Programozás és Fejlesztés', slug: 'programozas-es-fejlesztes', description: 'Webfejlesztés, mobilappok, szoftverfejlesztés', icon: '💻', order: 3, active: true },
+        { name: 'Design és Kreativitás', slug: 'design-es-kreativitas', description: 'Grafikai tervezés, UX/UI, kreatív alkotás', icon: '🎨', order: 4, active: true },
+        { name: 'Személyes Fejlődés', slug: 'szemelyes-fejlodes', description: 'Önismeret, kommunikáció, produktivitás', icon: '🌱', order: 5, active: true },
+        { name: 'Pénzügyek és Befektetés', slug: 'penzugyek-es-befektetes', description: 'Befektetés, vagyonkezelés, pénzügyi tervezés', icon: '💰', order: 6, active: true },
+        { name: 'Egészség és Wellness', slug: 'egeszseg-es-wellness', description: 'Fitness, táplálkozás, mentális egészség', icon: '💪', order: 7, active: true },
+        { name: 'Nyelvek', slug: 'nyelvek', description: 'Nyelvtanulás, kommunikáció idegen nyelveken', icon: '🌍', order: 8, active: true },
+        { name: 'Jog és Compliance', slug: 'jog-es-compliance', description: 'Jogszabályok, adatvédelem, megfelelőség', icon: '⚖️', order: 9, active: true },
+        { name: 'Data Science és AI', slug: 'data-science-es-ai', description: 'Adatelemzés, gépi tanulás, mesterséges intelligencia', icon: '🤖', order: 10, active: true },
+        { name: 'HR és Toborzás', slug: 'hr-es-toborzas', description: 'Emberi erőforrás menedzsment, toborzás, onboarding', icon: '👥', order: 11, active: true },
+        { name: 'Fotózás és Videózás', slug: 'fotozas-es-videozas', description: 'Fotográfia, videókészítés, vágás', icon: '📸', order: 12, active: true }
+      ];
+
+      const batch = firestore.batch();
+
+      for (const category of defaultCategories) {
+        const docRef = firestore.collection('categories').doc();
+        batch.set(docRef, {
+          ...category,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        });
+      }
+
+      await batch.commit();
+      logger.info('[getCategories] Created 12 default categories');
+
+      // Re-fetch categories
+      snapshot = await firestore.collection('categories').orderBy('name', 'asc').get();
+    }
+
+    const categories: any[] = [];
+
+    snapshot.forEach(doc => {
+      categories.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+
+    logger.info(`[getCategories] Returning ${categories.length} categories`);
+
+    return {
+      success: true,
+      categories
+    };
+
+  } catch (error: any) {
+    logger.error('[getCategories] Error:', error);
+    return {
+      success: false,
+      error: error.message || 'Kategóriák betöltése sikertelen'
+    };
+  }
+});
+
+/**
+ * Get all instructors (ADMIN/INSTRUCTOR only)
+ */
+export const getInstructors = onCall({
+  cors: true,
+  region: 'us-central1',
+}, async (request) => {
+  try {
+    logger.info('[getInstructors] Called');
+
+    // Check authentication
+    if (!request.auth) {
+      throw new Error('Hitelesítés szükséges');
+    }
+
+    const userId = request.auth.uid;
+
+    // Check if user has permission (ADMIN or INSTRUCTOR)
+    const userDoc = await firestore.collection('users').doc(userId).get();
+    const userData = userDoc.data();
+
+    if (!userData || !['ADMIN', 'INSTRUCTOR'].includes(userData.role)) {
+      throw new Error('Nincs jogosultságod az oktatók listázásához');
+    }
+
+    // Get all users with INSTRUCTOR or ADMIN role
+    const snapshot = await firestore
+      .collection('users')
+      .where('role', 'in', ['INSTRUCTOR', 'ADMIN'])
+      .get();
+
+    const instructors: any[] = [];
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      instructors.push({
+        id: doc.id,
+        firstName: data.firstName || '',
+        lastName: data.lastName || '',
+        email: data.email || '',
+        profilePictureUrl: data.profilePictureUrl || null,
+        title: data.title || null,
+        bio: data.bio || null,
+      });
+    });
+
+    logger.info(`[getInstructors] Found ${instructors.length} instructors`);
+
+    return {
+      success: true,
+      instructors
+    };
+
+  } catch (error: any) {
+    logger.error('[getInstructors] Error:', error);
+    return {
+      success: false,
+      error: error.message || 'Oktatók betöltése sikertelen'
+    };
+  }
+});
+
+/**
+ * Seed default categories (ADMIN only)
+ */
+export const seedCategories = onCall({
+  cors: true,
+  region: 'us-central1',
+}, async (request) => {
+  try {
+    logger.info('[seedCategories] Called');
+
+    // Check authentication
+    if (!request.auth) {
+      throw new Error('Hitelesítés szükséges');
+    }
+
+    // Check if user is ADMIN
+    const userDoc = await firestore.collection('users').doc(request.auth.uid).get();
+    const userData = userDoc.data();
+
+    if (!userData || userData.role !== 'ADMIN') {
+      throw new Error('Csak ADMIN futtathatja ezt a funkciót');
+    }
+
+    const categories = [
+      { name: 'Üzleti és Menedzsment', slug: 'uzleti-es-menedzsment', description: 'Üzleti vezetés, stratégia, projektmenedzsment', icon: '💼', order: 1 },
+      { name: 'Marketing és Értékesítés', slug: 'marketing-es-ertekesites', description: 'Digitális marketing, közösségi média, értékesítési technikák', icon: '📈', order: 2 },
+      { name: 'Programozás és Fejlesztés', slug: 'programozas-es-fejlesztes', description: 'Webfejlesztés, mobilappok, szoftverfejlesztés', icon: '💻', order: 3 },
+      { name: 'Design és Kreativitás', slug: 'design-es-kreativitas', description: 'Grafikai tervezés, UX/UI, kreatív alkotás', icon: '🎨', order: 4 },
+      { name: 'Személyes Fejlődés', slug: 'szemelyes-fejlodes', description: 'Önismeret, kommunikáció, produktivitás', icon: '🌱', order: 5 },
+      { name: 'Pénzügyek és Befektetés', slug: 'penzugyek-es-befektetes', description: 'Befektetés, vagyonkezelés, pénzügyi tervezés', icon: '💰', order: 6 },
+      { name: 'Egészség és Wellness', slug: 'egeszseg-es-wellness', description: 'Fitness, táplálkozás, mentális egészség', icon: '💪', order: 7 },
+      { name: 'Nyelvek', slug: 'nyelvek', description: 'Nyelvtanulás, kommunikáció idegen nyelveken', icon: '🌍', order: 8 },
+      { name: 'Jog és Compliance', slug: 'jog-es-compliance', description: 'Jogszabályok, adatvédelem, megfelelőség', icon: '⚖️', order: 9 },
+      { name: 'Data Science és AI', slug: 'data-science-es-ai', description: 'Adatelemzés, gépi tanulás, mesterséges intelligencia', icon: '🤖', order: 10 },
+      { name: 'HR és Toborzás', slug: 'hr-es-toborzas', description: 'Emberi erőforrás menedzsment, toborzás, onboarding', icon: '👥', order: 11 },
+      { name: 'Fotózás és Videózás', slug: 'fotozas-es-videozas', description: 'Fotográfia, videókészítés, vágás', icon: '📸', order: 12 }
+    ];
+
+    let added = 0;
+    let skipped = 0;
+
+    for (const category of categories) {
+      // Check if exists
+      const existing = await firestore.collection('categories')
+        .where('slug', '==', category.slug)
+        .limit(1)
+        .get();
+
+      if (!existing.empty) {
+        skipped++;
+        continue;
+      }
+
+      // Add category
+      await firestore.collection('categories').add({
+        ...category,
+        active: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+
+      added++;
+    }
+
+    logger.info(`[seedCategories] Added ${added}, skipped ${skipped} categories`);
+
+    return {
+      success: true,
+      added,
+      skipped,
+      message: `${added} kategória hozzáadva, ${skipped} már létezett`
+    };
+
+  } catch (error: any) {
+    logger.error('[seedCategories] Error:', error);
+    return {
+      success: false,
+      error: error.message || 'Kategóriák feltöltése sikertelen'
+    };
+  }
+});

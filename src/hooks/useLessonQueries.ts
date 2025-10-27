@@ -1,21 +1,23 @@
 import { useQuery } from '@tanstack/react-query'
-import { doc, getDoc, collection, getDocs, query, where } from 'firebase/firestore'
+import { doc, getDoc, collection, getDocs, query, where, orderBy } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Lesson } from '@/types'
 import { useAuthStore } from '@/stores/authStore'
 
 export const useLesson = (id: string | undefined, courseId?: string) => {
   const { isAuthenticated, authReady, user } = useAuthStore();
-  
-  return useQuery<Lesson, Error>({
+
+  console.log('🎬 [useLesson] Hook called with:', { id, courseId, isAuthenticated, authReady });
+
+  const queryResult = useQuery<Lesson, Error>({
     queryKey: ['lesson', id, courseId],
     queryFn: async () => {
-      console.log('🔍 [useLesson] Fetching lesson from Firestore:', { 
-        lessonId: id, 
+      console.log('🔍 [useLesson] queryFn EXECUTING - Fetching lesson from Firestore:', {
+        lessonId: id,
         courseId,
         authReady,
         isAuthenticated,
-        hasUser: !!user 
+        hasUser: !!user
       });
       
       if (!courseId || !id) {
@@ -154,13 +156,36 @@ export const useLesson = (id: string | undefined, courseId?: string) => {
           if (!lessonData) {
             for (const moduleDoc of modulesSnapshot.docs) {
               console.log('Checking module:', moduleDoc.id);
-              
+
               // Get all lessons in this module to see what's there
               const allLessonsInModule = await getDocs(
-                collection(db, 'courses', actualCourseId, 'modules', moduleDoc.id, 'lessons')
+                query(
+                  collection(db, 'courses', actualCourseId, 'modules', moduleDoc.id, 'lessons'),
+                  orderBy('order', 'asc')
+                )
               );
-              console.log(`Module ${moduleDoc.id} has lessons:`, allLessonsInModule.docs.map(d => ({ id: d.id, title: d.data().title })));
-              
+              console.log(`Module ${moduleDoc.id} has lessons:`, allLessonsInModule.docs.map(d => ({ id: d.id, title: d.data().title, order: d.data().order })));
+
+              // If looking for lesson-1, lesson-2, etc., try to match by order
+              if (id.startsWith('lesson-')) {
+                const lessonNumber = parseInt(id.replace('lesson-', ''));
+                if (!isNaN(lessonNumber) && lessonNumber > 0) {
+                  // Find lesson with matching order (1-indexed)
+                  const matchingLesson = allLessonsInModule.docs.find(doc => doc.data().order === lessonNumber - 1);
+                  if (matchingLesson) {
+                    lessonData = {
+                      id: matchingLesson.id, // Use the actual Firestore ID
+                      ...matchingLesson.data(),
+                      type: matchingLesson.data()?.type || 'VIDEO',
+                      content: matchingLesson.data()?.content || '',
+                      resources: matchingLesson.data()?.resources || []
+                    } as Lesson;
+                    console.log(`Found lesson by order ${lessonNumber - 1} in module ${moduleDoc.id}:`, lessonData);
+                    break;
+                  }
+                }
+              }
+
               // Try to find lesson by slug first
               const lessonsBySlug = await getDocs(
                 query(
@@ -168,11 +193,11 @@ export const useLesson = (id: string | undefined, courseId?: string) => {
                   where('slug', '==', 'bevezeto-lecke') // lesson-1 usually maps to this slug
                 )
               );
-              
+
               if (!lessonsBySlug.empty) {
                 const lessonDoc = lessonsBySlug.docs[0];
                 lessonData = {
-                  id: id, // Use the requested ID
+                  id: lessonDoc.id, // Use actual Firestore ID
                   ...lessonDoc.data(),
                   type: lessonDoc.data()?.type || 'VIDEO',
                   content: lessonDoc.data()?.content || '',
@@ -181,12 +206,12 @@ export const useLesson = (id: string | undefined, courseId?: string) => {
                 console.log('Found lesson in module by slug:', moduleDoc.id, lessonData);
                 break;
               }
-              
+
               // Try direct ID lookup
               const lessonDoc = await getDoc(
                 doc(db, 'courses', actualCourseId, 'modules', moduleDoc.id, 'lessons', id)
               );
-              
+
               if (lessonDoc.exists()) {
                 lessonData = {
                   id: lessonDoc.id,
@@ -196,6 +221,20 @@ export const useLesson = (id: string | undefined, courseId?: string) => {
                   resources: lessonDoc.data()?.resources || []
                 } as Lesson;
                 console.log('Found lesson in module subcollection:', moduleDoc.id, lessonData);
+                break;
+              }
+
+              // If still not found and this is the first module, try getting the first lesson
+              if (!lessonData && !allLessonsInModule.empty && id === 'lesson-1') {
+                const firstLesson = allLessonsInModule.docs[0];
+                lessonData = {
+                  id: firstLesson.id, // Use actual Firestore ID
+                  ...firstLesson.data(),
+                  type: firstLesson.data()?.type || 'VIDEO',
+                  content: firstLesson.data()?.content || '',
+                  resources: firstLesson.data()?.resources || []
+                } as Lesson;
+                console.log('Using first lesson in module as fallback:', moduleDoc.id, lessonData);
                 break;
               }
             }
@@ -224,6 +263,7 @@ export const useLesson = (id: string | undefined, courseId?: string) => {
     },
     enabled: !!id && !!courseId,
     staleTime: 5 * 60 * 1000,
+    gcTime: 0, // Don't cache failed queries
     retry: (failureCount, error) => {
       // Don't retry auth-related errors
       if (error.message.includes('Bejelentkezés') || error.message.includes('Autentikáció')) {
@@ -231,7 +271,17 @@ export const useLesson = (id: string | undefined, courseId?: string) => {
       }
       return failureCount < 3;
     }
-  })
+  });
+
+  console.log('📊 [useLesson] Query state:', {
+    isLoading: queryResult.isLoading,
+    isFetching: queryResult.isFetching,
+    isError: queryResult.isError,
+    error: queryResult.error?.message,
+    hasData: !!queryResult.data
+  });
+
+  return queryResult;
 }
 
 export const useLessonsForModule = (moduleId: string | undefined) => {

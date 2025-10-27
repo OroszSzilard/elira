@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { httpsCallable } from 'firebase/functions';
 import { functions as fbFunctions } from '@/lib/firebase';
-import { Upload, X, Loader2 } from "lucide-react";
+import { Upload, X, Loader2, Plus } from "lucide-react";
 import { useCourseWizardStore } from "@/stores/courseWizardStore";
 import { useAuthStore } from "@/stores/authStore";
 
@@ -31,6 +31,16 @@ export interface BasicInfoData {
   certificateEnabled: boolean;
   thumbnailUrl?: string;
   learningObjectives: string;
+
+  // Marketing fields
+  shortDescription?: string;
+  whatYouWillLearn?: string[];
+  requirements?: string[];
+  targetAudience?: string[];
+  guaranteeEnabled?: boolean;
+  guaranteeText?: string;
+  guaranteeDays?: number;
+  faq?: Array<{ question: string; answer: string }>;
 }
 
 interface Props {
@@ -48,6 +58,19 @@ const schema = z.object({
   certificateEnabled: z.boolean(),
   thumbnailUrl: z.string().optional(),
   learningObjectives: z.string().min(10, "A tanulási célok legalább 10 karakter legyen"),
+
+  // Marketing fields (all optional)
+  shortDescription: z.string().max(160, "Maximum 160 karakter").optional(),
+  whatYouWillLearn: z.array(z.string()).optional(),
+  requirements: z.array(z.string()).optional(),
+  targetAudience: z.array(z.string()).optional(),
+  guaranteeEnabled: z.boolean().optional(),
+  guaranteeText: z.string().optional(),
+  guaranteeDays: z.number().optional(),
+  faq: z.array(z.object({
+    question: z.string(),
+    answer: z.string()
+  })).optional(),
 });
 
 export default function CourseBasicInfoStep({ initial, onSubmit }: Props) {
@@ -58,6 +81,12 @@ export default function CourseBasicInfoStep({ initial, onSubmit }: Props) {
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Marketing fields state
+  const [whatYouWillLearn, setWhatYouWillLearn] = useState<string[]>(initial?.whatYouWillLearn || []);
+  const [requirements, setRequirements] = useState<string[]>(initial?.requirements || []);
+  const [targetAudience, setTargetAudience] = useState<string[]>(initial?.targetAudience || []);
+  const [faq, setFaq] = useState<Array<{ question: string; answer: string }>>(initial?.faq || []);
 
   const {
     control,
@@ -84,6 +113,47 @@ export default function CourseBasicInfoStep({ initial, onSubmit }: Props) {
   });
 
   const { authReady, isAuthenticated, user } = useAuthStore();
+
+  // Helper functions for array management
+  const addWhatYouWillLearn = () => setWhatYouWillLearn([...whatYouWillLearn, ""]);
+  const updateWhatYouWillLearn = (index: number, value: string) => {
+    const updated = [...whatYouWillLearn];
+    updated[index] = value;
+    setWhatYouWillLearn(updated);
+  };
+  const removeWhatYouWillLearn = (index: number) => {
+    setWhatYouWillLearn(whatYouWillLearn.filter((_, i) => i !== index));
+  };
+
+  const addRequirement = () => setRequirements([...requirements, ""]);
+  const updateRequirement = (index: number, value: string) => {
+    const updated = [...requirements];
+    updated[index] = value;
+    setRequirements(updated);
+  };
+  const removeRequirement = (index: number) => {
+    setRequirements(requirements.filter((_, i) => i !== index));
+  };
+
+  const addTargetAudience = () => setTargetAudience([...targetAudience, ""]);
+  const updateTargetAudience = (index: number, value: string) => {
+    const updated = [...targetAudience];
+    updated[index] = value;
+    setTargetAudience(updated);
+  };
+  const removeTargetAudience = (index: number) => {
+    setTargetAudience(targetAudience.filter((_, i) => i !== index));
+  };
+
+  const addFaqItem = () => setFaq([...faq, { question: "", answer: "" }]);
+  const updateFaqItem = (index: number, field: 'question' | 'answer', value: string) => {
+    const updated = [...faq];
+    updated[index][field] = value;
+    setFaq(updated);
+  };
+  const removeFaqItem = (index: number) => {
+    setFaq(faq.filter((_, i) => i !== index));
+  };
 
   // Load categories and instructors
   useEffect(() => {
@@ -183,7 +253,15 @@ export default function CourseBasicInfoStep({ initial, onSubmit }: Props) {
   const onFormSubmit = async (data: BasicInfoData) => {
     setIsSubmitting(true);
     try {
-      await onSubmit(data);
+      // Merge form data with state-managed arrays
+      const completeData: BasicInfoData = {
+        ...data,
+        whatYouWillLearn: whatYouWillLearn.filter(item => item.trim() !== ""),
+        requirements: requirements.filter(item => item.trim() !== ""),
+        targetAudience: targetAudience.filter(item => item.trim() !== ""),
+        faq: faq.filter(item => item.question.trim() !== "" && item.answer.trim() !== ""),
+      };
+      await onSubmit(completeData);
     } catch (error) {
       console.error('Form submission error:', error);
     } finally {
@@ -431,6 +509,224 @@ export default function CourseBasicInfoStep({ initial, onSubmit }: Props) {
             </button>
           </div>
         )}
+      </div>
+
+      {/* Marketing Section */}
+      <div className="border-t pt-6 mt-6">
+        <h3 className="text-lg font-semibold mb-4">Marketing és értékesítési tartalom</h3>
+
+        {/* Short Description */}
+        <div className="space-y-2 mb-6">
+          <Label htmlFor="shortDescription">Rövid leírás (SEO)</Label>
+          <Textarea
+            id="shortDescription"
+            {...register("shortDescription")}
+            rows={2}
+            maxLength={160}
+            placeholder="Rövid, lényegre törő leírás (max 160 karakter)"
+          />
+          <p className="text-xs text-muted-foreground">
+            {watch('shortDescription')?.length || 0} / 160 karakter
+          </p>
+        </div>
+
+        {/* What You'll Learn */}
+        <div className="space-y-2 mb-6">
+          <Label>Mit fogsz tanulni?</Label>
+          <div className="space-y-2">
+            {whatYouWillLearn.map((item, index) => (
+              <div key={index} className="flex gap-2">
+                <Input
+                  value={item}
+                  onChange={(e) => updateWhatYouWillLearn(index, e.target.value)}
+                  placeholder="pl. React komponensek létrehozása"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => removeWhatYouWillLearn(index)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addWhatYouWillLearn}
+              className="w-full"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Új tanulási cél hozzáadása
+            </Button>
+          </div>
+        </div>
+
+        {/* Requirements */}
+        <div className="space-y-2 mb-6">
+          <Label>Előfeltételek</Label>
+          <div className="space-y-2">
+            {requirements.map((item, index) => (
+              <div key={index} className="flex gap-2">
+                <Input
+                  value={item}
+                  onChange={(e) => updateRequirement(index, e.target.value)}
+                  placeholder="pl. Alapvető HTML/CSS ismeretek"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => removeRequirement(index)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addRequirement}
+              className="w-full"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Új előfeltétel hozzáadása
+            </Button>
+          </div>
+        </div>
+
+        {/* Target Audience */}
+        <div className="space-y-2 mb-6">
+          <Label>Célközönség</Label>
+          <div className="space-y-2">
+            {targetAudience.map((item, index) => (
+              <div key={index} className="flex gap-2">
+                <Input
+                  value={item}
+                  onChange={(e) => updateTargetAudience(index, e.target.value)}
+                  placeholder="pl. Kezdő fejlesztők"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => removeTargetAudience(index)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addTargetAudience}
+              className="w-full"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Új célcsoport hozzáadása
+            </Button>
+          </div>
+        </div>
+
+        {/* Guarantee Section */}
+        <div className="space-y-4 mb-6 p-4 border rounded-lg">
+          <div className="flex items-center space-x-2">
+            <Controller
+              name="guaranteeEnabled"
+              control={control}
+              render={({ field }) => (
+                <Switch
+                  id="guaranteeEnabled"
+                  checked={field.value || false}
+                  onCheckedChange={field.onChange}
+                />
+              )}
+            />
+            <Label htmlFor="guaranteeEnabled" className="font-semibold cursor-pointer">
+              Pénzvisszafizetési garancia
+            </Label>
+          </div>
+
+          {watch('guaranteeEnabled') && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="guaranteeDays">Garancia időtartama (napok)</Label>
+                <Controller
+                  name="guaranteeDays"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      id="guaranteeDays"
+                      type="number"
+                      min={1}
+                      max={365}
+                      value={field.value || 30}
+                      onChange={(e) => field.onChange(parseInt(e.target.value) || 30)}
+                      placeholder="30"
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="guaranteeText">Garancia szöveg</Label>
+                <Textarea
+                  id="guaranteeText"
+                  {...register("guaranteeText")}
+                  rows={3}
+                  placeholder="Pl. Ha nem vagy elégedett a kurzussal, 30 napon belül teljes visszatérítést kapsz."
+                />
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* FAQ Section */}
+        <div className="space-y-2 mb-6">
+          <Label>Gyakran Ismételt Kérdések (GYIK)</Label>
+          <div className="space-y-4">
+            {faq.map((item, index) => (
+              <div key={index} className="p-4 border rounded-lg space-y-2">
+                <div className="flex justify-between items-start gap-2">
+                  <Input
+                    value={item.question}
+                    onChange={(e) => updateFaqItem(index, 'question', e.target.value)}
+                    placeholder="Kérdés"
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => removeFaqItem(index)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <Textarea
+                  value={item.answer}
+                  onChange={(e) => updateFaqItem(index, 'answer', e.target.value)}
+                  placeholder="Válasz"
+                  rows={2}
+                />
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addFaqItem}
+              className="w-full"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Új GYIK elem hozzáadása
+            </Button>
+          </div>
+        </div>
       </div>
 
       {/* Submit Button */}

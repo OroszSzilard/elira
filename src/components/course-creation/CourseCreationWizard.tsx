@@ -153,11 +153,27 @@ export default function CourseCreationWizard() {
     }
   };
 
-  // Check content when courseId or currentStep changes
+  // Auto-refresh Firestore content when on step 2 (curriculum)
   useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+
     if (courseId && currentStep === 2) {
+      // Initial check
       checkFirestoreContent();
+
+      // Set up auto-refresh every 3 seconds while on step 2
+      // This ensures the "Next" button becomes enabled when modules/lessons are added
+      intervalId = setInterval(() => {
+        checkFirestoreContent();
+      }, 3000);
     }
+
+    // Cleanup interval when leaving step 2
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, [courseId, currentStep]);
 
   // Check if step is valid
@@ -198,13 +214,30 @@ export default function CourseCreationWizard() {
         // Create new course
         const createCourseFn = httpsCallable(fbFunctions, 'createCourse');
         const res: any = await createCourseFn(formData);
-        
+
+        console.log('🔍 createCourse response:', res.data);
+
         if (!res.data?.success) {
+          // Log the full error details
+          console.error('❌ createCourse failed:', {
+            error: res.data?.error,
+            details: res.data?.details,
+            fullResponse: res.data
+          });
+
+          // Show detailed error if available
+          if (res.data?.details) {
+            const errorMsg = `${res.data.error}: ${JSON.stringify(res.data.details, null, 2)}`;
+            console.error('Validation errors:', errorMsg);
+            throw new Error(errorMsg);
+          }
+
           throw new Error(res.data?.error || 'Kurzus létrehozása sikertelen');
         }
-        
-        setCourseId(res.data.course.id);
-        
+
+        const newCourseId = res.data.courseId;
+        setCourseId(newCourseId);
+
         // Create audit log entry for course creation
         try {
           await addDoc(collection(db, 'auditLogs'), {
@@ -213,7 +246,7 @@ export default function CourseCreationWizard() {
             userName: user?.displayName || user?.email || 'Admin',
             action: 'CREATE_COURSE',
             resource: 'Course',
-            resourceId: res.data.course.id,
+            resourceId: newCourseId,
             details: JSON.stringify({
               courseTitle: formData.title,
               category: formData.categoryId,
@@ -228,20 +261,20 @@ export default function CourseCreationWizard() {
         } catch (logError) {
           console.error('Failed to create audit log:', logError);
         }
-        
+
         toast.success('Kurzus sikeresen létrehozva');
       } else {
         // Update existing course
         const updateFn = httpsCallable(fbFunctions, 'updateCourse');
-        const res: any = await updateFn({ 
-          courseId, 
-          data: formData // This ensures data is properly structured
+        const res: any = await updateFn({
+          courseId,
+          ...formData // Spread directly, not nested
         });
-        
+
         if (!res.data?.success) {
           throw new Error(res.data?.error || 'Kurzus frissítése sikertelen');
         }
-        
+
         toast.success('Kurzus adatok frissítve');
       }
       
